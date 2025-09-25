@@ -1,0 +1,19 @@
+{
+  "idf.openOcdConfigs": [
+    "board/esp32p4-builtin.cfg"
+  ],
+  "idf.portWin": "COM34",
+  "idf.flashType": "UART",
+  "idf.customExtraVars": {
+    "OPENOCD_SCRIPTS": "d:\\ESP-IDFE\\5.3.1\\tools\\openocd-esp32\\v0.12.0-esp32-20240318/openocd-esp32/share/openocd/scripts",
+    "IDF_CCACHE_ENABLE": "1",
+    "ESP_ROM_ELF_DIR": "d:\\ESP-IDFE\\5.3.1\\tools\\esp-rom-elfs\\20240305/",
+    "IDF_TARGET": "esp32p4"
+  },
+  "clangd.path": "d:\\ESP-IDFE\\v5.5\\tools\\esp-clang\\esp-19.1.2_20250312\\esp-clang\\bin\\clangd.exe",
+  "clangd.arguments": [
+    "--background-index",
+    "--query-driver=d:\\ESP-IDFE\\v5.5\\tools\\riscv32-esp-elf\\esp-14.2.0_20241119\\riscv32-esp-elf\\bin\\riscv32-esp-elf-gcc.exe",
+    "--compile-commands-dir=e:\\ESP32-P4-WIFI6-Touch-LCD-7\\code\\esp-dev-kits\\examples\\esp32-p4-function-ev-board\\examples\\esp_brookesia_phone\\components\\esp_lcd_ek79007\\test_apps\\build"
+  ]
+}
