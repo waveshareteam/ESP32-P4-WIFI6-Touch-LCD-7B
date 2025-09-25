@@ -1,0 +1,3 @@
+## IDF Component Manager Manifest File
+dependencies:
+  esp_lcd_ek79007: "*"
