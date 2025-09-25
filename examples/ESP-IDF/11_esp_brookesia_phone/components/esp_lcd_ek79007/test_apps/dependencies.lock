@@ -1,0 +1,32 @@
+dependencies:
+  esp_lcd_ek79007:
+    dependencies:
+    - name: espressif/cmake_utilities
+      version: 0.*
+    - name: idf
+      version: '>=5.3'
+    source:
+      path: E:\ESP32-P4-WIFI6-Touch-LCD-7\code\esp-dev-kits\examples\esp32-p4-function-ev-board\examples\esp_brookesia_phone\components\esp_lcd_ek79007
+      type: local
+    targets:
+    - esp32p4
+    version: 1.0.2
+  espressif/cmake_utilities:
+    component_hash: 351350613ceafba240b761b4ea991e0f231ac7a9f59a9ee901f751bddc0bb18f
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=4.1'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 0.5.3
+  idf:
+    source:
+      type: idf
+    version: 5.5.0
+direct_dependencies:
+- esp_lcd_ek79007
+manifest_hash: d097e5ff3abb0773346ed33805028cdc1a8214639ee33f82665bb9dcfc0e2156
+target: esp32p4
+version: 2.0.0

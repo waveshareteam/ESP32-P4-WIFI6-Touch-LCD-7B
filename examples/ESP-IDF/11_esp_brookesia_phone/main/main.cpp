@@ -48,7 +48,6 @@ extern "C" void app_main(void)
         }
     };
     lv_display_t *disp = bsp_display_start_with_config(&cfg);
-    bsp_display_backlight_on();
 
     if (disp != NULL)
     {
@@ -99,4 +98,6 @@ extern "C" void app_main(void)
 #endif
 
     bsp_display_unlock();
+    bsp_display_backlight_on();
+
 }
