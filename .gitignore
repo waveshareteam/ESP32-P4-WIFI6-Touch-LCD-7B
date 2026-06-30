@@ -1,0 +1,66 @@
+# Editors and local tools
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ESP-IDF generated files
+build/
+**/build/
+build-local/
+**/build-local/
+managed_components/
+**/managed_components/
+dependencies.lock
+**/dependencies.lock
+sdkconfig
+**/sdkconfig
+sdkconfig.old
+**/sdkconfig.old
+sdkconfig.ci.tmp
+**/sdkconfig.ci.tmp
+
+# ESP-IDF tooling caches
+.cache/
+**/.cache/
+pytest_embedded_log/
+**/pytest_embedded_log/
+
+# Python caches used by test helpers
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+**/.pytest_cache/
+
+# Frontend example generated outputs
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.vite/
+**/.vite/
+
+# Logs and local environment
+*.log
+.env
+.env.*
+
+# Firmware binaries and archives generated locally
+*.elf
+*.map
+*.uf2
+*.hex
+*.zip
+*.tar
+*.tar.gz
+
+# Prebuilt factory firmware packages
+!firmware/factory_firmware/**/*.zip
