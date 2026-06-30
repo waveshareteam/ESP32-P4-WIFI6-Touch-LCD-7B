@@ -1,6 +1,6 @@
 # NVS Counter
 
-[中文版本](./README_CN.md)
+[中文](README_CN.md)
 
 Beginner-friendly example that stores a boot counter in NVS flash.
 

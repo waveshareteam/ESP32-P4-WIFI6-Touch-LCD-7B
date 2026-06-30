@@ -1,6 +1,6 @@
 # System Monitor
 
-[English Version](./README.md)
+[English](README.md)
 
 面向高级用户的串口诊断和运行时监视器。
 

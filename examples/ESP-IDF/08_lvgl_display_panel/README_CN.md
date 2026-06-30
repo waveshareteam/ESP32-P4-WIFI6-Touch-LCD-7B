@@ -1,6 +1,6 @@
 # LVGL 显示触摸面板
 
-[English Version](./README.md)
+[English](README.md)
 
 本示例使用一个小型 LVGL app 验证 1024 x 600 显示屏和 GT911 触摸。程序会依次显示红、
 绿、蓝纯色屏，然后切换到白色触摸画布；触摸面板时会在触摸坐标绘制黑色方块。

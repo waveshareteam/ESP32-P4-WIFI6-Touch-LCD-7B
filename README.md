@@ -1,5 +1,7 @@
 # ESP32-P4-WIFI6-Touch-LCD-7B
 
+[中文](README_CN.md)
+
 Buildable ESP-IDF examples, CI checks, and factory firmware source for the
 Waveshare ESP32-P4-WIFI6-Touch-LCD-7B board.
 

@@ -1,6 +1,6 @@
 # 开发板检查
 
-[English Version](./README.md)
+[English](README.md)
 
 这是本仓库推荐的第一个 ESP-IDF 示例。
 

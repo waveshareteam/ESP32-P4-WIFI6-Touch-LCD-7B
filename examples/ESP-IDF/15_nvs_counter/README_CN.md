@@ -1,6 +1,6 @@
 # NVS 计数器
 
-[English Version](./README.md)
+[English](README.md)
 
 这是一个适合初学者的示例，用 NVS flash 保存启动计数。
 

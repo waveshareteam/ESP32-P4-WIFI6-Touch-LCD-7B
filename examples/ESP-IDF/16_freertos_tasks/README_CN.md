@@ -1,6 +1,6 @@
 # FreeRTOS 任务
 
-[English Version](./README.md)
+[English](README.md)
 
 这是一个适合初学者的 FreeRTOS 示例，包含两个任务和一个队列。
 

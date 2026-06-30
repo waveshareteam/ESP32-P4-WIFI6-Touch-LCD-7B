@@ -1,6 +1,6 @@
 # ESP-Brookesia Phone
 
-[中文版本](./README_CN.md)
+[中文](README_CN.md)
 
 This example runs an ESP-Brookesia phone-style UI on
 ESP32-P4-WIFI6-Touch-LCD-7B. It demonstrates display, touch, audio, camera,

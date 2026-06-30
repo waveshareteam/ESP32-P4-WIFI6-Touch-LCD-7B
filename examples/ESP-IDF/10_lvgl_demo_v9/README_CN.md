@@ -1,6 +1,6 @@
 # LVGL Demo v9
 
-[English Version](./README.md)
+[English](README.md)
 
 本示例在 ESP32-P4-WIFI6-Touch-LCD-7B 上运行 LVGL v9 widgets demo。示例使用本板
 BSP，适配 1024 x 600 EK79007 MIPI-DSI 屏和 GT911 触摸。

@@ -1,6 +1,6 @@
 # LVGL Display Panel
 
-[中文版本](./README_CN.md)
+[中文](README_CN.md)
 
 This example validates the 1024 x 600 display and GT911 touch controller with a
 small LVGL app. It shows red, green, and blue screens, then switches to a white

@@ -1,6 +1,6 @@
 # USB 扩展显示
 
-[English Version](./README.md)
+[English](README.md)
 
 本示例可让 ESP32-P4-WIFI6-Touch-LCD-7B 作为 Windows 的 USB 副屏使用。示例使用本板的
 高速 USB、1024 x 600 MIPI-DSI 屏、GT911 触摸，以及可选 USB 音频功能。
@@ -24,7 +24,7 @@ idf.py -p PORT flash monitor
 
 ## Windows 驱动
 
-请按 [windows_driver](./windows_driver/README_cn.md) 中的说明安装 Windows IDD 驱动。
+请按 [windows_driver](./windows_driver/README_CN.md) 中的说明安装 Windows IDD 驱动。
 
 默认 USB ID 如下：
 

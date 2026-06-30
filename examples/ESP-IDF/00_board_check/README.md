@@ -1,6 +1,6 @@
 # Board Check
 
-[中文版本](./README_CN.md)
+[中文](README_CN.md)
 
 This is the recommended first ESP-IDF example for this repository.
 

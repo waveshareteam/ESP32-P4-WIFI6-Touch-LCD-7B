@@ -1,6 +1,6 @@
 # ESP-Brookesia Phone
 
-[English Version](./README.md)
+[English](README.md)
 
 本示例在 ESP32-P4-WIFI6-Touch-LCD-7B 上运行 ESP-Brookesia 手机风格 UI。它演示
 7 英寸 1024 x 600 开发板上的显示、触摸、音频、摄像头、Hosted Wi-Fi、SPIFFS

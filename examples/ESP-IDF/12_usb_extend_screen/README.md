@@ -1,6 +1,6 @@
 # USB Extended Display
 
-[中文版本](./README_cn.md)
+[中文](README_CN.md)
 
 This example makes ESP32-P4-WIFI6-Touch-LCD-7B act as a USB secondary display
 for Windows. It uses the board's high-speed USB path, 1024 x 600 MIPI-DSI panel,
