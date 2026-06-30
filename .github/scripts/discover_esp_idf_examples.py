@@ -21,6 +21,20 @@ GLOBAL_EXAMPLE_PATTERNS = (
     ".github/scripts/discover_esp_idf_examples.py",
     "config/esp32p4_rev_*.defaults",
 )
+DEFAULT_IDF_VERSIONS = ("v5.5.4", "v6.0.1")
+IDF_VERSION_OVERRIDES = {
+    # These projects currently depend on upstream components or ESP-IDF test
+    # helpers that are still IDF 5.x only.
+    "Firmware/brookesia": ("v5.5.4",),
+    "examples/esp-idf/05_wifistation": ("v5.5.4",),
+    "examples/esp-idf/06_I2SCodec": ("v5.5.4",),
+    "examples/esp-idf/07_color_panel": ("v5.5.4",),
+    "examples/esp-idf/08_lvgl_display_panel": ("v5.5.4",),
+    "examples/esp-idf/09_lvgl_demo_v8": ("v5.5.4",),
+    "examples/esp-idf/10_lvgl_demo_v9": ("v5.5.4",),
+    "examples/esp-idf/11_esp_brookesia_phone": ("v5.5.4",),
+    "examples/esp-idf/12_usb_extend_screen": ("v5.5.4",),
+}
 
 
 def run_git(args: list[str]) -> list[str]:
@@ -106,6 +120,20 @@ def github_output(name: str, value: str) -> None:
             output.write(f"{name}={value}\n")
 
 
+def versions_for_example(example: str) -> tuple[str, ...]:
+    return IDF_VERSION_OVERRIDES.get(example, DEFAULT_IDF_VERSIONS)
+
+
+def build_matrix(selected: list[str]) -> dict[str, list[dict[str, str]]]:
+    return {
+        "include": [
+            {"example": example, "idf_version": idf_version}
+            for example in selected
+            for idf_version in versions_for_example(example)
+        ]
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--base-ref")
@@ -136,7 +164,7 @@ def main() -> int:
         if args.fallback_all and not selected:
             selected = sorted(known_examples)
 
-    matrix = {"example": selected}
+    matrix = build_matrix(selected)
     matrix_json = json.dumps(matrix, separators=(",", ":"))
     has_examples = "true" if selected else "false"
 

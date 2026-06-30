@@ -13,6 +13,21 @@ Build matrix:
 - ESP-IDF `v6.0.1`
 - Target `esp32p4`
 
+The discovery script emits a project/version include matrix. New lightweight
+examples use the default `v5.5.4` plus `v6.0.1` matrix. Projects that currently
+depend on IDF 5.x-only upstream components or ESP-IDF test helpers are built
+with `v5.5.4` until those dependencies are v6-ready:
+
+- `Firmware/brookesia`
+- `examples/esp-idf/05_wifistation`
+- `examples/esp-idf/06_I2SCodec`
+- `examples/esp-idf/07_color_panel`
+- `examples/esp-idf/08_lvgl_display_panel`
+- `examples/esp-idf/09_lvgl_demo_v8`
+- `examples/esp-idf/10_lvgl_demo_v9`
+- `examples/esp-idf/11_esp_brookesia_phone`
+- `examples/esp-idf/12_usb_extend_screen`
+
 Manual workflow runs accept `project`:
 
 | Value | Meaning |

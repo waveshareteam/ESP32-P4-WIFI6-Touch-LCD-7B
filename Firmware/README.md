@@ -29,4 +29,6 @@ idf.py set-target esp32p4
 idf.py build
 ```
 
-The project is included in CI together with the ESP-IDF examples.
+The project is included in CI together with the ESP-IDF examples. It currently
+builds in CI with ESP-IDF `v5.5.4`; the hosted Wi-Fi dependency stack needs a
+v6-compatible update before enabling the `v6.0.1` matrix entry.

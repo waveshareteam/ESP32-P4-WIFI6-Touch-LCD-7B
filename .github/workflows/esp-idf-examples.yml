@@ -86,11 +86,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        example: ${{ fromJson(needs.discover.outputs.matrix).example }}
-        idf_version:
-          - v5.5.4
-          - v6.0.1
+      matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

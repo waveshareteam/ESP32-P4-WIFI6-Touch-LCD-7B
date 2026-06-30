@@ -55,8 +55,8 @@ idf.py set-target esp32p4
 idf.py build
 ```
 
-The GitHub Actions workflow builds changed ESP-IDF examples and the firmware
-source with both ESP-IDF `v5.5.4` and `v6.0.1`.
+The GitHub Actions workflow builds changed ESP-IDF projects with ESP-IDF
+`v5.5.4` and runs `v6.0.1` checks for projects whose dependencies are v6-ready.
 
 ## Documentation
 
