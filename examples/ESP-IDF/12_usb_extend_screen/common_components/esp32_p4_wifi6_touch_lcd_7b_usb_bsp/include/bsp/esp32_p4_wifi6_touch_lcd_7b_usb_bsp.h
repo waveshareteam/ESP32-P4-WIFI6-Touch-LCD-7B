@@ -6,7 +6,7 @@
 
 /**
  * @file
- * @brief ESP BSP: S3-LCD-EV board
+ * @brief ESP BSP helpers for ESP32-P4-WIFI6-Touch-LCD-7B
  */
 
 #pragma once
@@ -24,7 +24,7 @@
 #include "driver/i2c_master.h"
 
 /**************************************************************************************************
- *  ESP32-P4-Function-ev-board Pinout
+ *  ESP32-P4-WIFI6-Touch-LCD-7B Pinout
  **************************************************************************************************/
 /* I2C */
 #if CONFIG_BSP_BOARD_TYPE_FLY_LINE
@@ -308,10 +308,6 @@ esp_codec_dev_handle_t bsp_audio_codec_microphone_init(void);
  * Display
  *
  */
-/* LCD Controller */
-#define LCD_CONTROLLER_ILI9881      (CONFIG_BSP_LCD_CONTROLLER_ILI9881)
-#define LCD_CONTROLLER_EK79007      (CONFIG_BSP_LCD_CONTROLLER_EK79007)
-
 #if LV_COLOR_DEPTH == 16
 #define  MIPI_DPI_PX_FORMAT         (LCD_COLOR_PIXEL_FORMAT_RGB565)
 #define BSP_LCD_COLOR_DEPTH         (16)
@@ -324,56 +320,13 @@ esp_codec_dev_handle_t bsp_audio_codec_microphone_init(void);
 // #define  BSP_LCD_DSI_USE_DMA2D          (0)
 
 #define  MIPI_DSI_LINE_NUM          (2)
-
-#if LCD_CONTROLLER_ILI9881
-#define BSP_LCD_H_RES               (800)
-#define BSP_LCD_V_RES               (1280)
 #define  MIPI_DSI_LANE_MBPS         (1000)
-#define ILI9881_PANEL_BUS_DSI_CONFIG(lane_num, lane_mbps) \
-    {                                                     \
-        .bus_id = 0,                                      \
-        .num_data_lanes = lane_num,                       \
-        .phy_clk_src = 0,                                 \
-        .lane_bit_rate_mbps = lane_mbps,                  \
-    }
-#define ILI9881_PANEL_IO_DBI_CONFIG() \
-    {                                 \
-        .virtual_channel = 0,         \
-        .lcd_cmd_bits = 8,            \
-        .lcd_param_bits = 8,          \
-    }
-#define ILI9881_800_1280_PANEL_60HZ_CONFIG(px_format, en_dma2d)  \
-    {                                                            \
-        .dpi_clk_src = MIPI_DSI_DPI_CLK_SRC_DEFAULT,             \
-        .dpi_clock_freq_mhz = 80,                                \
-        .virtual_channel = 0,                                    \
-        .pixel_format = px_format,                               \
-        .num_fbs = 1,                                            \
-        .video_timing = {                                        \
-            .h_size = 800,                                      \
-            .v_size = 1280,                                       \
-            .hsync_back_porch = 140,                             \
-            .hsync_pulse_width = 40,                             \
-            .hsync_front_porch = 40,                            \
-            .vsync_back_porch = 16,                              \
-            .vsync_pulse_width = 4,                              \
-            .vsync_front_porch = 16,                             \
-        },                                                       \
-        .flags.use_dma2d = en_dma2d,                             \
-    }
-
-#define BSP_TOUCH_MIRROR_X          (true)
-#define BSP_TOUCH_MIRROR_Y          (true)
-
-#elif LCD_CONTROLLER_EK79007
 
 #define BSP_LCD_H_RES               (1024)
 #define BSP_LCD_V_RES               (600)
-#define  MIPI_DSI_LANE_MBPS         (1000)
 
 #define BSP_TOUCH_MIRROR_X          (true)
 #define BSP_TOUCH_MIRROR_Y          (true)
-#endif
 
 #define BSP_LCD_BACKLIGHT_BRIGHTNESS_MAX    (95)
 #define BSP_LCD_BACKLIGHT_BRIGHTNESS_MIN    (0)

@@ -19,6 +19,7 @@ PROJECT_ROOTS = (
 GLOBAL_EXAMPLE_PATTERNS = (
     ".github/workflows/esp-idf-examples.yml",
     ".github/scripts/discover_esp_idf_examples.py",
+    ".github/scripts/check_public_repo.py",
     "config/esp32p4_rev_*.defaults",
 )
 DEFAULT_IDF_VERSIONS = ("v5.5.4", "v6.0.1")

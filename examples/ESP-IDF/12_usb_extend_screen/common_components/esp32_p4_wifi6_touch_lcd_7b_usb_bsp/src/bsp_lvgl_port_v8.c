@@ -28,7 +28,7 @@
 #include "bsp_err_check.h"
 #include "bsp/display.h"
 #include "bsp/touch.h"
-#include "bsp/esp32_p4_function_ev_board.h"
+#include "bsp/esp32_p4_wifi6_touch_lcd_7b_usb_bsp.h"
 
 #define ALIGN_UP_BY(num, align) (((num) + ((align) - 1)) & ~((align) - 1))
 

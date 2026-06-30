@@ -17,7 +17,7 @@ dependencies:
     version: "1.0.0"
     public: true
 
-description: Board Support Package for ESP32-P4-Function-ev-board
+description: Board support helpers for ESP32-P4-WIFI6-Touch-LCD-7B
 targets:
 - esp32p4
 version: 0.0.2

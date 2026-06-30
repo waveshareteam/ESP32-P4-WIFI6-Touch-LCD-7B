@@ -2,7 +2,7 @@ set(SRCS "")
 list(APPEND SRCS
     "src/bsp_board_extra.c"
     "src/bsp_sub_board.c"
-    "src/esp32_p4_function_ev_board.c")
+    "src/esp32_p4_wifi6_touch_lcd_7b_usb_bsp.c")
 if(CONFIG_BSP_DISPLAY_LVGL_VERSION_V8)
     list(APPEND SRCS "src/bsp_lvgl_port_v8.c")
 elseif(CONFIG_BSP_DISPLAY_LVGL_VERSION_V9)

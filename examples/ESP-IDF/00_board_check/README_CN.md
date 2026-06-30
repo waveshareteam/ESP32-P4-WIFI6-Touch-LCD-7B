@@ -40,7 +40,7 @@ idf.py -p PORT flash monitor
 
 ```text
 ========================================
- ESP32-P4 Platform Board Check
+ ESP32-P4-WIFI6-Touch-LCD-7B Board Check
 ========================================
 IDF target: esp32p4
 CPU cores: 2
@@ -54,5 +54,5 @@ Board check is running. Open the serial monitor and confirm this output.
 ## 下一步
 
 - 运行 [02_HelloWorld](../02_HelloWorld/)，查看经典 ESP-IDF hello world。
-- 如果想扫描 I2C 设备，运行 [08_i2c_tools](../08_i2c_tools/)。
+- 如果想扫描 I2C 设备，运行 [03_i2c_tools](../03_i2c_tools/)。
 - 阅读 [../../../docs/EXAMPLES_GUIDE.md](../../../docs/EXAMPLES_GUIDE.md)，为你的开发板选择下一个示例。

@@ -10,8 +10,6 @@ dependencies:
     version: ">=8"
     public: true
 
-  espressif/esp_lcd_ili9881c: "*"
-
   espressif/esp_lcd_ek79007: "^0.1.0"
 
   esp_lcd_touch_gt911:
@@ -30,7 +28,7 @@ dependencies:
     version: "1.0.0"
     public: true
 
-description: Board Support Package for ESP32-P4-Function-ev-board
+description: USB extended screen BSP helpers for ESP32-P4-WIFI6-Touch-LCD-7B
 targets:
 - esp32p4
 version: 0.0.1

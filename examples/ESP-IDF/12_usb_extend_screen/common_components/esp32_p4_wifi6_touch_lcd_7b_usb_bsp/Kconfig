@@ -6,9 +6,9 @@ menu "Board Support Package"
         help
             Error check assert the application before returning the error code.
 
-    choice
-        prompt "Choose Board Type"
-        default BSP_BOARD_TYPE_SAMPLE
+        choice
+            prompt "Choose Board Type"
+            default BSP_BOARD_TYPE_FIB
             config BSP_BOARD_TYPE_FLY_LINE
                 bool "Fly Line"
 
@@ -25,7 +25,7 @@ menu "Board Support Package"
             default 1
             range 0 1
             help
-                ESP32S3 has two I2C peripherals, pick the one you want to use.
+                Pick the I2C peripheral used by the board peripherals.
 
         config BSP_I2C_FAST_MODE
             bool "Enable I2C fast mode"
@@ -89,16 +89,6 @@ menu "Board Support Package"
     endmenu
 
     menu "LCD DSI"
-        choice
-            prompt "Choose LCD Controller"
-            default BSP_LCD_CONTROLLER_ILI9881
-                config BSP_LCD_CONTROLLER_ILI9881
-                    bool "ILI9881"
-
-                config BSP_LCD_CONTROLLER_EK79007
-                    bool "EK79007"
-        endchoice
-
         config BSP_LCD_DSI_USE_DMA2D
             bool "Use DMA2D for LCD DSI"
             default y
@@ -203,7 +193,7 @@ menu "Board Support Package"
         config BSP_DISPLAY_LVGL_BUF_HEIGHT
             depends on !BSP_DISPLAY_LVGL_AVOID_TEAR_ENABLE
             int "LVGL buffer height"
-            default 1280
+            default 600
             help
                 Height of LVGL buffer. The width of the buffer is the same as that of the LCD.
 
@@ -218,5 +208,5 @@ menu "Board Support Package"
         default 1
         range 0 1
         help
-            ESP32S3 has two I2S peripherals, pick the one you want to use.
+            Pick the I2S peripheral used by the board audio codec.
 endmenu

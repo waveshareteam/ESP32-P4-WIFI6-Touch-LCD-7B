@@ -1,6 +1,10 @@
 # Continuous Integration
 
-The `ESP-IDF examples` GitHub Actions workflow builds changed ESP-IDF projects.
+The `Public repository checks` workflow validates customer-facing repository
+layout and documentation links on every pull request.
+
+The `ESP-IDF examples` GitHub Actions workflow also runs those public checks,
+then builds changed ESP-IDF projects.
 
 Covered project roots:
 
@@ -43,6 +47,7 @@ shared revision overlays as global changes and builds all projects.
 ## Local Self-Check
 
 ```bash
+python .github/scripts/check_public_repo.py
 python .github/scripts/discover_esp_idf_examples.py --example all
 ```
 

@@ -9,12 +9,7 @@
 #include "usb_device_uac.h"
 #include "bsp/esp-bsp.h"
 #include "usb_descriptors.h"
-#if CONFIG_IDF_TARGET_ESP32P4
 #include "bsp/bsp_board_extra.h"
-#endif
-#if CONFIG_IDF_TARGET_ESP32S3
-#include "bsp_board_extra.h"
-#endif
 
 static const char *TAG = "app_uac";
 

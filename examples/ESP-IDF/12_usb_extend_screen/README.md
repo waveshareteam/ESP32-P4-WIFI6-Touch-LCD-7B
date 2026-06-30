@@ -1,87 +1,55 @@
-## USB Extended Display Example
+# USB Extended Display
 
-Use [LaunchPad](https://espressif.github.io/esp-launchpad/?flashConfigURL=https://dl.espressif.com/AE/esp-iot-solution/config.toml) to flash this example.
+[中文版本](./README_cn.md)
 
-The USB extended display example allows the [ESP32_S3_LCD_EV_BOARD](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-lcd-ev-board/index.html) / [ESP32_P4_FUNCTION_EV_BOARD](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32p4/esp32-p4-function-ev-board/index.html) development boards to function as a secondary display for Windows. It supports the following features:
+This example makes ESP32-P4-WIFI6-Touch-LCD-7B act as a USB secondary display
+for Windows. It uses the board's high-speed USB path, 1024 x 600 MIPI-DSI panel,
+GT911 touch controller, and optional USB audio function.
 
-* **P4**: Supports a screen refresh rate of **1024×576@60FPS**.
-* **S3**: Supports a screen refresh rate of **800×480@13FPS**.
-* Supports up to **five-point touch input**.
-* Supports **audio input and output**.
+## Hardware Required
 
-## Required Hardware
+- ESP32-P4-WIFI6-Touch-LCD-7B board.
+- USB cable connected to the board's high-speed USB port.
+- Windows 10 or Windows 11 host for the PC-side display driver.
 
-### P4 Development Board
+## Build and Flash
 
-1. [ESP32-P4-Function-EV-Board](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32p4/esp32-p4-function-ev-board/user_guide.html#getting-started) development board.
-2. A **1024×600** MIPI display from the development kit.
-3. A speaker.
+```bash
+cd examples/ESP-IDF/12_usb_extend_screen
+idf.py set-target esp32p4
+idf.py build
+idf.py -p PORT flash monitor
+```
 
-### S3 Development Board
+Replace `PORT` with your board's serial port.
 
-1. [ESP32-S3-LCD-EV-Board](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-lcd-ev-board/user_guide.html#getting-started) development board.
-2. A **800×480** or **480×480** RGB display from the development kit.
-3. A speaker.
+## Windows Driver
 
-## Hardware Connection
+Install the Windows IDD driver described in [windows_driver](./windows_driver/README.md).
 
-1. Connect the high-speed USB port on the development board to the PC.
+The default USB IDs are:
 
-## Compilation and Flashing
+| Mode | VID/PID |
+| --- | --- |
+| Composite display, touch, or audio | `USB\VID_303A&PID_2986` |
+| Display-only | `USB\VID_303A&PID_2987` |
 
-### Device Side
+## Configuration
 
-Build the project, flash it to the board, and run the monitor tool to check the serial output:
+Useful menuconfig options:
 
-1. Run `. ./export.sh` to set up the IDF environment.
-2. Run `idf.py set-target esp32p4` to set the target chip.
-3. If you encounter any errors in the previous step, run `pip install "idf-component-manager~=1.1.4"` to upgrade the component manager.
-4. Run `idf.py -p PORT flash monitor` to build, flash, and monitor the project.
+| Option | Purpose |
+| --- | --- |
+| `CONFIG_USB_EXTEND_SCREEN_HEIGHT` | Horizontal pixel count sent to the host, default `1024` |
+| `CONFIG_USB_EXTEND_SCREEN_WIDTH` | Vertical pixel count sent to the host, default `576` for the transported frame |
+| `CONFIG_USB_EXTEND_SCREEN_JPEG_QUALITY` | JPEG quality used for transported frames |
+| `CONFIG_USB_EXTEND_SCREEN_MAX_FPS` | Maximum output FPS |
+| `CONFIG_USB_EXTEND_SCREEN_FRAME_LIMIT_B` | Maximum frame size received from the PC driver |
+| `CONFIG_HID_TOUCH_ENABLE` | Enable USB HID touch reports |
+| `CONFIG_UAC_AUDIO_ENABLE` | Enable USB audio |
 
-(To exit the serial monitor, press `Ctrl-]`.)
+The physical LCD is 1024 x 600. The transported display frame defaults to
+1024 x 576 to match the upstream USB display driver behavior.
 
-Refer to the **Getting Started Guide** for full instructions on configuring and using ESP-IDF to build projects.
-
->> **Note:** This example fetches AVI files online. Ensure you have an internet connection during the first compilation.
-
-### PC Side
-
-For preparation, refer to [windows_driver](./windows_driver/README_cn.md).
-
-![Demo](https://dl.espressif.com/AE/esp-iot-solution/p4_usb_extern_screen.gif)
-
-## Troubleshooting
-
-### The touchscreen controls the wrong display
-
-1. Open **Control Panel** and select **Tablet PC Settings**.
-2. Under the **Display** section, select **Setup**.
-3. Follow the on-screen instructions to choose the correct extended display.
-
-### Adjusting JPEG Image Quality
-
-* Modify `CONFIG_USB_EXTEND_SCREEN_JPEG_QUALITY`. A higher value increases image quality but also consumes more memory per frame.
-
-### Changing the Secondary Screen Resolution
-
-* Modify `CONFIG_USB_EXTEND_SCREEN_HEIGHT` and `CONFIG_USB_EXTEND_SCREEN_WIDTH`.
-
-**Note:** The driver currently does not support portrait-oriented screens. Please use a screen designed for landscape mode.
-
-### Adjusting Image Output Frame Rate
-
-* Modify `CONFIG_USB_EXTEND_SCREEN_MAX_FPS`. Lowering this value effectively reduces USB bandwidth usage. If USB audio stuttering occurs, consider decreasing this value.
-
-### Modifying the Maximum Frame Size
-
-* Modify `CONFIG_USB_EXTEND_SCREEN_FRAME_LIMIT_B` to limit the maximum image size received from the PC driver.
-
-### Disabling Touchscreen Functionality
-
-* Set `CONFIG_HID_TOUCH_ENABLE` to `n`.
-
-### Disabling Audio Functionality
-
-* Set `CONFIG_UAC_AUDIO_ENABLE` to `n`.
-
-**Note:** If only the secondary screen function is enabled, change the PID to `0x2987`.
+Generated files such as `sdkconfig`, `build/`, `managed_components/`, and
+`dependencies.lock` are ignored and should not be committed.

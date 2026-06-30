@@ -350,8 +350,8 @@ void AppSettings::extraUiInit(void)
     lv_obj_add_flag(ui_PanelSettingMainContainerItem2, LV_OBJ_FLAG_HIDDEN);
     lv_label_set_text(ui_LabelPanelPanelScreenSettingAbout3, mac_str);
     lv_label_set_text(ui_LabelPanelPanelScreenSettingAbout5, "v0.2.0");
-    lv_label_set_text(ui_LabelPanelPanelScreenSettingAbout2, "ESP32-P4-Function-EV-Board");
-    lv_obj_set_x( ui_LabelPanelPanelScreenSettingAbout2, 167 );
+    lv_label_set_text(ui_LabelPanelPanelScreenSettingAbout2, "ESP32-P4-WIFI6-Touch-LCD-7B");
+    lv_obj_set_x( ui_LabelPanelPanelScreenSettingAbout2, 126 );
 
     char char_ui_version[20];
     snprintf(char_ui_version, sizeof(char_ui_version), "v%d.%d.%d", ESP_BROOKESIA_CONF_VER_MAJOR, ESP_BROOKESIA_CONF_VER_MINOR, ESP_BROOKESIA_CONF_VER_PATCH);

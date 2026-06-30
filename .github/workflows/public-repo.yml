@@ -1,0 +1,22 @@
+name: Public repository checks
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  public-repo:
+    name: Public repository layout
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check customer-facing repository layout
+        run: python .github/scripts/check_public_repo.py

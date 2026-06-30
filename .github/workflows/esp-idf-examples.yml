@@ -8,6 +8,7 @@ on:
       - "config/esp32p4_rev_*.defaults"
       - ".github/workflows/esp-idf-examples.yml"
       - ".github/scripts/discover_esp_idf_examples.py"
+      - ".github/scripts/check_public_repo.py"
   push:
     branches:
       - main
@@ -17,6 +18,7 @@ on:
       - "config/esp32p4_rev_*.defaults"
       - ".github/workflows/esp-idf-examples.yml"
       - ".github/scripts/discover_esp_idf_examples.py"
+      - ".github/scripts/check_public_repo.py"
   workflow_dispatch:
     inputs:
       project:
@@ -40,6 +42,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Check public repository layout
+        shell: bash
+        run: python .github/scripts/check_public_repo.py
 
       - name: Discover changed ESP-IDF examples
         id: examples

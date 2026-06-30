@@ -13,7 +13,6 @@
 #include "esp_rom_sys.h"
 #include "esp_lcd_mipi_dsi.h"
 #include "esp_lcd_panel_ops.h"
-#include "esp_lcd_ili9881c.h"
 #include "esp_lcd_ek79007.h"
 #include "esp_lcd_touch_gt911.h"
 #include "esp_lcd_touch_ft5x06.h"
@@ -21,7 +20,7 @@
 #include "sdkconfig.h"
 #include "bsp_err_check.h"
 #include "bsp/display.h"
-#include "bsp/esp32_p4_function_ev_board.h"
+#include "bsp/esp32_p4_wifi6_touch_lcd_7b_usb_bsp.h"
 #include "bsp/touch.h"
 
 #include "driver/i2c_master.h"
@@ -32,7 +31,6 @@ static bsp_display_on_vsync_cb_t vsync_cb;
 static esp_lcd_dsi_bus_handle_t mipi_dsi_bus = NULL;
 static esp_lcd_panel_io_handle_t mipi_dbi_io = NULL;
 static esp_lcd_panel_handle_t mipi_dpi_panel = NULL;
-static esp_lcd_panel_handle_t ili9881c_ctrl_panel = NULL;
 
 static i2c_master_bus_handle_t i2c_bus_handle;
 
@@ -70,38 +68,12 @@ esp_err_t bsp_display_new(const bsp_display_config_t *config, esp_lcd_panel_hand
     bsp_ldo_power_on();
 
     ESP_LOGD(TAG, "Install LCD driver");
-    esp_lcd_dsi_bus_config_t bus_config =
-#if LCD_CONTROLLER_ILI9881
-        ILI9881_PANEL_BUS_DSI_CONFIG(MIPI_DSI_LINE_NUM, MIPI_DSI_LANE_MBPS);
-#elif LCD_CONTROLLER_EK79007
-        EK79007_PANEL_BUS_DSI_2CH_CONFIG();
-#endif
+    esp_lcd_dsi_bus_config_t bus_config = EK79007_PANEL_BUS_DSI_2CH_CONFIG();
     ESP_ERROR_CHECK(esp_lcd_new_dsi_bus(&bus_config, &mipi_dsi_bus));
 
-    esp_lcd_dbi_io_config_t dbi_config =
-#if LCD_CONTROLLER_ILI9881
-        ILI9881_PANEL_IO_DBI_CONFIG();
-#elif LCD_CONTROLLER_EK79007
-        EK79007_PANEL_IO_DBI_CONFIG();
-#endif
+    esp_lcd_dbi_io_config_t dbi_config = EK79007_PANEL_IO_DBI_CONFIG();
     ESP_ERROR_CHECK(esp_lcd_new_panel_io_dbi(mipi_dsi_bus, &dbi_config, &mipi_dbi_io));
 
-#if LCD_CONTROLLER_ILI9881
-    esp_lcd_panel_dev_config_t lcd_dev_config = {
-        .bits_per_pixel = BSP_LCD_COLOR_DEPTH,
-        .rgb_ele_order = LCD_RGB_ELEMENT_ORDER_RGB,
-        .reset_gpio_num = -1,
-    };
-    ESP_ERROR_CHECK(esp_lcd_new_panel_ili9881c(mipi_dbi_io, &lcd_dev_config, &ili9881c_ctrl_panel));
-    ESP_ERROR_CHECK(esp_lcd_panel_reset(ili9881c_ctrl_panel));
-    ESP_ERROR_CHECK(esp_lcd_panel_init(ili9881c_ctrl_panel));
-    ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(ili9881c_ctrl_panel, true));
-    esp_lcd_dpi_panel_config_t dpi_config = ILI9881_800_1280_PANEL_60HZ_CONFIG(MIPI_DPI_PX_FORMAT, BSP_LCD_DSI_USE_DMA2D);
-    if (config != NULL) {
-        dpi_config.num_fbs = config->dpi_fb_buf_num;
-    }
-    ESP_ERROR_CHECK(esp_lcd_new_panel_dpi(mipi_dsi_bus, &dpi_config, &mipi_dpi_panel));
-#elif LCD_CONTROLLER_EK79007
     esp_lcd_dpi_panel_config_t dpi_config = EK79007_1024_600_PANEL_60HZ_CONFIG(MIPI_DPI_PX_FORMAT);
     if (config != NULL) {
         dpi_config.num_fbs = config->dpi_fb_buf_num;
@@ -122,7 +94,6 @@ esp_err_t bsp_display_new(const bsp_display_config_t *config, esp_lcd_panel_hand
         .vendor_config = &vendor_config,
     };
     ESP_ERROR_CHECK(esp_lcd_new_panel_ek79007(mipi_dbi_io, &panel_config, &mipi_dpi_panel));
-#endif
 
     gpio_set_level(33, 1);
     // register event callbacks

@@ -24,7 +24,7 @@
 #include "bsp/display.h"
 #include "bsp_lvgl_port.h"
 #include "bsp/touch.h"
-#include "bsp/esp32_p4_function_ev_board.h"
+#include "bsp/esp32_p4_wifi6_touch_lcd_7b_usb_bsp.h"
 #include "bsp_err_check.h"
 #include "driver/ledc.h"
 
@@ -55,7 +55,7 @@
 
 #define USE_I2S_RX_CHAN     (1)
 
-static const char *TAG = "P4-FUNCTION-EV-BOARD";
+static const char *TAG = "P4-WIFI6-LCD-7B";
 
 static bool i2c_initialized = false;
 static i2c_master_bus_handle_t i2c_bus_handle;

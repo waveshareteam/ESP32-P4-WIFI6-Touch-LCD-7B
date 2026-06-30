@@ -32,3 +32,9 @@ idf.py build
 The project is included in CI together with the ESP-IDF examples. It currently
 builds in CI with ESP-IDF `v5.5.4`; the hosted Wi-Fi dependency stack needs a
 v6-compatible update before enabling the `v6.0.1` matrix entry.
+
+## Media Assets
+
+`brookesia/spiffs/` contains sample audio assets used by the music and game
+demo apps. Replace those files with properly licensed customer content before
+publishing a derived product firmware.

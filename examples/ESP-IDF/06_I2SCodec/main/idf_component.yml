@@ -2,17 +2,7 @@
 dependencies:
   idf: "^5.0"
   espressif/es8311: "^1.0.0"
-
-# After enabling Board Support Packages support in menuconfig, you can pick you specific BSP here
-  espressif/esp-box:
-    version: "^2.4.2"
+  waveshare/esp32_p4_wifi6_touch_lcd_7b:
+    version: "*"
     rules:
-      - if: "target in [esp32s3]"
-  #espressif/esp32_s2_kaluga_kit:
-  #  version: "^2.1.1"
-  #  rules:
-  #    - if: "target in [esp32s2]"
-  #espressif/esp32_s3_lcd_ev_board:
-  #  version: "^1"
-  #  rules:
-  #    - if: "target in [esp32s3]"
+      - if: "target in [esp32p4]"

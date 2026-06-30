@@ -1,19 +1,12 @@
-set(srcs "app_hid.c" "app_uac.c" "app_usb.c" "app_vendor.c"
-         "usb_extend_screen.c" "usb_frame.c")
+set(srcs "app_hid.c" "app_usb.c" "app_vendor.c"
+         "usb_extend_screen.c" "usb_frame.c" "app_lcd_p4.c")
 
 if(CONFIG_HID_TOUCH_ENABLE)
     list (APPEND srcs "app_touch.c")
 endif()
 
 if(CONFIG_UAC_AUDIO_ENABLE)
-    list (APPEND srcs "app_uac.c")
-endif()
-
-
-if(CONFIG_IDF_TARGET_ESP32P4)
-    list(APPEND srcs "app_lcd_p4.c")
-elseif(CONFIG_IDF_TARGET_ESP32S3)
-    list(APPEND srcs "app_lcd_s3.c")
+    list(APPEND srcs "app_uac.c")
 endif()
 
 idf_component_register(SRCS ${srcs}
