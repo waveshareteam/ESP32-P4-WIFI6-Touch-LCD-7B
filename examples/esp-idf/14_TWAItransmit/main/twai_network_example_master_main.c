@@ -17,19 +17,16 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <inttypes.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/queue.h"
 #include "freertos/semphr.h"
 #include "esp_err.h"
 #include "esp_log.h"
-#include "driver/twai.h"
-#include <esp_timer.h>  
-  
-#include "driver/i2c.h"
-#include "driver/gpio.h"
-
-#define GPIO_OUTPUT_PIN_SEL  ((1ULL<<CONFIG_EXAMPLE_TX_GPIO_NUM) | (1ULL<<CONFIG_EXAMPLE_RX_GPIO_NUM))
+#include "esp_timer.h"
+#include "esp_twai.h"
+#include "esp_twai_onchip.h"
 
 // #define I2C_MASTER_SCL_IO           9      /*!< GPIO number used for I2C master clock */
 // #define I2C_MASTER_SDA_IO           8      /*!< GPIO number used for I2C master data  */
@@ -45,16 +42,33 @@
 #define RX_GPIO_NUM             CONFIG_EXAMPLE_RX_GPIO_NUM
 #define EXAMPLE_TAG             "TWAI Master"
 
-static bool driver_installed = false;
+static bool node_enabled = false;
+static twai_node_handle_t twai_node = NULL;
+static volatile uint32_t tx_success_count = 0;
+static volatile uint32_t tx_failed_count = 0;
+static volatile uint32_t bus_error_count = 0;
 unsigned long previousMillis = 0;  // will store last time a message was send
 // Intervall:
 #define TRANSMIT_RATE_MS 1000
 
 #define POLLING_RATE_MS 1000
 
-static const twai_timing_config_t t_config = TWAI_TIMING_CONFIG_500KBITS();
-static const twai_filter_config_t f_config = TWAI_FILTER_CONFIG_ACCEPT_ALL();
-static const twai_general_config_t g_config = TWAI_GENERAL_CONFIG_DEFAULT(TX_GPIO_NUM, RX_GPIO_NUM, TWAI_MODE_NO_ACK);
+static bool twai_tx_done_callback(twai_node_handle_t handle, const twai_tx_done_event_data_t *edata, void *user_ctx)
+{
+    if (edata->is_tx_success) {
+        tx_success_count++;
+    } else {
+        tx_failed_count++;
+    }
+
+    return false;
+}
+
+static bool twai_error_callback(twai_node_handle_t handle, const twai_error_event_data_t *edata, void *user_ctx)
+{
+    bus_error_count++;
+    return false;
+}
 
 // static esp_err_t i2c_master_init(void)
 // {
@@ -78,15 +92,19 @@ static void send_message() {
   // Send message
 
   // Configure message to transmit
-  twai_message_t message;
-  message.identifier = 0x0F6;
-  message.data_length_code = 8;
+  uint8_t data[8];
   for (int i = 0; i < 8; i++) {
-    message.data[i] = i;
+    data[i] = i;
   }
+  twai_frame_t frame = {
+    .header.id = 0x0F6,
+    .buffer = data,
+    .buffer_len = sizeof(data),
+  };
 
   // Queue message for transmission
-  if (twai_transmit(&message, pdMS_TO_TICKS(1000)) == ESP_OK) {
+  if (twai_node_transmit(twai_node, &frame, 1000) == ESP_OK) {
+    twai_node_transmit_wait_all_done(twai_node, 1000);
     printf("Message queued for transmission\n");
   } else {
     printf("Failed to queue message for transmission\n");
@@ -121,63 +139,48 @@ void app_main(void)
     // write_buf = 0x20;
     // ret = i2c_master_write_to_device(I2C_MASTER_NUM, 0x38, &write_buf, 1, I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS);
 
-    // Install TWAI driver
-    if (twai_driver_install(&g_config, &t_config, &f_config) == ESP_OK) {
-        ESP_LOGI(EXAMPLE_TAG,"Driver installed");
-    } else {
-        ESP_LOGI(EXAMPLE_TAG,"Failed to install driver");
-        return;
-    }
-    
-    // Start TWAI driver
-    if (twai_start() == ESP_OK) {
-        ESP_LOGI(EXAMPLE_TAG,"Driver started");
-    } else {
-        ESP_LOGI(EXAMPLE_TAG,"Failed to start driver");
-        return;
-    }
+    twai_onchip_node_config_t node_config = {
+        .io_cfg = {
+            .tx = TX_GPIO_NUM,
+            .rx = RX_GPIO_NUM,
+            .quanta_clk_out = GPIO_NUM_NC,
+            .bus_off_indicator = GPIO_NUM_NC,
+        },
+        .bit_timing = {
+            .bitrate = 500000,
+        },
+        .fail_retry_cnt = 3,
+        .tx_queue_depth = 5,
+        .flags.enable_self_test = true,
+    };
+    ESP_ERROR_CHECK(twai_new_node_onchip(&node_config, &twai_node));
 
-    // Reconfigure alerts to detect TX alerts and Bus-Off errors
-    uint32_t alerts_to_enable = TWAI_ALERT_TX_IDLE | TWAI_ALERT_TX_SUCCESS | TWAI_ALERT_TX_FAILED | TWAI_ALERT_ERR_PASS | TWAI_ALERT_BUS_ERROR;
-    if (twai_reconfigure_alerts(alerts_to_enable, NULL) == ESP_OK) {
-        ESP_LOGI(EXAMPLE_TAG,"CAN Alerts reconfigured");
-    } else {
-        ESP_LOGI(EXAMPLE_TAG,"Failed to reconfigure alerts");
-        return;
-    }
+    twai_event_callbacks_t callbacks = {
+        .on_tx_done = twai_tx_done_callback,
+        .on_error = twai_error_callback,
+    };
+    ESP_ERROR_CHECK(twai_node_register_event_callbacks(twai_node, &callbacks, NULL));
+    ESP_ERROR_CHECK(twai_node_enable(twai_node));
+    ESP_LOGI(EXAMPLE_TAG, "Node started");
 
     // TWAI driver is now successfully installed and started
-    driver_installed = true;
+    node_enabled = true;
     while (1)
     {
-        if (!driver_installed) {
-            // Driver not installed
+        if (!node_enabled) {
+            // Node not enabled
             vTaskDelay(pdMS_TO_TICKS(1000));
             return;
         }
-        // Check if alert happened
-        uint32_t alerts_triggered;
-        twai_read_alerts(&alerts_triggered, pdMS_TO_TICKS(POLLING_RATE_MS));
-        twai_status_info_t twaistatus;
-        twai_get_status_info(&twaistatus);
 
-        // Handle alerts
-        if (alerts_triggered & TWAI_ALERT_ERR_PASS) {
-            ESP_LOGI(EXAMPLE_TAG,"Alert: TWAI controller has become error passive.");
-        }
-        if (alerts_triggered & TWAI_ALERT_BUS_ERROR) {
-            ESP_LOGI(EXAMPLE_TAG,"Alert: A (Bit, Stuff, CRC, Form, ACK) error has occurred on the bus.");
-            ESP_LOGI(EXAMPLE_TAG,"Bus error count: %"PRIu32, twaistatus.bus_error_count);
-        }
-        if (alerts_triggered & TWAI_ALERT_TX_FAILED) {
-            ESP_LOGI(EXAMPLE_TAG,"Alert: The Transmission failed.");
-            ESP_LOGI(EXAMPLE_TAG,"TX buffered: %"PRIu32, twaistatus.msgs_to_tx);
-            ESP_LOGI(EXAMPLE_TAG,"TX error: %"PRIu32, twaistatus.tx_error_counter);
-            ESP_LOGI(EXAMPLE_TAG,"TX failed: %"PRIu32, twaistatus.tx_failed_count);
-        }
-        if (alerts_triggered & TWAI_ALERT_TX_SUCCESS) {
-            ESP_LOGI(EXAMPLE_TAG,"Alert: The Transmission was successful.");
-            ESP_LOGI(EXAMPLE_TAG,"TX buffered: %"PRIu32, twaistatus.msgs_to_tx);
+        twai_node_status_t twai_status;
+        twai_node_record_t twai_record;
+        twai_node_get_info(twai_node, &twai_status, &twai_record);
+        ESP_LOGI(EXAMPLE_TAG, "TX success: %" PRIu32 ", TX failed: %" PRIu32 ", bus errors: %" PRIu32,
+                 tx_success_count, tx_failed_count, twai_record.bus_err_num);
+        if (twai_status.state == TWAI_ERROR_BUS_OFF) {
+            ESP_LOGW(EXAMPLE_TAG, "TWAI node entered bus-off state.");
+            return;
         }
 
         // Send message

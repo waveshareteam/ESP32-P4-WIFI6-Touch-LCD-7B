@@ -1,2 +1,3 @@
 idf_component_register(SRCS "twai_network_example_master_main.c"
-                    INCLUDE_DIRS ".")
+                    INCLUDE_DIRS "."
+                    REQUIRES esp_driver_twai esp_timer)
