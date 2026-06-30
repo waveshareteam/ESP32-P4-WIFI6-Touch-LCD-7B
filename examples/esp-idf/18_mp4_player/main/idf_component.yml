@@ -1,0 +1,9 @@
+dependencies:
+  idf: ">=5.4"
+
+  waveshare/esp32_p4_wifi6_touch_lcd_7b:
+    version: "*"
+
+  espressif/esp_audio_codec:
+    version: "^2.3.0"
+    public: true

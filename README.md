@@ -27,7 +27,7 @@ and firmware settings specific to this 7-inch 1024 x 600 product.
 Install ESP-IDF v5.5.4 first. Then build the board check example:
 
 ```bash
-cd examples/ESP-IDF/00_board_check
+cd examples/esp-idf/00_board_check
 idf.py set-target esp32p4
 idf.py build
 idf.py -p PORT flash monitor
@@ -36,7 +36,7 @@ idf.py -p PORT flash monitor
 After the board check passes, try a display example:
 
 ```bash
-cd examples/ESP-IDF/10_lvgl_demo_v9
+cd examples/esp-idf/10_lvgl_demo_v9
 idf.py set-target esp32p4
 idf.py build
 ```
@@ -44,7 +44,7 @@ idf.py build
 For the factory-style Brookesia firmware source:
 
 ```bash
-cd Firmware/brookesia
+cd firmware/brookesia
 idf.py set-target esp32p4
 idf.py build
 ```
@@ -55,8 +55,8 @@ Replace `PORT` with your board's serial port.
 
 ```text
 .
-|-- examples/ESP-IDF/   Standalone ESP-IDF examples
-|-- Firmware/
+|-- examples/esp-idf/   Standalone ESP-IDF examples
+|-- firmware/
 |   |-- brookesia/      ESP-Brookesia factory firmware source
 |   `-- *.bin           Existing prebuilt factory firmware
 |-- config/             Shared ESP32-P4 revision config overlays
@@ -64,9 +64,9 @@ Replace `PORT` with your board's serial port.
 `-- .github/            ESP-IDF build workflow and checks
 ```
 
-Use the exact `examples/ESP-IDF/` path casing. The repository intentionally
-keeps a single ESP-IDF example tree so Linux CI and Windows workstations see the
-same project structure.
+Use the lowercase `examples/esp-idf/` path. The repository intentionally keeps a
+single ESP-IDF example tree so Linux CI and Windows workstations see the same
+project structure.
 
 Generated ESP-IDF outputs such as `build/`, `managed_components/`,
 `dependencies.lock`, and local `sdkconfig` files are intentionally ignored.
@@ -78,7 +78,7 @@ Generated ESP-IDF outputs such as `build/`, `managed_components/`,
 | [Getting Started](docs/GETTING_STARTED.md) | Build, flash, and monitor workflow |
 | [Examples](examples/README.md) | ESP-IDF example index |
 | [Example Guide](docs/EXAMPLES_GUIDE.md) | Recommended example order by customer task |
-| [Firmware](Firmware/README.md) | Factory firmware source and prebuilt binary notes |
+| [Firmware](firmware/README.md) | Factory firmware source and prebuilt binary notes |
 | [Continuous Integration](docs/CI.md) | CI matrix and local self-checks |
 | [Project Structure](docs/PROJECT_STRUCTURE.md) | Repository organization and contribution expectations |
 | [ESP32-P4 Revision Config](docs/ESP32P4_REVISION_CONFIG.md) | Shared chip revision overlays |
@@ -91,8 +91,8 @@ The GitHub Actions workflow builds changed ESP-IDF projects with ESP-IDF
 
 ## Factory Firmware
 
-The original prebuilt factory binary is retained under `Firmware/`.
-`Firmware/brookesia` contains a source project adapted from the local
+The original prebuilt factory binary is retained under `firmware/`.
+`firmware/brookesia` contains a source project adapted from the local
 ESP-Brookesia example and the ESP32-P4-platform firmware layout. It uses the
 7B BSP and `BSP_LCD_H_RES/BSP_LCD_V_RES`, so display, touch, camera buffers,
 and UI layout follow the 1024 x 600 panel instead of upstream 800 x 1280

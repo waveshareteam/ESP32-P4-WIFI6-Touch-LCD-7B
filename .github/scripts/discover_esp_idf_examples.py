@@ -13,8 +13,8 @@ from pathlib import Path
 
 
 PROJECT_ROOTS = (
-    Path("examples/ESP-IDF"),
-    Path("Firmware"),
+    Path("examples/esp-idf"),
+    Path("firmware"),
 )
 GLOBAL_EXAMPLE_PATTERNS = (
     ".github/workflows/esp-idf-examples.yml",
@@ -26,15 +26,16 @@ DEFAULT_IDF_VERSIONS = ("v5.5.4", "v6.0.1")
 IDF_VERSION_OVERRIDES = {
     # These projects currently depend on upstream components or ESP-IDF test
     # helpers that are still IDF 5.x only.
-    "Firmware/brookesia": ("v5.5.4",),
-    "examples/ESP-IDF/05_wifistation": ("v5.5.4",),
-    "examples/ESP-IDF/06_I2SCodec": ("v5.5.4",),
-    "examples/ESP-IDF/07_color_panel": ("v5.5.4",),
-    "examples/ESP-IDF/08_lvgl_display_panel": ("v5.5.4",),
-    "examples/ESP-IDF/09_lvgl_demo_v8": ("v5.5.4",),
-    "examples/ESP-IDF/10_lvgl_demo_v9": ("v5.5.4",),
-    "examples/ESP-IDF/11_esp_brookesia_phone": ("v5.5.4",),
-    "examples/ESP-IDF/12_usb_extend_screen": ("v5.5.4",),
+    "firmware/brookesia": ("v5.5.4",),
+    "examples/esp-idf/05_wifistation": ("v5.5.4",),
+    "examples/esp-idf/06_i2s_codec": ("v5.5.4",),
+    "examples/esp-idf/07_color_panel": ("v5.5.4",),
+    "examples/esp-idf/08_lvgl_display_panel": ("v5.5.4",),
+    "examples/esp-idf/09_lvgl_demo_v8": ("v5.5.4",),
+    "examples/esp-idf/10_lvgl_demo_v9": ("v5.5.4",),
+    "examples/esp-idf/11_esp_brookesia_phone": ("v5.5.4",),
+    "examples/esp-idf/12_usb_extend_screen": ("v5.5.4",),
+    "examples/esp-idf/18_mp4_player": ("v5.5.4",),
 }
 
 

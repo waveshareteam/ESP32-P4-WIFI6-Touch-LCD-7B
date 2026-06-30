@@ -6,17 +6,18 @@ ESP32-P4-WIFI6-Touch-LCD-7B.
 | Path | Purpose |
 | --- | --- |
 | `README.md` | Repository overview and quick start |
-| `examples/ESP-IDF/` | Standalone ESP-IDF examples |
-| `Firmware/` | Prebuilt firmware and buildable firmware source |
-| `Firmware/brookesia/` | ESP-Brookesia factory-style firmware project |
+| `examples/esp-idf/` | Standalone ESP-IDF examples |
+| `firmware/` | Prebuilt firmware and buildable firmware source |
+| `firmware/brookesia/` | ESP-Brookesia factory-style firmware project |
 | `config/` | Shared ESP32-P4 revision overlays |
 | `docs/` | Maintainer and user documentation |
 | `.github/` | CI workflow and discovery script |
 
 ## ESP-IDF Projects
 
-Use the exact `examples/ESP-IDF/` path casing. Linux CI treats case-only paths
-as different directories, so do not add a lower-case duplicate.
+Use the lowercase `examples/esp-idf/` path. Linux CI treats case-only paths as
+different directories, so do not add another ESP-IDF example root with different
+capitalization.
 
 Each project should contain:
 
@@ -31,7 +32,6 @@ outputs out of git.
 
 ## Firmware Source
 
-`Firmware/brookesia` mirrors the local Brookesia example as a firmware project
+`firmware/brookesia` mirrors the local Brookesia example as a firmware project
 so the source for the factory-style application can be built and checked in CI.
-It intentionally keeps the existing `Firmware/` directory name to avoid
-case-only path changes on Windows workstations.
+Keep firmware paths lowercase for consistency with the example tree.

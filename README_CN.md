@@ -26,7 +26,7 @@ ESP-IDF 示例、CI 自检配置和出厂固件源码。
 请先安装 ESP-IDF v5.5.4，然后构建板级检查示例：
 
 ```bash
-cd examples/ESP-IDF/00_board_check
+cd examples/esp-idf/00_board_check
 idf.py set-target esp32p4
 idf.py build
 idf.py -p PORT flash monitor
@@ -35,7 +35,7 @@ idf.py -p PORT flash monitor
 板级检查通过后，可以继续尝试显示示例：
 
 ```bash
-cd examples/ESP-IDF/10_lvgl_demo_v9
+cd examples/esp-idf/10_lvgl_demo_v9
 idf.py set-target esp32p4
 idf.py build
 ```
@@ -43,7 +43,7 @@ idf.py build
 构建接近出厂固件形态的 Brookesia 源码工程：
 
 ```bash
-cd Firmware/brookesia
+cd firmware/brookesia
 idf.py set-target esp32p4
 idf.py build
 ```
@@ -54,8 +54,8 @@ idf.py build
 
 ```text
 .
-|-- examples/ESP-IDF/   独立 ESP-IDF 示例
-|-- Firmware/
+|-- examples/esp-idf/   独立 ESP-IDF 示例
+|-- firmware/
 |   |-- brookesia/      ESP-Brookesia 出厂固件源码
 |   `-- *.bin           已有出厂预编译固件
 |-- config/             共享 ESP32-P4 revision 配置覆盖
@@ -63,8 +63,8 @@ idf.py build
 `-- .github/            ESP-IDF 构建工作流和检查脚本
 ```
 
-请使用准确的 `examples/ESP-IDF/` 路径大小写。仓库有意只保留一个 ESP-IDF
-示例目录，确保 Linux CI 和 Windows 工作站看到一致的项目结构。
+请使用小写的 `examples/esp-idf/` 路径。仓库有意只保留一个 ESP-IDF 示例目录，
+确保 Linux CI 和 Windows 工作站看到一致的项目结构。
 
 `build/`、`managed_components/`、`dependencies.lock` 和本地 `sdkconfig`
 等 ESP-IDF 生成文件会被忽略，不应提交。
@@ -76,7 +76,7 @@ idf.py build
 | [快速入门](docs/GETTING_STARTED.md) | 构建、烧录和监视器流程 |
 | [示例索引](examples/README.md) | ESP-IDF 示例列表 |
 | [示例指南](docs/EXAMPLES_GUIDE.md) | 按客户任务推荐示例使用顺序 |
-| [固件说明](Firmware/README.md) | 出厂固件源码和预编译二进制说明 |
+| [固件说明](firmware/README.md) | 出厂固件源码和预编译二进制说明 |
 | [持续集成](docs/CI.md) | CI 矩阵和本地自检 |
 | [项目结构](docs/PROJECT_STRUCTURE.md) | 仓库组织和贡献要求 |
 | [ESP32-P4 Revision 配置](docs/ESP32P4_REVISION_CONFIG.md) | 共享芯片 revision 配置覆盖 |
@@ -88,7 +88,7 @@ GitHub Actions 工作流会使用 ESP-IDF `v5.5.4` 构建发生变更的 ESP-IDF
 
 ## 出厂固件
 
-原始出厂预编译固件保留在 `Firmware/` 目录下。`Firmware/brookesia`
+原始出厂预编译固件保留在 `firmware/` 目录下。`firmware/brookesia`
 包含基于本地 ESP-Brookesia 示例和 ESP32-P4-platform 固件结构适配的源码工程。
 该工程使用 7B BSP 以及 `BSP_LCD_H_RES/BSP_LCD_V_RES`，因此显示、触摸、
 摄像头缓冲区和 UI 布局会跟随 1024 x 600 面板，而不是上游 800 x 1280

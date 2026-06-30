@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 
-EXAMPLE_ROOT = Path("examples/ESP-IDF")
+EXAMPLE_ROOT = Path("examples/esp-idf")
 BAD_TEXT_PATTERNS = (
     (
         "stale ESP32-P4 Function EV Board text",
@@ -91,7 +91,7 @@ def check_example_root() -> int:
         seen_names[key] = path
 
     if seen_names.get("esp-idf") != EXAMPLE_ROOT:
-        fail("use examples/ESP-IDF for ESP-IDF examples")
+        fail("use examples/esp-idf for ESP-IDF examples")
         errors += 1
 
     numbers: dict[str, Path] = {}
@@ -101,6 +101,9 @@ def check_example_root() -> int:
             fail(f"example directory lacks NN_ prefix: {path.as_posix()}")
             errors += 1
             continue
+        if path.name != path.name.lower():
+            fail(f"example directory must be lowercase: {path.as_posix()}")
+            errors += 1
 
         prefix = match.group(1)
         if prefix in numbers:
