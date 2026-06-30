@@ -27,7 +27,7 @@ No external peripheral is required.
 ## Build and Flash
 
 ```bash
-cd examples/esp-idf/19_system_monitor
+cd examples/ESP-IDF/17_system_monitor
 idf.py set-target esp32p4
 idf.py build
 idf.py -p PORT flash monitor

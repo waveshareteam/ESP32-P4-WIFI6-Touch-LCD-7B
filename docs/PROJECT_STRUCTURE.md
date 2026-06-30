@@ -6,7 +6,7 @@ ESP32-P4-WIFI6-Touch-LCD-7B.
 | Path | Purpose |
 | --- | --- |
 | `README.md` | Repository overview and quick start |
-| `examples/esp-idf/` | Standalone ESP-IDF examples |
+| `examples/ESP-IDF/` | Standalone ESP-IDF examples |
 | `Firmware/` | Prebuilt firmware and buildable firmware source |
 | `Firmware/brookesia/` | ESP-Brookesia factory-style firmware project |
 | `config/` | Shared ESP32-P4 revision overlays |
@@ -14,6 +14,9 @@ ESP32-P4-WIFI6-Touch-LCD-7B.
 | `.github/` | CI workflow and discovery script |
 
 ## ESP-IDF Projects
+
+Use the exact `examples/ESP-IDF/` path casing. Linux CI treats case-only paths
+as different directories, so do not add a lower-case duplicate.
 
 Each project should contain:
 

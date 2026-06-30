@@ -10,13 +10,13 @@ This board uses the ESP-IDF target `esp32p4` and the
 3. Build the Brookesia firmware source.
 
 ```bash
-cd examples/esp-idf/00_board_check
+cd examples/ESP-IDF/00_board_check
 idf.py set-target esp32p4
 idf.py build
 ```
 
 ```bash
-cd examples/esp-idf/10_lvgl_demo_v9
+cd examples/ESP-IDF/10_lvgl_demo_v9
 idf.py set-target esp32p4
 idf.py build
 ```

@@ -4,7 +4,7 @@ The `ESP-IDF examples` GitHub Actions workflow builds changed ESP-IDF projects.
 
 Covered project roots:
 
-- `examples/esp-idf/*`
+- `examples/ESP-IDF/*`
 - `Firmware/brookesia`
 
 Build matrix:
@@ -19,14 +19,14 @@ depend on IDF 5.x-only upstream components or ESP-IDF test helpers are built
 with `v5.5.4` until those dependencies are v6-ready:
 
 - `Firmware/brookesia`
-- `examples/esp-idf/05_wifistation`
-- `examples/esp-idf/06_I2SCodec`
-- `examples/esp-idf/07_color_panel`
-- `examples/esp-idf/08_lvgl_display_panel`
-- `examples/esp-idf/09_lvgl_demo_v8`
-- `examples/esp-idf/10_lvgl_demo_v9`
-- `examples/esp-idf/11_esp_brookesia_phone`
-- `examples/esp-idf/12_usb_extend_screen`
+- `examples/ESP-IDF/05_wifistation`
+- `examples/ESP-IDF/06_I2SCodec`
+- `examples/ESP-IDF/07_color_panel`
+- `examples/ESP-IDF/08_lvgl_display_panel`
+- `examples/ESP-IDF/09_lvgl_demo_v8`
+- `examples/ESP-IDF/10_lvgl_demo_v9`
+- `examples/ESP-IDF/11_esp_brookesia_phone`
+- `examples/ESP-IDF/12_usb_extend_screen`
 
 Manual workflow runs accept `project`:
 
@@ -34,7 +34,7 @@ Manual workflow runs accept `project`:
 | --- | --- |
 | `all` | Build every discovered project |
 | `10_lvgl_demo_v9` | Build one example by directory name |
-| `examples/esp-idf/10_lvgl_demo_v9` | Build one example by path |
+| `examples/ESP-IDF/10_lvgl_demo_v9` | Build one example by path |
 | `Firmware/brookesia` | Build firmware source |
 
 The discovery script treats changes to the workflow, discovery script, or

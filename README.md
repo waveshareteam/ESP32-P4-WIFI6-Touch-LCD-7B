@@ -24,7 +24,7 @@ while keeping the board-specific BSP and display configuration for this 7-inch
 
 ```text
 .
-|-- examples/esp-idf/   Standalone ESP-IDF examples
+|-- examples/ESP-IDF/   Standalone ESP-IDF examples
 |-- Firmware/
 |   |-- brookesia/      ESP-Brookesia factory firmware source
 |   `-- *.bin           Existing prebuilt factory firmware
@@ -41,7 +41,7 @@ Generated ESP-IDF outputs such as `build/`, `managed_components/`,
 Install ESP-IDF v5.5.4 or a compatible v6.x release, then build an example:
 
 ```bash
-cd examples/esp-idf/10_lvgl_demo_v9
+cd examples/ESP-IDF/10_lvgl_demo_v9
 idf.py set-target esp32p4
 idf.py build
 idf.py -p PORT flash monitor

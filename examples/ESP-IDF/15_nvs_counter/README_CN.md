@@ -20,7 +20,7 @@ NVS 通常用于保存少量设置，例如校准值、设备名称、用户偏�
 ## 构建和烧录
 
 ```bash
-cd examples/esp-idf/03_nvs_counter
+cd examples/ESP-IDF/15_nvs_counter
 idf.py set-target esp32p4
 idf.py build
 idf.py -p PORT flash monitor

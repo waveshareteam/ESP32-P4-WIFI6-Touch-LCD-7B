@@ -3,7 +3,7 @@ name: ESP-IDF examples
 on:
   pull_request:
     paths:
-      - "examples/esp-idf/**"
+      - "examples/ESP-IDF/**"
       - "Firmware/brookesia/**"
       - "config/esp32p4_rev_*.defaults"
       - ".github/workflows/esp-idf-examples.yml"
@@ -12,7 +12,7 @@ on:
     branches:
       - main
     paths:
-      - "examples/esp-idf/**"
+      - "examples/ESP-IDF/**"
       - "Firmware/brookesia/**"
       - "config/esp32p4_rev_*.defaults"
       - ".github/workflows/esp-idf-examples.yml"
