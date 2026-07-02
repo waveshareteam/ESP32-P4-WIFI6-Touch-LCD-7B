@@ -9,4 +9,5 @@ set(EXTRA_COMPONENT_DIRS
     )
 
 add_compile_options(-Wno-format)
+add_compile_options(-Wno-attributes)
 project(lvgl_demo_v9)

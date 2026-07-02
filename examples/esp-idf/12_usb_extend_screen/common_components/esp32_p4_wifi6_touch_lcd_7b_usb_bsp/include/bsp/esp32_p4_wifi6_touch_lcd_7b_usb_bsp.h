@@ -20,6 +20,7 @@
 #include "lvgl.h"
 
 #include "sdkconfig.h"
+#include "esp_idf_version.h"
 
 #include "driver/i2c_master.h"
 
@@ -116,6 +117,22 @@
 #define BSP_PROBE_IO_46             (GPIO_NUM_46)
 #define BSP_PROBE_IO_47             (GPIO_NUM_47)
 #define BSP_PROBE_IO_48             (GPIO_NUM_48)
+
+#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(6, 0, 0)
+
+#ifndef LCD_COLOR_PIXEL_FORMAT_RGB565
+#define LCD_COLOR_PIXEL_FORMAT_RGB565 LCD_COLOR_FMT_RGB565
+#endif
+
+#ifndef LCD_COLOR_PIXEL_FORMAT_RGB666
+#define LCD_COLOR_PIXEL_FORMAT_RGB666 LCD_COLOR_FMT_RGB888
+#endif
+
+#ifndef LCD_COLOR_PIXEL_FORMAT_RGB888
+#define LCD_COLOR_PIXEL_FORMAT_RGB888 LCD_COLOR_FMT_RGB888
+#endif
+
+#endif
 
 #ifdef __cplusplus
 extern "C" {

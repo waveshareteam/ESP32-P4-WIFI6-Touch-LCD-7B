@@ -26,7 +26,7 @@ idf_component_register(
     SRCS ${SRCS}
     INCLUDE_DIRS ${INCLUDE_DIRS}
     REQUIRES driver esp_driver_cam esp_lcd esp_driver_ppa esp_driver_isp
-    PRIV_REQUIRES esp_timer spiffs fatfs esp_psram esp_mm
+    PRIV_REQUIRES esp_timer spiffs fatfs esp_psram esp_mm esp_driver_i2c esp_driver_ledc
 )
 
 if(CONFIG_BSP_DISPLAY_LVGL_VERSION_V9)

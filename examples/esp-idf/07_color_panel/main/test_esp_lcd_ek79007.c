@@ -39,6 +39,22 @@
 #define TEST_PIN_NUM_HOR_FLIP           (-1)
 #define TEST_LCD_ROTATE_LEVEL           (1)
 
+#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(6, 0, 0)
+
+#ifndef LCD_COLOR_PIXEL_FORMAT_RGB565
+#define LCD_COLOR_PIXEL_FORMAT_RGB565 LCD_COLOR_FMT_RGB565
+#endif
+
+#ifndef LCD_COLOR_PIXEL_FORMAT_RGB666
+#define LCD_COLOR_PIXEL_FORMAT_RGB666 LCD_COLOR_FMT_RGB888
+#endif
+
+#ifndef LCD_COLOR_PIXEL_FORMAT_RGB888
+#define LCD_COLOR_PIXEL_FORMAT_RGB888 LCD_COLOR_FMT_RGB888
+#endif
+
+#endif
+
 #if TEST_LCD_BIT_PER_PIXEL == 24
 #define TEST_MIPI_DPI_PX_FORMAT         (LCD_COLOR_PIXEL_FORMAT_RGB888)
 #elif TEST_LCD_BIT_PER_PIXEL == 18
@@ -100,7 +116,7 @@ static void test_init_lcd(void)
     TEST_ESP_OK(esp_lcd_new_panel_io_dbi(mipi_dsi_bus, &dbi_config, &mipi_dbi_io));
 
     ESP_LOGI(TAG, "Install LCD driver of ek79007");
-    esp_lcd_dpi_panel_config_t dpi_config = EK79007_1024_600_PANEL_60HZ_CONFIG(TEST_MIPI_DPI_PX_FORMAT);
+    esp_lcd_dpi_panel_config_t dpi_config = EK79007_1024_600_PANEL_60HZ_CONFIG_CF(TEST_MIPI_DPI_PX_FORMAT);
     ek79007_vendor_config_t vendor_config = {
         .mipi_config = {
             .dsi_bus = mipi_dsi_bus,

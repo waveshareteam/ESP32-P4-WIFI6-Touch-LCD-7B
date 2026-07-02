@@ -64,3 +64,6 @@ dist/
 
 # Prebuilt factory firmware packages
 !firmware/factory_firmware/**/*.zip
+
+.clangd
+*.patch

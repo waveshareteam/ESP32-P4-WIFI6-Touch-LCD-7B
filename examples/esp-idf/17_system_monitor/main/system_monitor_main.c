@@ -21,9 +21,6 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include "freertos/task.h"
-#include "driver/usb_serial_jtag.h"
-#include "driver/usb_serial_jtag_vfs.h"
-#include "linenoise/linenoise.h"
 #include "nvs.h"
 #include "nvs_flash.h"
 
@@ -224,60 +221,30 @@ static void register_console_commands(void)
     ESP_ERROR_CHECK(esp_console_cmd_register(&period_cmd));
 }
 
-static void console_task(void *arg)
+static void init_console(void)
 {
-    const char *prompt = "monitor> ";
+    esp_console_repl_t *repl = NULL;
+    esp_console_repl_config_t repl_config = ESP_CONSOLE_REPL_CONFIG_DEFAULT();
+
+    repl_config.prompt = "monitor>";
+    repl_config.max_cmdline_length = 256;
+
+    esp_console_register_help_command();
+    register_console_commands();
 
     printf("\nType 'help' to list commands. Try: info, heap, period 1000\n");
 
-    while (true) {
-        char *line = linenoise(prompt);
-        if (line == NULL) {
-            vTaskDelay(pdMS_TO_TICKS(10));
-            continue;
-        }
+#if defined(CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG)
+    esp_console_dev_usb_serial_jtag_config_t hw_config = ESP_CONSOLE_DEV_USB_SERIAL_JTAG_CONFIG_DEFAULT();
+    ESP_ERROR_CHECK(esp_console_new_repl_usb_serial_jtag(&hw_config, &repl_config, &repl));
+#elif defined(CONFIG_ESP_CONSOLE_UART_DEFAULT) || defined(CONFIG_ESP_CONSOLE_UART_CUSTOM)
+    esp_console_dev_uart_config_t hw_config = ESP_CONSOLE_DEV_UART_CONFIG_DEFAULT();
+    ESP_ERROR_CHECK(esp_console_new_repl_uart(&hw_config, &repl_config, &repl));
+#else
+#error Unsupported console type
+#endif
 
-        if (strlen(line) > 0) {
-            linenoiseHistoryAdd(line);
-        }
-
-        int ret = 0;
-        esp_err_t err = esp_console_run(line, &ret);
-        if (err == ESP_ERR_NOT_FOUND) {
-            printf("unknown command: %s\n", line);
-        } else if (err == ESP_ERR_INVALID_ARG) {
-            printf("invalid command arguments\n");
-        } else if (err != ESP_OK) {
-            printf("command returned error: %s\n", esp_err_to_name(err));
-        } else if (ret != 0) {
-            printf("command returned non-zero code: %d\n", ret);
-        }
-
-        linenoiseFree(line);
-    }
-}
-
-static void init_console(void)
-{
-    setvbuf(stdin, NULL, _IONBF, 0);
-    setvbuf(stdout, NULL, _IONBF, 0);
-
-    usb_serial_jtag_driver_config_t usb_serial_jtag_config = USB_SERIAL_JTAG_DRIVER_CONFIG_DEFAULT();
-    ESP_ERROR_CHECK(usb_serial_jtag_driver_install(&usb_serial_jtag_config));
-    usb_serial_jtag_vfs_use_driver();
-    usb_serial_jtag_vfs_set_rx_line_endings(ESP_LINE_ENDINGS_CR);
-    usb_serial_jtag_vfs_set_tx_line_endings(ESP_LINE_ENDINGS_CRLF);
-
-    const esp_console_config_t console_config = {
-        .max_cmdline_args = 8,
-        .max_cmdline_length = 256,
-    };
-    ESP_ERROR_CHECK(esp_console_init(&console_config));
-
-    linenoiseSetMultiLine(1);
-    linenoiseHistorySetMaxLen(20);
-    esp_console_register_help_command();
-    register_console_commands();
+    ESP_ERROR_CHECK(esp_console_start_repl(repl));
 }
 
 void app_main(void)
@@ -304,5 +271,4 @@ void app_main(void)
 
     xTaskCreate(sampler_task, "sampler", 3072, NULL, 5, NULL);
     xTaskCreate(printer_task, "printer", 3072, NULL, 5, NULL);
-    xTaskCreate(console_task, "console", 4096, NULL, 5, NULL);
 }

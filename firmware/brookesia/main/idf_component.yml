@@ -1,18 +1,26 @@
 ## IDF Component Manager Manifest File
 dependencies:
   espressif/esp_wifi_remote:
-    version: "0.14.*"
-    
+    matches:
+      - if: "idf_version >= 6.0"
+        version: ">=1.6,<2.0"
+      - if: "idf_version < 6.0"
+        version: "0.14.*"
+
   espressif/esp_hosted:
-    version: "1.4.*"
+    matches:
+      - if: "idf_version >= 6.0"
+        version: ">=2.12,<3.0"
+      - if: "idf_version < 6.0"
+        version: "1.4.*"
 
   espressif/esp-brookesia:
     version: "0.4.*"
 
   esp_video:
-    version: "0.8.*"
+    version: ">=2.2,<3.0"
     public: true
 
   espressif/esp_h264:
-      version: "==1.0.3"
+      version: "1.3.*"
       public: true

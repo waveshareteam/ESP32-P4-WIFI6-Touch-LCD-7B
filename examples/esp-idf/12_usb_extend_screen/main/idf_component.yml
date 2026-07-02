@@ -4,8 +4,6 @@ targets:
 dependencies:
   idf: ">=5.3"
   espressif/tinyusb: "*"
-  espressif/esp_lcd_ek79007:
-    version: "*"
   esp32_p4_wifi6_touch_lcd_7b_usb_bsp:
     override_path: "../common_components/esp32_p4_wifi6_touch_lcd_7b_usb_bsp"
   espressif/usb_device_uac:

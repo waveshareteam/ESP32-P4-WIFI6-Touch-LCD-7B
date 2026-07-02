@@ -18,7 +18,7 @@ std::list<dl::detect::result_t> app_humanface_detect(uint16_t *frame, int width,
     img.data = frame;
     img.width = width;
     img.height = height;
-    img.pix_type = dl::image::DL_IMAGE_PIX_TYPE_RGB565;
+    img.pix_type = dl::image::DL_IMAGE_PIX_TYPE_RGB565BE;
     
     auto &detect_results = detect->run(img);
 

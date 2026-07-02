@@ -268,9 +268,12 @@ bool Camera::init(void)
     }
 
     ESP_ERROR_CHECK(esp_cache_get_alignment(MALLOC_CAP_SPIRAM, &data_cache_line_size));
+    // Buffers are DMA-filled by the V4L2 driver with full sensor frames
+    // (e.g. SC2336 1280x720), which are larger than the LCD resolution.
+    uint32_t cam_frame_size = app_video_get_buf_size();
     for (int i = 0; i < EXAMPLE_CAM_BUF_NUM; i++) {
-        _cam_buffer[i] = (uint8_t *)heap_caps_aligned_alloc(data_cache_line_size, _hor_res * _ver_res * BSP_LCD_BITS_PER_PIXEL / 8, MALLOC_CAP_SPIRAM);
-        _cam_buffer_size[i] = _hor_res * _ver_res * BSP_LCD_BITS_PER_PIXEL / 8;
+        _cam_buffer[i] = (uint8_t *)heap_caps_aligned_alloc(data_cache_line_size, cam_frame_size, MALLOC_CAP_SPIRAM);
+        _cam_buffer_size[i] = cam_frame_size;
     }
 
     // Register the video frame operation callback

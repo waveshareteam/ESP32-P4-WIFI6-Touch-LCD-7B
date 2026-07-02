@@ -1,3 +1,2 @@
-## IDF Component Manager Manifest File
 dependencies:
-  esp_lcd_ek79007: "*"
+  espressif/esp_lcd_ek79007: ^2.0.2~1

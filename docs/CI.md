@@ -6,6 +6,34 @@ layout and documentation links on every pull request.
 The `ESP-IDF examples` GitHub Actions workflow also runs those public checks,
 then builds changed ESP-IDF projects.
 
+## ESP-IDF 6.0.1 Compatibility Log
+
+The repository has been updated to support ESP-IDF `v6.0.1` alongside the
+existing `v5.x` build path. The main compatibility work includes:
+
+- adapting EK79007 and LVGL display code to the newer 6.x pixel-format and BSP
+  APIs
+- switching selected examples to the REPL-based console flow used by newer IDF
+  releases
+- keeping ESP32-P4-specific audio helpers isolated so the legacy 5.x codec path
+  remains available for non-P4 builds
+
+Projects that depend on 5.x-only upstream components may still be pinned to
+`v5.5.4` until those dependencies are refreshed, but the board and display
+paths targeted by this update are now v6.0.1-aware.
+
+Examples updated in this round:
+
+- `examples/esp-idf/05_wifistation`
+- `examples/esp-idf/06_i2s_codec`
+- `examples/esp-idf/07_color_panel`
+- `examples/esp-idf/08_lvgl_display_panel`
+- `examples/esp-idf/09_lvgl_demo_v8`
+- `examples/esp-idf/10_lvgl_demo_v9`
+- `examples/esp-idf/11_esp_brookesia_phone`
+- `examples/esp-idf/12_usb_extend_screen`
+- `examples/esp-idf/17_system_monitor`
+
 Covered project roots:
 
 - `examples/esp-idf/*`

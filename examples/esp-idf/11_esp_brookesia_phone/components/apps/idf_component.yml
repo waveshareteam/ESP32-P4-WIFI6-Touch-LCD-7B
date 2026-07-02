@@ -1,0 +1,7 @@
+## IDF Component Manager Manifest File
+dependencies:
+  espressif/human_face_detect:
+    version: "0.5.0"
+
+  espressif/pedestrian_detect:
+    version: "0.3.2"

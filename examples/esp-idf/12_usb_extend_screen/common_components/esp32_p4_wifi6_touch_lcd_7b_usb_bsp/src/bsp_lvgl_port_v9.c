@@ -149,10 +149,8 @@ static lv_disp_t *display_init(esp_lcd_panel_handle_t lcd)
 #endif
 #else
     buffer_size = LVGL_PORT_H_RES * LVGL_PORT_BUFFER_HEIGHT * LV_COLOR_DEPTH / 8;
-    esp_dma_mem_info_t dma_mem_info = {
-        .extra_heap_caps = MALLOC_CAP_SPIRAM,
-    };
-    BSP_ERROR_CHECK_RETURN_NULL(esp_dma_capable_calloc(1, buffer_size, &dma_mem_info, &buf1, &buffer_size));
+    buf1 = heap_caps_calloc(1, buffer_size,
+                            MALLOC_CAP_DMA | MALLOC_CAP_CACHE_ALIGNED | MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
     assert(buf1 && "Failed to allocate memory for LVGL display buffer");
 #endif /* LVGL_PORT_AVOID_TEAR_ENABLE */
 
