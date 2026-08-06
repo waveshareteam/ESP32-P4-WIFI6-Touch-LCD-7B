@@ -38,31 +38,40 @@ extern "C" void app_main(void)
     ESP_ERROR_CHECK(bsp_extra_codec_init());
 
     bsp_display_cfg_t cfg = {
-        .lvgl_port_cfg = ESP_LVGL_PORT_INIT_CONFIG(),
-        .buffer_size = BSP_LCD_H_RES * BSP_LCD_V_RES,
-        .double_buffer = BSP_LCD_DRAW_BUFF_DOUBLE,
-        .flags = {
-            .buff_dma = false,
-            .buff_spiram = true,
-            .sw_rotate = true,
+        .lv_adapter_cfg = ESP_LV_ADAPTER_DEFAULT_CONFIG(),
+        .rotation = ESP_LV_ADAPTER_ROTATE_0,
+        .tear_avoid_mode = ESP_LV_ADAPTER_TEAR_AVOID_MODE_TRIPLE_PARTIAL,
+        .touch_flags = {
+            .swap_xy = 0,
+            .mirror_x = 0,
+            .mirror_y = 0
         }
-    };
+	};
     lv_display_t *disp = bsp_display_start_with_config(&cfg);
 
-    if (disp != NULL)
+    assert(disp != nullptr && "Failed to initialize display");
+
+    assert(bsp_display_lock(-1) && "Failed to acquire display lock");
+
+    if (disp != nullptr)
     {
+#if LVGL_VERSION_MAJOR >= 9
         bsp_display_rotate(disp, LV_DISPLAY_ROTATION_180);
+#else
+        bsp_display_rotate(disp, LV_DISP_ROT_180);
+#endif
     }
 
-    bsp_display_lock(0);
-
-    ESP_Brookesia_Phone *phone = new ESP_Brookesia_Phone();
+    ESP_Brookesia_Phone *phone = new ESP_Brookesia_Phone(disp);
     assert(phone != nullptr && "Failed to create phone");
 
     ESP_Brookesia_PhoneStylesheet_t *phone_stylesheet = new ESP_Brookesia_PhoneStylesheet_t ESP_BROOKESIA_PHONE_1024_600_DARK_STYLESHEET();
     ESP_BROOKESIA_CHECK_NULL_EXIT(phone_stylesheet, "Create phone stylesheet failed");
     ESP_BROOKESIA_CHECK_FALSE_EXIT(phone->addStylesheet(*phone_stylesheet), "Add phone stylesheet failed");
     ESP_BROOKESIA_CHECK_FALSE_EXIT(phone->activateStylesheet(*phone_stylesheet), "Activate phone stylesheet failed");
+
+    phone->registerLvLockCallback((ESP_Brookesia_LvLockCallback_t)(bsp_display_lock), -1);
+    phone->registerLvUnlockCallback((ESP_Brookesia_LvUnlockCallback_t)(bsp_display_unlock));
 
     assert(phone->begin() && "Failed to begin phone");
 

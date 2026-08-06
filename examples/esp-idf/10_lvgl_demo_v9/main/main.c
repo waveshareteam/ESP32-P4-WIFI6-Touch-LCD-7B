@@ -18,15 +18,15 @@
 void app_main(void)
 {
     bsp_display_cfg_t cfg = {
-        .lvgl_port_cfg = ESP_LVGL_PORT_INIT_CONFIG(),
-        .buffer_size = BSP_LCD_DRAW_BUFF_SIZE,
-        .double_buffer = BSP_LCD_DRAW_BUFF_DOUBLE,
-        .flags = {
-            .buff_dma = true,
-            .buff_spiram = false,
-            .sw_rotate = true,
+        .lv_adapter_cfg = ESP_LV_ADAPTER_DEFAULT_CONFIG(),
+        .rotation = ESP_LV_ADAPTER_ROTATE_0,
+        .tear_avoid_mode = ESP_LV_ADAPTER_TEAR_AVOID_MODE_TRIPLE_PARTIAL,
+        .touch_flags = {
+            .swap_xy = 0,
+            .mirror_x = 0,
+            .mirror_y = 0
         }
-    };
+	};
     lv_display_t *disp = bsp_display_start_with_config(&cfg);
 
     bsp_display_backlight_on();
