@@ -17,8 +17,8 @@ The ZIP records the exact full source SHA, `esp32p4`, 32 MiB flash limit,
 921600 baud rate, source project, offsets, sizes, and SHA-256 values. It
 contains every offset-bearing file listed by the build's `flasher_args.json`.
 
-The 44-entry full matrix produces four `04_sdmmc` ZIPs, ten
-`12_usb_extend_screen` ZIPs, and two ZIPs for each of the other 15 included
+The 46-entry full matrix produces four `04_sdmmc` ZIPs, ten
+`12_usb_extend_screen` ZIPs, and two ZIPs for each of the other 16 included
 examples. This CI packaging covers ESP-IDF examples only. The separate Arduino
 workflow compiles sketches but does not publish Arduino firmware ZIPs;
 `firmware/brookesia`, the factory binary, and the ESP32-C6 image are also not
@@ -42,7 +42,7 @@ python -m pip install esptool
 gh auth status
 ```
 
-Run `Flash-CI-Firmware.cmd -ListOnly` to list all 44 expected example artifacts
+Run `Flash-CI-Firmware.cmd -ListOnly` to list all 46 expected example artifacts
 or `Flash-CI-Firmware.cmd -SelfTest` to check its local safety logic without
 Git, GitHub, Python, serial-port access, downloads, or a graphical interface.
 

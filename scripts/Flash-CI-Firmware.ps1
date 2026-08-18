@@ -10,11 +10,10 @@ $DefaultStartIndex = 1
 $RepoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $Specs = @(
     '00_board_check','01_how_to_create_project','02_hello_world','03_i2c_tools','04_sdmmc',
-    '05_wifistation','06_i2s_codec','07_color_panel','08_lvgl_display_panel','09_lvgl_demo_v9','12_usb_extend_screen','13_rs485_test',
+    '05_wifistation','06_i2s_codec','07_color_panel','08_lvgl_display_panel','09_lvgl_demo_v9','11_esp_brookesia_phone','12_usb_extend_screen','13_rs485_test',
     '14_twai_transmit','15_nvs_counter','16_freertos_tasks','17_system_monitor','18_mp4_player'
 )
-# Kept in the repository, but excluded until ESP-Brookesia supports the BSP LVGL 9 line.
-$ExcludedSpecs = @('11_esp_brookesia_phone')
+$ExcludedSpecs = @()
 $Items = @()
 foreach ($name in $Specs) {
     $configs = if ($name -eq '04_sdmmc') { @('default','format_on_mount_failure') } elseif ($name -eq '12_usb_extend_screen') { @('default','esp32_p4_function_ev_board','no_hid_uac','without_hid','without_uac') } else { @('default') }
@@ -51,7 +50,7 @@ function Get-StateForFinalSha($Saved, [string]$Sha, [string]$DefaultPort) {
 }
 
 if ($SelfTest) {
-    if ($Items.Count -ne 44 -or @($Items.Artifact | Sort-Object -Unique).Count -ne 44) { throw 'Self-test item contract failed.' }
+    if ($Items.Count -ne 46 -or @($Items.Artifact | Sort-Object -Unique).Count -ne 46) { throw 'Self-test item contract failed.' }
     $exampleRoot = Join-Path $RepoRoot 'examples\esp-idf'
     $discovered = @(Get-ChildItem -LiteralPath $exampleRoot -Directory | Where-Object {
         (Test-Path -LiteralPath (Join-Path $_.FullName 'CMakeLists.txt') -PathType Leaf) -and
@@ -66,7 +65,7 @@ if ($SelfTest) {
     }
     $counts = @{}; foreach ($item in $Items) { $counts[$item.SourceProject] = 1 + [int]$counts[$item.SourceProject] }
     $regularExamplePairs=@($counts.GetEnumerator()|Where-Object {$_.Key -like 'examples/esp-idf/*' -and $_.Value -eq 2})
-    if ($counts['examples/esp-idf/04_sdmmc'] -ne 4 -or $counts['examples/esp-idf/12_usb_extend_screen'] -ne 10 -or $regularExamplePairs.Count -ne 15) { throw 'Self-test configuration cardinality failed.' }
+    if ($counts['examples/esp-idf/04_sdmmc'] -ne 4 -or $counts['examples/esp-idf/12_usb_extend_screen'] -ne 10 -or $regularExamplePairs.Count -ne 16) { throw 'Self-test configuration cardinality failed.' }
     if ((Test-RelativePackagePath 'C:\package' '..\escape.bin') -or (Test-RelativePackagePath 'C:\package' 'C:\escape.bin') -or -not (Test-RelativePackagePath 'C:\package' 'bin\app.bin')) { throw 'Self-test safe-path contract failed.' }
     $reset = Get-StateForFinalSha ([pscustomobject]@{FinalSha='old';CurrentIndex=2;ConfirmedIndexes=@(1)}) 'new' ''
     if ($reset.CurrentIndex -ne 1 -or @($reset.ConfirmedIndexes).Count -ne 0) { throw 'Self-test SHA state reset failed.' }

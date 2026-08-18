@@ -25,18 +25,9 @@ DEFAULT_ROUTING_CONFIG = Path(".github/ci-routing.json")
 DEFAULT_IDF_VERSIONS = ("v5.5.5", "v6.0.2")
 PROJECT_IDF_VERSION_OVERRIDES: dict[str, tuple[str, ...]] = {}
 
-# Examples kept in the repository but excluded from the default CI matrix.
-# 11_esp_brookesia_phone: esp-brookesia 0.4.x requires LVGL 8 while the 7B BSP
-# moved to the LVGL 9.5 line. Re-enable once esp-brookesia publishes an LVGL 9
-# release.
-EXCLUDED_EXAMPLES = {
-    "examples/esp-idf/11_esp_brookesia_phone",
-}
-EXCLUDED_EXAMPLE_REASONS = {
-    "examples/esp-idf/11_esp_brookesia_phone": (
-        "esp-brookesia 0.4.x requires LVGL 8; the BSP supports LVGL 9 only"
-    ),
-}
+# All first-party ESP-IDF examples are included in the default matrix.
+EXCLUDED_EXAMPLES: set[str] = set()
+EXCLUDED_EXAMPLE_REASONS: dict[str, str] = {}
 PROJECT_IDF_VERSION_REASONS: dict[str, str] = {}
 PROJECT_CONFIG_VARIANTS = {
     "examples/esp-idf/04_sdmmc": (
@@ -68,6 +59,7 @@ EXCLUDED_CI_CONFIGS = {
 # These are upstream component test applications, not first-party product
 # examples.  They remain visible to the static contract test below.
 EXCLUDED_TEST_APPS = {
+    "examples/esp-idf/11_esp_brookesia_phone/components/brookesia_core/test_apps",
     "examples/esp-idf/12_usb_extend_screen/components/usb_device_uac/test_apps",
 }
 

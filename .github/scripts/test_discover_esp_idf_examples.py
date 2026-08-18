@@ -30,7 +30,7 @@ def powershell_array(source: str, variable: str) -> set[str]:
 
 def assert_matrix_contract() -> None:
     examples = discover.list_examples()
-    assert len(examples) == 17, examples
+    assert len(examples) == 18, examples
     assert examples[0].endswith("/00_board_check")
     assert examples[-1].endswith("/18_mp4_player")
     assert all(not path.startswith("firmware/") for path in examples)
@@ -39,16 +39,16 @@ def assert_matrix_contract() -> None:
         "v6.0.2",
     }
     assert not discover.PROJECT_IDF_VERSION_OVERRIDES
-    assert discover.EXCLUDED_EXAMPLES == {"examples/esp-idf/11_esp_brookesia_phone"}
+    assert discover.EXCLUDED_EXAMPLES == set()
     assert not discover.PROJECT_IDF_VERSION_REASONS
     assert all(discover.versions_for_example(example) == discover.DEFAULT_IDF_VERSIONS for example in examples)
 
     all_matrix = discover.build_matrix(examples)["include"]
     # Every project runs on both supported lines; SDMMC adds one variant per
     # line and USB adds four variants per line.
-    assert len(all_matrix) == 44, len(all_matrix)
+    assert len(all_matrix) == 46, len(all_matrix)
     artifact_names = [entry["artifact_name"] for entry in all_matrix]
-    assert len(artifact_names) == len(set(artifact_names)) == 44
+    assert len(artifact_names) == len(set(artifact_names)) == 46
     assert all(name.startswith("firmware-esp-idf-") for name in artifact_names)
     assert all(name.endswith("-rev1_3") and entry["profile"] == "rev1_3" for name, entry in zip(artifact_names, all_matrix))
     flasher = (ROOT / "scripts/Flash-CI-Firmware.ps1").read_text(encoding="utf-8")
@@ -66,8 +66,8 @@ def assert_matrix_contract() -> None:
     assert "'01_display'" not in flasher and "'13_ethernet'" not in flasher
     assert {entry["idf_version"] for entry in all_matrix} == {"v5.5.5", "v6.0.2"}
     default_jobs = [entry for entry in all_matrix if entry["config_id"] == "default"]
-    assert sum(entry["idf_version"] == "v5.5.5" for entry in default_jobs) == 17
-    assert sum(entry["idf_version"] == "v6.0.2" for entry in default_jobs) == 17
+    assert sum(entry["idf_version"] == "v5.5.5" for entry in default_jobs) == 18
+    assert sum(entry["idf_version"] == "v6.0.2" for entry in default_jobs) == 18
 
     submitted_configs = {
         f"{example}/{config_file}"
@@ -429,16 +429,16 @@ def assert_cli_routing_contract() -> None:
 
 def assert_documentation_contract() -> None:
     documents = {
-        "README.md": ("All 17 included first-party examples", "All 44 example builds"),
-        "README_ZH.md": ("全部 17 个纳入矩阵的一方示例", "44 个示例构建"),
-        "docs/CI.md": ("| Included first-party projects | 17 |", "| Full manual-dispatch matrix | 44 jobs |"),
-        "docs/CI_ZH.md": ("| 纳入矩阵的一方工程 | 17 个 |", "| 完整手动触发矩阵 | 44 项 |"),
-        "docs/firmware.md": ("The 44-entry full matrix", "all 44 expected example artifacts"),
-        "docs/firmware_ZH.md": ("完整 44 项矩阵", "全部 44 个预期示例构件"),
-        "docs/ESP32P4_REVISION_CONFIG.md": ("all 17 included ESP-IDF",),
-        "docs/ESP32P4_REVISION_CONFIG_ZH.md": ("17 个 ESP-IDF 示例默认使用",),
-        "firmware/README.md": ("separate from the 44-job default", "No current GitHub Actions workflow"),
-        "firmware/README_ZH.md": ("与默认 44 项示例矩阵分开", "目前没有 GitHub Actions 工作流"),
+        "README.md": ("All 18 included first-party examples", "46 example builds"),
+        "README_ZH.md": ("全部 18 个纳入矩阵的一方示例", "46 个示例构建"),
+        "docs/CI.md": ("| Included first-party projects | 18 |", "| Full manual-dispatch matrix | 46 jobs |"),
+        "docs/CI_ZH.md": ("| 纳入矩阵的一方工程 | 18 个 |", "| 完整手动触发矩阵 | 46 项 |"),
+        "docs/firmware.md": ("The 46-entry full matrix", "all 46 expected example artifacts"),
+        "docs/firmware_ZH.md": ("完整 46 项矩阵", "全部 46 个预期示例构件"),
+        "docs/ESP32P4_REVISION_CONFIG.md": ("all 18 included ESP-IDF",),
+        "docs/ESP32P4_REVISION_CONFIG_ZH.md": ("18 个 ESP-IDF 示例默认使用",),
+        "firmware/README.md": ("separate from the 46-job default", "No current GitHub Actions workflow"),
+        "firmware/README_ZH.md": ("与默认 46 项示例矩阵分开", "目前没有 GitHub Actions 工作流"),
     }
     texts = {}
     for name, required in documents.items():

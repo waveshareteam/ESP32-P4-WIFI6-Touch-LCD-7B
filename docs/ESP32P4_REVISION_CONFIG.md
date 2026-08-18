@@ -3,9 +3,8 @@
 [简体中文](ESP32P4_REVISION_CONFIG_ZH.md)
 
 The repository has exactly two machine-readable ESP32-P4 silicon profiles in
-[`config/`](../config/). `rev1_3` is the default for all 17 included ESP-IDF
-examples; `11_esp_brookesia_phone` remains excluded until its LVGL contract is
-compatible with the BSP. The ESP-IDF minimum-revision choice has 1.0
+[`config/`](../config/). `rev1_3` is the default for all 18 included ESP-IDF
+examples, including the LVGL 9 Brookesia phone example. The ESP-IDF minimum-revision choice has 1.0
 granularity, so the rev1.3 family
 uses `REV_MIN_100`; it does not claim that the minimum is exactly 1.3.
 

@@ -17,10 +17,8 @@ ROOT = Path(__file__).resolve().parents[2]
 USB_ROOT = ROOT / "examples/esp-idf/12_usb_extend_screen"
 SETTING_FILES = (
     ROOT / "firmware/brookesia/components/apps/setting/Setting.cpp",
-    ROOT / "examples/esp-idf/11_esp_brookesia_phone/components/apps/setting/Setting.cpp",
 )
 PRODUCT_AUDIO_FILES = (
-    ROOT / "examples/esp-idf/11_esp_brookesia_phone/components/product_audio/src/product_audio.c",
     ROOT / "firmware/brookesia/components/product_audio/src/product_audio.c",
     USB_ROOT / "common_components/usb_extend_support/src/usb_extend_audio.c",
 )
@@ -57,31 +55,10 @@ CODEC_READMES = (
 BROOKESIA_ROOT = ROOT / "examples/esp-idf/11_esp_brookesia_phone"
 BROOKESIA_MANIFEST = BROOKESIA_ROOT / "main/idf_component.yml"
 BROOKESIA_MAIN_CMAKE = BROOKESIA_ROOT / "main/CMakeLists.txt"
-FIRMWARE_BROOKESIA_MAIN_CMAKE = ROOT / "firmware/brookesia/main/CMakeLists.txt"
-BROOKESIA_PRODUCT_AUDIO_CMAKE = BROOKESIA_ROOT / "components/product_audio/CMakeLists.txt"
-BROOKESIA_PRODUCT_AUDIO_MANIFEST = BROOKESIA_ROOT / "components/product_audio/idf_component.yml"
-BROOKESIA_APPS_CMAKE = BROOKESIA_ROOT / "components/apps/CMakeLists.txt"
-BROOKESIA_APPS_MANIFEST = BROOKESIA_ROOT / "components/apps/idf_component.yml"
-BROOKESIA_DETECTOR_APP_FILES = (
-    BROOKESIA_ROOT / "components/apps/camera/app_humanface_detect.cpp",
-    BROOKESIA_ROOT / "components/apps/camera/app_pedestrian_detect.cpp",
-)
-BROOKESIA_LOCAL_DETECTOR_COMPONENT_DIRS = (
-    BROOKESIA_ROOT / "components/human_face_detect",
-    BROOKESIA_ROOT / "components/pedestrian_detect",
-)
-BROOKESIA_LOCAL_DETECTOR_COMPONENT_FILES = (
-    BROOKESIA_ROOT / "components/human_face_detect/idf_component.yml",
-    BROOKESIA_ROOT / "components/human_face_detect/human_face_detect.cpp",
-    BROOKESIA_ROOT / "components/pedestrian_detect/idf_component.yml",
-    BROOKESIA_ROOT / "components/pedestrian_detect/pedestrian_detect.cpp",
-)
-BROOKESIA_MANAGED_DETECTOR_DEPENDENCIES = (
-    'idf: ">=5.3,<7"',
-    'espressif/human_face_detect: "==0.5.0"',
-    'espressif/pedestrian_detect: "==0.3.2"',
-    'espressif/esp-dl: "==3.3.9"',
-)
+BROOKESIA_CORE_MANIFEST = BROOKESIA_ROOT / "components/brookesia_core/idf_component.yml"
+BROOKESIA_APP_CMAKE = BROOKESIA_ROOT / "components/brookesia_app_squareline_demo/CMakeLists.txt"
+BROOKESIA_APP_MANIFEST = BROOKESIA_ROOT / "components/brookesia_app_squareline_demo/idf_component.yml"
+BROOKESIA_APP_SOURCE = BROOKESIA_ROOT / "components/brookesia_app_squareline_demo/esp_brookesia_app_squareline_demo.cpp"
 BROOKESIA_READMES = (BROOKESIA_ROOT / "README.md", BROOKESIA_ROOT / "README_ZH.md")
 BROOKESIA_LCD_COMPONENT_VERSION = 'version: "==2.0.2~1"'
 BROOKESIA_LCD_LOCAL_OVERRIDE_COMPONENT_FILES = (
@@ -207,7 +184,6 @@ def test_source_invariants() -> None:
     assert "phy_init, data, phy,     0x10000, 0x1000," in partitions
     assert "automatically aligned to 0x20000" in partitions
     setting_texts = [path.read_text(encoding="utf-8") for path in SETTING_FILES]
-    assert setting_texts[0] == setting_texts[1]
     for text in setting_texts:
         assert "st_wifi_password" not in text
         assert "ESP_ERROR_CHECK(esp_wifi_disconnect" not in text
@@ -361,67 +337,29 @@ def test_source_invariants() -> None:
 
     brookesia_manifest = BROOKESIA_MANIFEST.read_text(encoding="utf-8")
     brookesia_main_cmake = BROOKESIA_MAIN_CMAKE.read_text(encoding="utf-8")
-    firmware_brookesia_main_cmake = FIRMWARE_BROOKESIA_MAIN_CMAKE.read_text(encoding="utf-8")
-    assert 'version: "==1.2.5"' in brookesia_manifest
-    assert 'version: "1.4.*"' in brookesia_manifest
-    assert "IDF 6-compatible release" in brookesia_manifest
-    for main_cmake in (brookesia_main_cmake, firmware_brookesia_main_cmake):
-        for dependency in (
-            "apps", "product_audio", "esp-brookesia",
-            "esp32_p4_wifi6_touch_lcd_7b", "freertos", "nvs_flash", "log",
-            "esp_common", "esp_hw_support", "heap", "lvgl__lvgl",
-            "esp_driver_sdmmc", "esp_driver_gpio", "esp_driver_isp",
-        ):
-            assert dependency in main_cmake
-        assert "        esp_driver_sdmmc\n        esp_driver_gpio\n        esp_driver_isp)" in main_cmake
-    assert '"espressif__esp_hosted" IN_LIST build_components' in brookesia_main_cmake
-    assert "idf_component_get_property(esp_hosted_lib espressif__esp_hosted COMPONENT_LIB)" in brookesia_main_cmake
-    assert "target_link_libraries(${esp_hosted_lib} PRIVATE ${sdmmc_driver_lib})" in brookesia_main_cmake
-    assert '"espressif__esp_ipa" IN_LIST build_components' in brookesia_main_cmake
-    assert '"esp_driver_isp" IN_LIST build_components' in brookesia_main_cmake
-    assert "idf_component_get_property(esp_ipa_lib espressif__esp_ipa COMPONENT_LIB)" in brookesia_main_cmake
-    assert "idf_component_get_property(isp_driver_lib esp_driver_isp COMPONENT_LIB)" in brookesia_main_cmake
-    assert "target_link_libraries(${esp_ipa_lib} PUBLIC ${isp_driver_lib})" in brookesia_main_cmake
-    assert "esp_hal_cam/hal/isp_types.h" in brookesia_main_cmake
-    assert '"espressif__esp_video" IN_LIST build_components AND "esp_driver_gpio" IN_LIST build_components' in brookesia_main_cmake
-    assert "idf_component_get_property(esp_video_lib espressif__esp_video COMPONENT_LIB)" in brookesia_main_cmake
-    assert "idf_component_get_property(gpio_driver_lib esp_driver_gpio COMPONENT_LIB)" in brookesia_main_cmake
-    assert "target_link_libraries(${esp_video_lib} PRIVATE ${gpio_driver_lib})" in brookesia_main_cmake
-    assert "IDF 6 provides driver/gpio.h through esp_driver_gpio" in brookesia_main_cmake
-    assert "target_compile_definitions(${esp_video_lib} PRIVATE CAM_CTLR_COLOR_YUV422=CAM_CTLR_COLOR_YUV422_UYVY)" in brookesia_main_cmake
-    assert "legacy generic YUV422" in brookesia_main_cmake
-    assert "explicit pack orders" in brookesia_main_cmake
-    assert "ISP YUV422 contract" in brookesia_main_cmake
-    assert "SC2336 RAW/RGB565 paths remain unchanged" in brookesia_main_cmake
-    assert '"chmorgan__esp-audio-player" IN_LIST build_components' not in brookesia_main_cmake
-    assert "target_link_libraries(${audio_player_lib} PRIVATE ${i2s_driver_lib})" not in brookesia_main_cmake
-    brookesia_product_audio_cmake = BROOKESIA_PRODUCT_AUDIO_CMAKE.read_text(encoding="utf-8")
-    brookesia_product_audio_manifest = BROOKESIA_PRODUCT_AUDIO_MANIFEST.read_text(encoding="utf-8")
-    assert 'waveshare/esp32_p4_wifi6_touch_lcd_7b:' in brookesia_product_audio_manifest
-    assert 'version: "==3.0.0"' in brookesia_product_audio_manifest
-    assert 'version: "==1.1.0"' in brookesia_product_audio_manifest
-    assert "version: '>=5.3.0'" in brookesia_product_audio_manifest
-    assert BROOKESIA_LCD_COMPONENT_VERSION in brookesia_product_audio_manifest
-    assert "Matches the Waveshare BSP 3.0.0 display-driver contract." in brookesia_product_audio_manifest
-    assert "espressif/esp_lvgl_port" not in brookesia_product_audio_manifest
-    assert all(not path.exists() for path in BROOKESIA_LCD_LOCAL_OVERRIDE_COMPONENT_FILES)
-    for dependency in ("driver", "esp_driver_i2c", "esp_driver_i2s", "esp_driver_gpio", "esp_driver_ledc"):
-        assert dependency in brookesia_product_audio_cmake
+    brookesia_core_manifest = BROOKESIA_CORE_MANIFEST.read_text(encoding="utf-8")
+    brookesia_app_cmake = BROOKESIA_APP_CMAKE.read_text(encoding="utf-8")
+    brookesia_app_manifest = BROOKESIA_APP_MANIFEST.read_text(encoding="utf-8")
+    brookesia_app_source = BROOKESIA_APP_SOURCE.read_text(encoding="utf-8")
 
-    brookesia_apps_manifest = BROOKESIA_APPS_MANIFEST.read_text(encoding="utf-8")
-    brookesia_apps_cmake = BROOKESIA_APPS_CMAKE.read_text(encoding="utf-8")
-    assert all(dependency in brookesia_apps_manifest for dependency in BROOKESIA_MANAGED_DETECTOR_DEPENDENCIES)
-    assert "targets:\n  - esp32p4" in brookesia_apps_manifest
-    assert all(not path.exists() for path in BROOKESIA_LOCAL_DETECTOR_COMPONENT_DIRS)
-    assert all(not path.exists() for path in BROOKESIA_LOCAL_DETECTOR_COMPONENT_FILES)
-    assert "REQUIRES" in brookesia_apps_cmake
-    assert "pedestrian_detect human_face_detect" in brookesia_apps_cmake
-    humanface_app, pedestrian_app = (path.read_text(encoding="utf-8") for path in BROOKESIA_DETECTOR_APP_FILES)
-    assert "new HumanFaceDetect();" in humanface_app
-    assert "new PedestrianDetect();" in pedestrian_app
-    for app in (humanface_app, pedestrian_app):
-        assert "dl::image::DL_IMAGE_PIX_TYPE_RGB565BE" in app
-        assert "dl::image::DL_IMAGE_PIX_TYPE_RGB565;" not in app
+    assert 'idf: ">=5.5"' in brookesia_manifest
+    assert 'waveshare/esp32_p4_wifi6_touch_lcd_7b:\n    version: "==3.0.0"' in brookesia_manifest
+    assert "espressif/esp-brookesia" not in brookesia_manifest
+    assert 'SRCS "main.cpp"' in brookesia_main_cmake
+    assert "get_component_library(\"lvgl\" LVGL_LIB)" in brookesia_main_cmake
+
+    assert 'version: "0.6.0-beta2"' in brookesia_core_manifest
+    assert 'lvgl/lvgl:' in brookesia_core_manifest
+    assert 'version: "9.5.0"' in brookesia_core_manifest
+    assert 'version: 0.6.0' in brookesia_app_manifest
+    assert "brookesia_core" in brookesia_app_manifest
+    assert "WHOLE_ARCHIVE" in brookesia_app_cmake
+    assert "ESP_UTILS_REGISTER_PLUGIN_WITH_CONSTRUCTOR" in brookesia_app_source
+    assert "phone_app_squareline_ui_init" in brookesia_app_source
+    assert not (BROOKESIA_ROOT / "components/apps").exists()
+    assert not (BROOKESIA_ROOT / "components/product_audio").exists()
+    assert not (BROOKESIA_ROOT / "spiffs").exists()
+    assert all(not path.exists() for path in BROOKESIA_LCD_LOCAL_OVERRIDE_COMPONENT_FILES)
 
     usb_main_cmake = USB_MAIN_CMAKE.read_text(encoding="utf-8")
     usb_support_cmake = USB_SUPPORT_CMAKE.read_text(encoding="utf-8")
@@ -522,7 +460,7 @@ def test_source_invariants() -> None:
         "examples/esp-idf/06_i2s_codec/main/idf_component.yml",
         "examples/esp-idf/08_lvgl_display_panel/main/idf_component.yml",
         "examples/esp-idf/09_lvgl_demo_v9/main/idf_component.yml",
-        "examples/esp-idf/11_esp_brookesia_phone/components/product_audio/idf_component.yml",
+        "examples/esp-idf/11_esp_brookesia_phone/main/idf_component.yml",
         "examples/esp-idf/12_usb_extend_screen/common_components/usb_extend_support/idf_component.yml",
         "examples/esp-idf/12_usb_extend_screen/main/idf_component.yml",
         "examples/esp-idf/13_rs485_test/main/idf_component.yml",
@@ -555,7 +493,7 @@ def test_source_invariants() -> None:
         assert "BSP_LCD_DRAW_BUFF" not in text
     for path in display_cfg_files[:2]:
         assert "ESP_LV_ADAPTER_TEAR_AVOID_MODE_TRIPLE_PARTIAL" in path.read_text(encoding="utf-8")
-    for path in display_cfg_files[3:]:
+    for path in display_cfg_files[2:]:
         assert "ESP_LV_ADAPTER_TEAR_AVOID_MODE_DOUBLE_DIRECT" in path.read_text(encoding="utf-8")
     assert "lv_task_handler()" not in display_cfg_files[0].read_text(encoding="utf-8")
 
@@ -587,7 +525,6 @@ def test_source_invariants() -> None:
         assert "CONFIG_BSP_DISPLAY_LVGL_DIRECT_MODE" not in text
 
     lock_contract_files = display_cfg_files + SETTING_FILES + (
-        BROOKESIA_ROOT / "components/apps/video_player/esp_lvgl_simple_player/esp_lvgl_simple_player.c",
         ROOT / "firmware/brookesia/components/apps/video_player/esp_lvgl_simple_player/esp_lvgl_simple_player.c",
     )
     for path in lock_contract_files:
@@ -634,42 +571,14 @@ def test_source_invariants() -> None:
     brookesia_readme, brookesia_readme_zh = (path.read_text(encoding="utf-8") for path in BROOKESIA_READMES)
     brookesia_readme_normalized = " ".join(brookesia_readme.split())
     brookesia_readme_zh_normalized = " ".join(brookesia_readme_zh.split())
-    assert "ESP-IDF v5.5.5 and v6.0.2" in brookesia_readme
-    assert "Registry-managed `waveshare/esp32_p4_wifi6_touch_lcd_7b` BSP at `3.0.0`" in brookesia_readme_normalized
-    assert "public high-level display configuration and locking APIs" in brookesia_readme_normalized
-    assert "product_display" not in brookesia_readme_normalized
-    assert "BSP_CONFIG_NO_GRAPHIC_LIB" not in brookesia_readme_normalized
-    assert "`espressif/esp_lvgl_adapter` `~0.6`" in brookesia_readme_normalized
-    assert "LVGL 8 contract (`>=8.3,<9`)" in brookesia_readme_normalized
-    assert "both the LVGL 8 and LVGL 9 public API variants" in brookesia_readme_normalized
-    assert "temporarily excluded from the ESP-IDF v5.5.5 and v6.0.2 compilation matrix" in brookesia_readme_normalized
-    assert "`firmware/brookesia` source is maintained separately and is not currently built or packaged by GitHub Actions" in brookesia_readme_normalized
-    assert "`Product firmware` workflow" not in brookesia_readme_normalized
-    assert "BSP 2.0.0" not in brookesia_readme_normalized
-    assert "Legacy `esp_video`/`esp_ipa` compile shims" in brookesia_readme_normalized
-    assert "do not verify video, ISP, or other hardware runtime behavior" in brookesia_readme_normalized
-    assert "official managed `espressif/esp_lcd_ek79007` `2.0.2~1`" in brookesia_readme_normalized
-    assert "managed Waveshare BSP 3.0.0 display-driver contract" in brookesia_readme_normalized
-    assert "official managed `espressif/human_face_detect` `0.5.0`, `espressif/pedestrian_detect` `0.3.2`, and `espressif/esp-dl` `3.3.9`" in brookesia_readme_normalized
-    assert "GitHub Actions verifies compilation only; LCD, face, pedestrian, and other hardware runtime behavior remains unverified." in brookesia_readme_normalized
-    assert "ESP-IDF v5.5.5 和 v6.0.2" in brookesia_readme_zh
-    assert "Registry 托管的 `waveshare/esp32_p4_wifi6_touch_lcd_7b` BSP 精确固定为 `3.0.0`" in brookesia_readme_zh_normalized
-    assert "公开的高层显示配置与加锁 API" in brookesia_readme_zh_normalized
-    assert "product_display" not in brookesia_readme_zh_normalized
-    assert "BSP_CONFIG_NO_GRAPHIC_LIB" not in brookesia_readme_zh_normalized
-    assert "`espressif/esp_lvgl_adapter` `~0.6`" in brookesia_readme_zh_normalized
-    assert "LVGL 8 合同（`>=8.3,<9`）" in brookesia_readme_zh_normalized
-    assert "LVGL 8 与 LVGL 9 的公开 API 变体" in brookesia_readme_zh_normalized
-    assert "暂时不纳入 ESP-IDF v5.5.5 和 v6.0.2 编译矩阵" in brookesia_readme_zh_normalized
-    assert "`firmware/brookesia` 源码单独维护，目前没有 GitHub Actions 工作流构建或打包它" in brookesia_readme_zh_normalized
-    assert "`Product firmware` workflow" not in brookesia_readme_zh_normalized
-    assert "BSP 2.0.0" not in brookesia_readme_zh_normalized
-    assert "遗留 `esp_video`/`esp_ipa` 编译兼容垫片" in brookesia_readme_zh_normalized
-    assert "不验证视频、ISP 或其他硬件运行行为" in brookesia_readme_zh_normalized
-    assert "官方托管 `espressif/esp_lcd_ek79007` `2.0.2~1`" in brookesia_readme_zh_normalized
-    assert "托管 Waveshare BSP 3.0.0 显示驱动合同" in brookesia_readme_zh_normalized
-    assert "官方托管 `espressif/human_face_detect` `0.5.0`、`espressif/pedestrian_detect` `0.3.2` 和 `espressif/esp-dl` `3.3.9`" in brookesia_readme_zh_normalized
-    assert "GitHub Actions 仅验证编译；LCD、人脸、行人及其他硬件运行时行为未经验证。" in brookesia_readme_zh_normalized
+    assert "LVGL 9" in brookesia_readme_normalized
+    assert "brookesia_app_squareline_demo" in brookesia_readme_normalized
+    assert "ESP-Brookesia 0.4.2" not in brookesia_readme_normalized
+    assert "SPIFFS" not in brookesia_readme_normalized
+    assert "LVGL 9" in brookesia_readme_zh_normalized
+    assert "brookesia_app_squareline_demo" in brookesia_readme_zh_normalized
+    assert "ESP-Brookesia 0.4.2" not in brookesia_readme_zh_normalized
+    assert "SPIFFS" not in brookesia_readme_zh_normalized
 
     usb_readme, usb_readme_zh = (path.read_text(encoding="utf-8") for path in USB_READMES)
     usb_readme_normalized = " ".join(usb_readme.split())

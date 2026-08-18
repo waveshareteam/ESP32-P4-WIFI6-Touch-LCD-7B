@@ -1,9 +1,0 @@
-version: "0.1.0"
-description: "Application dependencies"
-dependencies:
-  idf: ">=5.3,<7"
-  espressif/human_face_detect: "==0.5.0"
-  espressif/pedestrian_detect: "==0.3.2"
-  espressif/esp-dl: "==3.3.9"
-targets:
-  - esp32p4

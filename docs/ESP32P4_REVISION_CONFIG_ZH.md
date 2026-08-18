@@ -3,8 +3,8 @@
 [English](ESP32P4_REVISION_CONFIG.md)
 
 仓库在 [`config/`](../config/) 中只保留两个机器可读的 ESP32-P4 硅片 profile。纳入矩阵的
-17 个 ESP-IDF 示例默认使用 `rev1_3`；`11_esp_brookesia_phone` 因 LVGL 合同与 BSP
-不兼容而暂时排除。ESP-IDF 的最小芯片版本选项以 1.0 为粒度，
+18 个 ESP-IDF 示例默认使用 `rev1_3`，其中包括 LVGL 9 的 Brookesia phone 示例。
+ESP-IDF 的最小芯片版本选项以 1.0 为粒度，
 因此 rev1.3 系列使用 `REV_MIN_100`，并不表示最小值精确为 1.3。
 
 | Profile | defaults | 已解析符号 | Arduino 设置 |

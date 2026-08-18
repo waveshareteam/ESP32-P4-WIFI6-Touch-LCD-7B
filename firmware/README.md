@@ -53,7 +53,7 @@ idf.py set-target esp32p4
 idf.py build
 ```
 
-This maintained delivery-source project is separate from the 44-job default
+This maintained delivery-source project is separate from the 46-job default
 example matrix. No current GitHub Actions workflow builds or packages it; use
 its profile defaults only for a separately validated manual build. The
 `rev1_3` and `rev3_x` profiles are incompatible and must not be shared. Changes

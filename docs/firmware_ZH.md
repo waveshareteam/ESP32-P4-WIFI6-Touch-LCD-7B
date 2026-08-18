@@ -14,7 +14,7 @@
 源工程、偏移量、大小和 SHA-256，并包含构建目录 `flasher_args.json` 中每个带偏移量
 的文件。
 
-完整 44 项矩阵会产生 4 个 `04_sdmmc` ZIP、10 个 `12_usb_extend_screen` ZIP，及其余 15 个
+完整 46 项矩阵会产生 4 个 `04_sdmmc` ZIP、10 个 `12_usb_extend_screen` ZIP，及其余 16 个
 纳入矩阵示例各自的 2 个 ZIP。该 CI 打包仅覆盖 ESP-IDF 示例。独立的 Arduino 工作流仅
 编译草图，不发布 Arduino 固件 ZIP；该矩阵同样不会打包 `firmware/brookesia`、出厂二进制
 或 ESP32-C6 镜像。
@@ -35,7 +35,7 @@ python -m pip install esptool
 gh auth status
 ```
 
-运行 `Flash-CI-Firmware.cmd -ListOnly` 可列出全部 44 个预期示例构件；运行
+运行 `Flash-CI-Firmware.cmd -ListOnly` 可列出全部 46 个预期示例构件；运行
 `Flash-CI-Firmware.cmd -SelfTest` 可在不访问 Git、GitHub、Python、串口、下载或图形
 界面的情况下检查本地安全逻辑。
 

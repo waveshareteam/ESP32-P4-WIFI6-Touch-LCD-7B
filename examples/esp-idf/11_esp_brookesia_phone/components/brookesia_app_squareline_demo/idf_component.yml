@@ -1,0 +1,9 @@
+version: 0.6.0
+dependencies:
+  espressif/cjson:
+    version: "^1.7.15"
+    public: true
+    rules:
+      - if: "idf_version >= 6.0"
+  brookesia_core:
+    public: true

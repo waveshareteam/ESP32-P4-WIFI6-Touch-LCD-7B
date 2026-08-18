@@ -106,8 +106,8 @@ ESP32-P4 本身不集成无线射频，Wi-Fi 与蓝牙由 ESP32-C6 协处理器�
 
 | ESP-IDF 版本 | 当前覆盖范围 |
 | --- | --- |
-| `v5.5.5` | 全部 17 个纳入矩阵的一方示例 |
-| `v6.0.2` | 全部 17 个纳入矩阵的一方示例 |
+| `v5.5.5` | 全部 18 个纳入矩阵的一方示例 |
+| `v6.0.2` | 全部 18 个纳入矩阵的一方示例 |
 
 [Arduino 示例工作流](https://github.com/waveshareteam/ESP32-P4-WIFI6-Touch-LCD-7B/actions/workflows/arduino-examples.yml)
 使用 Arduino-ESP32 3.3.11 和 `prev3` Chip Variant 编译全部 12 个 Arduino 草图。
@@ -115,7 +115,7 @@ ESP32-P4 本身不集成无线射频，Wi-Fi 与蓝牙由 ESP32-C6 协处理器�
 
 轻量发现任务会先对完整的 Pull Request 差异进行分类，再决定是否启动耗时构建。
 仅文档或治理文件的变更只运行仓库检查；直接源码变更只选择受影响示例，共享 CI
-或配置变更则选择全部 17 个示例。44 个示例构建默认使用 pre-v3 的 `rev1_3` 硅片
+或配置变更则选择全部 18 个示例。46 个示例构建默认使用 pre-v3 的 `rev1_3` 硅片
 profile，且不会倍增矩阵。`firmware/brookesia` 不属于该示例矩阵，目前也没有 GitHub
 Actions 工作流构建或打包它。完整路由和手动触发选项请参阅
 [持续集成说明](docs/CI_ZH.md)。CI 仅提供编译证据，不是硬件/HIL 验证；仓库没有本地原理图，
