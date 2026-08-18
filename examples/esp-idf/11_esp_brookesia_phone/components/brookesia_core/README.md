@@ -13,18 +13,11 @@ Brookesia-Core is the core component of ESP-Brookesia, providing fundamental sys
 - Adopts an app-based application management approach, enabling UI isolation and coexistence of multiple apps, allowing users to focus on UI implementation within their respective apps.
 - Application UI is compatible with "[Squareline](https://squareline.io/) export code" development approach.
 
-The functional demonstration of various system UIs is shown below:
+The Phone system UI is demonstrated below:
 
 <div align="center">
-    <img src="https://dl.espressif.com/AE/esp-dev-kits/esp_ui_phone_p4_function_ev_board_1024_600_2.gif" alt ="esp_ui_phone_p4_function_ev_board">
+    <img src="./docs/_static/readme/app_launcher_demo.png" alt="Phone app launcher demo">
 </div>
-
-<div align="center">
-    <a href="https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32p4/esp32-p4-function-ev-board/index.html">ESP32-P4-Function-EV-Board</a> running system UI - <a href="./docs/system_ui_phone.md">Phone</a>
-    <br>
-    （<a href="https://dl.espressif.com/AE/esp-dev-kits/esp_ui_phone_demo_1024_600_compress.mp4">Click to view video</a>）
-</div>
-<br>
 
 ## Built-in Systems
 

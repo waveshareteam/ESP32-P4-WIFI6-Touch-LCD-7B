@@ -7,7 +7,7 @@
 [Phone](../systems/phone/) is a smartphone-like system UI that runs on ESP development boards with various screen sizes and resolutions as shown below:
 
 <div align="center">
-    <img src="https://dl.espressif.com/AE/esp-dev-kits/esp_ui_phone_demo_esp.jpg" alt ="Running Effect" width="750">
+    <img src="_static/readme/app_launcher_demo.png" alt="Phone app launcher demo" width="750">
 </div>
 
 It has the following features:
