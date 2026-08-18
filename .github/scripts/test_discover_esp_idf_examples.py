@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import sys
 import tempfile
@@ -19,6 +20,12 @@ import discover_esp_idf_examples as discover  # noqa: E402
 
 def change(path: str, status: str = "M", old_path: str | None = None) -> discover.Change:
     return discover.Change(status=status, path=path, old_path=old_path)
+
+
+def powershell_array(source: str, variable: str) -> set[str]:
+    match = re.search(rf"\${variable}\s*=\s*@\((.*?)\)", source, flags=re.DOTALL)
+    assert match, f"missing PowerShell array ${variable}"
+    return set(re.findall(r"'([^']+)'", match.group(1)))
 
 
 def assert_matrix_contract() -> None:
@@ -45,7 +52,17 @@ def assert_matrix_contract() -> None:
     assert all(name.startswith("firmware-esp-idf-") for name in artifact_names)
     assert all(name.endswith("-rev1_3") and entry["profile"] == "rev1_3" for name, entry in zip(artifact_names, all_matrix))
     flasher = (ROOT / "scripts/Flash-CI-Firmware.ps1").read_text(encoding="utf-8")
-    assert all(f"'{Path(example).name}'" in flasher for example in examples)
+    flasher_specs = powershell_array(flasher, "Specs")
+    flasher_exclusions = powershell_array(flasher, "ExcludedSpecs")
+    repository_projects = {
+        path.name
+        for path in (ROOT / "examples/esp-idf").iterdir()
+        if path.is_dir() and (path / "CMakeLists.txt").is_file() and (path / "main").is_dir()
+    }
+    assert flasher_specs == {Path(example).name for example in examples}
+    assert flasher_exclusions == {Path(example).name for example in discover.EXCLUDED_EXAMPLES}
+    assert flasher_specs.isdisjoint(flasher_exclusions)
+    assert flasher_specs | flasher_exclusions == repository_projects
     assert "'01_display'" not in flasher and "'13_ethernet'" not in flasher
     assert {entry["idf_version"] for entry in all_matrix} == {"v5.5.5", "v6.0.2"}
     default_jobs = [entry for entry in all_matrix if entry["config_id"] == "default"]
@@ -410,12 +427,49 @@ def assert_cli_routing_contract() -> None:
     assert missing_ref.returncode == 2, missing_ref.stderr or missing_ref.stdout
 
 
+def assert_documentation_contract() -> None:
+    documents = {
+        "README.md": ("All 17 included first-party examples", "All 44 example builds"),
+        "README_ZH.md": ("全部 17 个纳入矩阵的一方示例", "44 个示例构建"),
+        "docs/CI.md": ("| Included first-party projects | 17 |", "| Full manual-dispatch matrix | 44 jobs |"),
+        "docs/CI_ZH.md": ("| 纳入矩阵的一方工程 | 17 个 |", "| 完整手动触发矩阵 | 44 项 |"),
+        "docs/firmware.md": ("The 44-entry full matrix", "all 44 expected example artifacts"),
+        "docs/firmware_ZH.md": ("完整 44 项矩阵", "全部 44 个预期示例构件"),
+        "docs/ESP32P4_REVISION_CONFIG.md": ("all 17 included ESP-IDF",),
+        "docs/ESP32P4_REVISION_CONFIG_ZH.md": ("17 个 ESP-IDF 示例默认使用",),
+        "firmware/README.md": ("separate from the 44-job default", "No current GitHub Actions workflow"),
+        "firmware/README_ZH.md": ("与默认 44 项示例矩阵分开", "目前没有 GitHub Actions 工作流"),
+    }
+    texts = {}
+    for name, required in documents.items():
+        text = (ROOT / name).read_text(encoding="utf-8")
+        texts[name] = text
+        assert all(value in text for value in required), (name, required)
+
+    combined = "\n".join(texts.values())
+    for stale in (
+        "All 19 first-party examples",
+        "all 19 examples",
+        "48-job",
+        "48 jobs",
+        "48-entry",
+        "50 expected artifacts",
+        "全部 19 个一方示例",
+        "全部 19 个示例",
+        "48 项示例矩阵",
+        "50 个预期构件",
+        "`Product firmware` workflow",
+    ):
+        assert stale not in combined, stale
+
+
 def main() -> int:
     assert_matrix_contract()
     assert_routing_contract()
     assert_workflow_contract()
     assert_cli_routing_contract()
-    print("ESP-IDF discovery, matrix, and routing assertions passed")
+    assert_documentation_contract()
+    print("ESP-IDF discovery, matrix, routing, and documentation assertions passed")
     return 0
 
 

@@ -3,8 +3,10 @@
 [简体中文](ESP32P4_REVISION_CONFIG_ZH.md)
 
 The repository has exactly two machine-readable ESP32-P4 silicon profiles in
-[`config/`](../config/). `rev1_3` is the default for all 19 ESP-IDF examples.
-The ESP-IDF minimum-revision choice has 1.0 granularity, so the rev1.3 family
+[`config/`](../config/). `rev1_3` is the default for all 17 included ESP-IDF
+examples; `11_esp_brookesia_phone` remains excluded until its LVGL contract is
+compatible with the BSP. The ESP-IDF minimum-revision choice has 1.0
+granularity, so the rev1.3 family
 uses `REV_MIN_100`; it does not claim that the minimum is exactly 1.3.
 
 | Profile | Defaults | Resolved symbols | Arduino setting |

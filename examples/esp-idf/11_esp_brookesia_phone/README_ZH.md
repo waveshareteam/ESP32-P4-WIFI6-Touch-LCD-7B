@@ -34,10 +34,10 @@ idf.py -p PORT flash monitor
 
 ## CI 兼容性边界
 
-此示例纳入 ESP-IDF v5.5.5 和 v6.0.2 编译矩阵。上游 `esp-audio-player` 1.1.0 固定版本和
-显式拆分驱动依赖仅保持本项目源码可编译。独立的 `Product firmware` workflow 会在 ESP-IDF
-v5.5.5 上恰好构建两次 [`firmware/brookesia`](../../../firmware/brookesia/)：分别对应
-`rev1_3` 与 `rev3_x`。
+此示例暂时不纳入 ESP-IDF v5.5.5 和 v6.0.2 编译矩阵，因为 ESP-Brookesia 0.4.x 需要 LVGL 8，
+而 7B BSP 使用 LVGL 9.5。上游 `esp-audio-player` 1.1.0 固定版本和显式拆分驱动依赖会在
+兼容边界恢复后保持本项目源码可编译。`firmware/brookesia` 源码单独维护，目前没有 GitHub
+Actions 工作流构建或打包它。
 遗留 `esp_video`/`esp_ipa` 编译兼容垫片仅保持源码兼容，不验证视频、ISP 或其他硬件运行行为。
 官方托管 `espressif/esp_lcd_ek79007` `2.0.2~1` 依赖提供托管 Waveshare BSP 3.0.0
 显示驱动合同所需的版本守卫 ESP-IDF 5/6 API。

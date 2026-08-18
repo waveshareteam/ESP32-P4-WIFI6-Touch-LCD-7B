@@ -35,11 +35,13 @@ Replace `PORT` with your board's serial port.
 
 ## CI Compatibility Boundary
 
-This example is covered by the ESP-IDF v5.5.5 and v6.0.2 compilation matrix.
-The upstream `esp-audio-player` 1.1.0 pin and explicit split-driver dependencies
-keep this project's sources buildable. Separately, the `Product firmware`
-workflow builds [`firmware/brookesia`](../../../firmware/brookesia/) on ESP-IDF
-v5.5.5 exactly twice, once for `rev1_3` and once for `rev3_x`.
+This example is temporarily excluded from the ESP-IDF v5.5.5 and v6.0.2
+compilation matrix because ESP-Brookesia 0.4.x requires LVGL 8 while the 7B BSP
+uses LVGL 9.5. The upstream `esp-audio-player` 1.1.0 pin and explicit
+split-driver dependencies keep this project's sources buildable when the
+compatibility boundary is restored. The `firmware/brookesia` source is maintained
+separately and is not
+currently built or packaged by GitHub Actions.
 Legacy `esp_video`/`esp_ipa` compile shims preserve source compatibility only;
 they do not verify video, ISP, or other hardware runtime behavior.
 The official managed `espressif/esp_lcd_ek79007` `2.0.2~1` dependency provides

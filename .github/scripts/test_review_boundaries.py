@@ -642,9 +642,9 @@ def test_source_invariants() -> None:
     assert "`espressif/esp_lvgl_adapter` `~0.6`" in brookesia_readme_normalized
     assert "LVGL 8 contract (`>=8.3,<9`)" in brookesia_readme_normalized
     assert "both the LVGL 8 and LVGL 9 public API variants" in brookesia_readme_normalized
-    assert "`Product firmware` workflow builds" in brookesia_readme_normalized
-    assert "exactly twice, once for `rev1_3` and once for `rev3_x`" in brookesia_readme_normalized
-    assert "does not build the bundled firmware or ESP-Brookesia separately" not in brookesia_readme_normalized
+    assert "temporarily excluded from the ESP-IDF v5.5.5 and v6.0.2 compilation matrix" in brookesia_readme_normalized
+    assert "`firmware/brookesia` source is maintained separately and is not currently built or packaged by GitHub Actions" in brookesia_readme_normalized
+    assert "`Product firmware` workflow" not in brookesia_readme_normalized
     assert "BSP 2.0.0" not in brookesia_readme_normalized
     assert "Legacy `esp_video`/`esp_ipa` compile shims" in brookesia_readme_normalized
     assert "do not verify video, ISP, or other hardware runtime behavior" in brookesia_readme_normalized
@@ -660,9 +660,9 @@ def test_source_invariants() -> None:
     assert "`espressif/esp_lvgl_adapter` `~0.6`" in brookesia_readme_zh_normalized
     assert "LVGL 8 合同（`>=8.3,<9`）" in brookesia_readme_zh_normalized
     assert "LVGL 8 与 LVGL 9 的公开 API 变体" in brookesia_readme_zh_normalized
-    assert "`Product firmware` workflow" in brookesia_readme_zh_normalized
-    assert "恰好构建两次" in brookesia_readme_zh_normalized
-    assert "不单独构建随附的 firmware 或 ESP-Brookesia" not in brookesia_readme_zh_normalized
+    assert "暂时不纳入 ESP-IDF v5.5.5 和 v6.0.2 编译矩阵" in brookesia_readme_zh_normalized
+    assert "`firmware/brookesia` 源码单独维护，目前没有 GitHub Actions 工作流构建或打包它" in brookesia_readme_zh_normalized
+    assert "`Product firmware` workflow" not in brookesia_readme_zh_normalized
     assert "BSP 2.0.0" not in brookesia_readme_zh_normalized
     assert "遗留 `esp_video`/`esp_ipa` 编译兼容垫片" in brookesia_readme_zh_normalized
     assert "不验证视频、ISP 或其他硬件运行行为" in brookesia_readme_zh_normalized

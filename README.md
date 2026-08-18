@@ -117,8 +117,8 @@ discovers first-party projects and builds them for `esp32p4`:
 
 | ESP-IDF version | Current coverage |
 | --- | --- |
-| `v5.5.5` | All 19 first-party examples |
-| `v6.0.2` | All 19 first-party examples |
+| `v5.5.5` | All 17 included first-party examples |
+| `v6.0.2` | All 17 included first-party examples |
 
 The [Arduino examples workflow](https://github.com/waveshareteam/ESP32-P4-WIFI6-Touch-LCD-7B/actions/workflows/arduino-examples.yml)
 compiles all 12 Arduino sketches with Arduino-ESP32 3.3.11 and the `prev3`
@@ -127,10 +127,10 @@ Chip Variant. It is compile coverage only and does not publish firmware ZIPs.
 The lightweight discovery job classifies the complete pull-request diff before
 starting expensive builds. Documentation-only and governance-only changes run
 the repository checks without building examples; direct source changes select
-the affected example, and shared CI or configuration changes select all 19.
-All 48 example builds default to the pre-v3 `rev1_3` silicon profile without
-multiplying the matrix. `firmware/brookesia` remains outside that matrix but has
-an explicitly maintained two-profile workflow (`rev1_3` and `rev3_x`). See
+the affected example, and shared CI or configuration changes select all 17.
+All 44 example builds default to the pre-v3 `rev1_3` silicon profile without
+multiplying the matrix. `firmware/brookesia` remains outside that matrix and is
+not currently built or packaged by GitHub Actions. See
 [Continuous Integration](docs/CI.md) for routing and dispatch options. CI is
 compile evidence only, not hardware/HIL validation; no local schematic is held
 in this repository and the online BSP/application glue boundary remains in use.

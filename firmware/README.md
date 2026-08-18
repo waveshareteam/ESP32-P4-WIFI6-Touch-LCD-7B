@@ -53,12 +53,12 @@ idf.py set-target esp32p4
 idf.py build
 ```
 
-This maintained delivery-source project is separate from the 48-job default
-example matrix. Its product workflow builds exactly two IDF 5.5.5 profiles,
-`rev1_3` (the local default) and `rev3_x`, into separate directories. The
-profile packages are incompatible and must not be shared. Changes must not
-replace or repackage the prebuilt factory image as a side effect; CI compilation
-does not prove hardware/HIL behavior.
+This maintained delivery-source project is separate from the 44-job default
+example matrix. No current GitHub Actions workflow builds or packages it; use
+its profile defaults only for a separately validated manual build. The
+`rev1_3` and `rev3_x` profiles are incompatible and must not be shared. Changes
+must not replace or repackage the prebuilt factory image as a side effect; CI
+compilation does not prove hardware/HIL behavior.
 
 ## Media Assets
 

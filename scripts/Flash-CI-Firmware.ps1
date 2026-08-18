@@ -13,6 +13,8 @@ $Specs = @(
     '05_wifistation','06_i2s_codec','07_color_panel','08_lvgl_display_panel','09_lvgl_demo_v9','12_usb_extend_screen','13_rs485_test',
     '14_twai_transmit','15_nvs_counter','16_freertos_tasks','17_system_monitor','18_mp4_player'
 )
+# Kept in the repository, but excluded until ESP-Brookesia supports the BSP LVGL 9 line.
+$ExcludedSpecs = @('11_esp_brookesia_phone')
 $Items = @()
 foreach ($name in $Specs) {
     $configs = if ($name -eq '04_sdmmc') { @('default','format_on_mount_failure') } elseif ($name -eq '12_usb_extend_screen') { @('default','esp32_p4_function_ev_board','no_hid_uac','without_hid','without_uac') } else { @('default') }
@@ -55,7 +57,13 @@ if ($SelfTest) {
         (Test-Path -LiteralPath (Join-Path $_.FullName 'CMakeLists.txt') -PathType Leaf) -and
         (Test-Path -LiteralPath (Join-Path $_.FullName 'main') -PathType Container)
     } | ForEach-Object { $_.Name } | Sort-Object)
-    if (@(Compare-Object @($Specs | Sort-Object) $discovered).Count -ne 0) { throw 'Self-test example inventory does not match the repository.' }
+    $declared = @($Specs + $ExcludedSpecs)
+    $uniqueDeclared = @($declared | Sort-Object -Unique)
+    $inventoryDiff = @(Compare-Object $uniqueDeclared $discovered)
+    $missingExclusions = @($ExcludedSpecs | Where-Object { $_ -notin $discovered })
+    if ($uniqueDeclared.Count -ne $declared.Count -or $inventoryDiff.Count -ne 0 -or $missingExclusions.Count -ne 0) {
+        throw 'Self-test example inventory or exclusions do not match the repository.'
+    }
     $counts = @{}; foreach ($item in $Items) { $counts[$item.SourceProject] = 1 + [int]$counts[$item.SourceProject] }
     $regularExamplePairs=@($counts.GetEnumerator()|Where-Object {$_.Key -like 'examples/esp-idf/*' -and $_.Value -eq 2})
     if ($counts['examples/esp-idf/04_sdmmc'] -ne 4 -or $counts['examples/esp-idf/12_usb_extend_screen'] -ne 10 -or $regularExamplePairs.Count -ne 15) { throw 'Self-test configuration cardinality failed.' }

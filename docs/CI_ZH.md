@@ -33,14 +33,15 @@ Arduino 草图。它直接构建所有匹配草图，使用 Arduino-ESP32 3.3.11
 | ESP-IDF 6 稳定线 | [`v6.0.2`](https://github.com/espressif/esp-idf/releases/tag/v6.0.2) |
 | 管理型开发板 BSP | [`waveshare/esp32_p4_wifi6_touch_lcd_7b` 3.0.0](https://components.espressif.com/components/waveshare/esp32_p4_wifi6_touch_lcd_7b/versions/3.0.0) |
 | BSP 的 LVGL 集成 | BSP 管理的 `espressif/esp_lvgl_adapter` `~0.6` 版本线 |
-| 一方工程 | 19 个 |
-| IDF 5.5 覆盖范围 | 19 个工程 |
-| IDF 6.0 覆盖范围 | 19 个工程 |
-| 完整手动触发矩阵 | 48 项 |
+| 纳入矩阵的一方工程 | 17 个 |
+| IDF 5.5 覆盖范围 | 17 个工程 |
+| IDF 6.0 覆盖范围 | 17 个工程 |
+| 完整手动触发矩阵 | 44 项 |
 
-全部一方工程都会在 IDF 5.5.5 和 IDF 6.0.2 上构建。`04_sdmmc` 会构建格式化挂载
-失败配置，`12_usb_extend_screen` 会在每条支持
-的版本线上构建以下 5 种配置：
+纳入矩阵的一方工程都会在 IDF 5.5.5 和 IDF 6.0.2 上构建。仓库仍保留
+`11_esp_brookesia_phone` 目录，但因 ESP-Brookesia 0.4.x 需要 LVGL 8、而 7B BSP 使用
+LVGL 9.5，暂时将其排除。`04_sdmmc` 会构建格式化挂载失败配置，
+`12_usb_extend_screen` 会在每条支持的版本线上构建以下 5 种配置：
 
 - `default`
 - 功能评估板兼容配置
@@ -48,19 +49,18 @@ Arduino 草图。它直接构建所有匹配草图，使用 Arduino-ESP32 3.3.11
 - `without_hid`
 - `without_uac`
 
-这 48 个任务都会追加 `rev1_3` defaults，保留 14 天的构件名也包含 `rev1_3`；芯片
-profile 不会把示例矩阵倍增。单独的 `Product firmware` 工作流仅维护
-`firmware/brookesia`：在 IDF 5.5.5 上恰好构建两次，分别使用 `rev1_3` 与 `rev3_x`，
-并使用独立构建目录和由 CMake 缓存解析的 SDKCONFIG。示例的每种配置同样使用绝对
-CMake 缓存路径，因此打包器读取的是 IDF 实际生成的 `build/<configuration>/sdkconfig`。
+这 44 个任务都会追加 `rev1_3` defaults，保留 14 天的构件名也包含 `rev1_3`；芯片
+profile 不会把示例矩阵倍增。`firmware/brookesia` 单独维护，目前没有 GitHub Actions
+工作流构建或打包它。示例的每种配置同样使用绝对 CMake 缓存路径，因此打包器读取的是
+IDF 实际生成的 `build/<configuration>/sdkconfig`。
 
 每个已跟踪的 `sdkconfig.ci*` 文件都会被提交为上述配置之一，或由发现契约明确
 分类。空的上游占位文件、仅包含 Wi-Fi 凭据的输入，以及 ESP32-C2/ESP32-S3
 target 配置均有意排除在本 ESP32-P4 产品矩阵之外。
 
-每个成功的矩阵任务还会打包一个可烧录的 CI ZIP。因此完整的 48 项矩阵会生成 48 个
-唯一命名的构件：`04_sdmmc` 产生 4 个，`12_usb_extend_screen` 产生 10 个，其余每个
-示例产生 2 个。下载和烧录边界见[固件与 CI 包](firmware_ZH.md)。
+每个成功的矩阵任务还会打包一个可烧录的 CI ZIP。因此完整的 44 项矩阵会生成 44 个
+唯一命名的构件：`04_sdmmc` 产生 4 个，`12_usb_extend_screen` 产生 10 个，其余 15 个
+纳入矩阵的示例各产生 2 个。下载和烧录边界见[固件与 CI 包](firmware_ZH.md)。
 
 ## Arduino 构建
 
@@ -88,10 +88,10 @@ esp32:esp32:esp32p4:ChipVariant=prev3,PSRAM=enabled,FlashSize=32M,FlashMode=qio,
 | Issue/PR 模板与治理文件 | 不构建 |
 | `examples/arduino/**` 或 Arduino 工作流输入 | 不进入 ESP-IDF 矩阵；Arduino 工作流独立编译草图 |
 | 单个示例中的直接源码或配置 | 仅构建该示例 |
-| 共享芯片版本配置、打包器或工作流安全输入 | 构建全部 19 个示例和两个固件 profile |
-| `firmware/brookesia` 源码/配置 | 不构建示例；构建两个维护固件 profile |
+| 共享芯片版本配置、打包器或工作流安全输入 | 构建全部 17 个纳入矩阵的示例 |
+| `firmware/brookesia` 源码/配置 | 不构建示例；单独报告固件范围 |
 | 固件 Markdown、出厂 BIN 或交付归档 | 不构建；单独报告固件/发布范围 |
-| 完整差异中无法分类的非文档路径 | 构建全部 19 个示例、两个固件 profile 并报告未知路径 |
+| 完整差异中无法分类的非文档路径 | 构建全部 17 个纳入矩阵的示例并报告未知路径 |
 | 重命名或删除 | 同时计入旧路径的构建影响 |
 | 空白或不可用的差异 | 发现任务失败 |
 
@@ -111,7 +111,7 @@ SHA-256 身份，不据此宣称完成固件构建或硬件测试。
 
 | 值 | 含义 |
 | --- | --- |
-| `all` | 构建全部 48 项一方示例矩阵 |
+| `all` | 构建全部 44 项已纳入示例矩阵 |
 | `09_lvgl_demo_v9` | 通过目录名在两条 IDF 版本线上构建一个示例 |
 | `examples/esp-idf/09_lvgl_demo_v9` | 通过路径在两条 IDF 版本线上构建一个示例 |
 
@@ -130,4 +130,5 @@ python .github/scripts/test_review_boundaries.py
 python .github/scripts/discover_esp_idf_examples.py --example all
 ```
 
-产品编译证据以最终审核提交上的必需 GitHub Actions 矩阵为准。
+示例与 Arduino 编译证据以最终审核提交上的必需 GitHub Actions 矩阵为准。被排除的
+Brookesia 源码仍是单独维护、需要手动验证的固件范围。

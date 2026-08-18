@@ -17,19 +17,17 @@ The ZIP records the exact full source SHA, `esp32p4`, 32 MiB flash limit,
 921600 baud rate, source project, offsets, sizes, and SHA-256 values. It
 contains every offset-bearing file listed by the build's `flasher_args.json`.
 
-The 48-entry full matrix produces four `04_sdmmc` ZIPs, ten
-`12_usb_extend_screen` ZIPs, and two ZIPs for each remaining first-party
-example. This CI packaging covers ESP-IDF examples only. The separate Arduino
+The 44-entry full matrix produces four `04_sdmmc` ZIPs, ten
+`12_usb_extend_screen` ZIPs, and two ZIPs for each of the other 15 included
+examples. This CI packaging covers ESP-IDF examples only. The separate Arduino
 workflow compiles sketches but does not publish Arduino firmware ZIPs;
 `firmware/brookesia`, the factory binary, and the ESP32-C6 image are also not
 packaged by this matrix.
 
-The maintained Brookesia workflow produces exactly two profile-specific IDF
-5.5.5 packages (`rev1_3` and `rev3_x`), also retained for 14 days. Packages are
-not interchangeable: the packager reads the resolved `sdkconfig` and rejects a
-wrong target, missing/multiple revision minima, a profile mismatch, or any
-resolved flash-size selection other than the unique 32 MB choice.
-Both packages use the same Brookesia partition layout: table `0x9000`, NVS
+The Brookesia source is not currently built or packaged by a GitHub Actions
+workflow. Its `rev1_3` and `rev3_x` defaults remain available for separately
+validated manual builds, and resulting firmware images are not interchangeable.
+Both profiles use the same Brookesia partition layout: table `0x9000`, NVS
 `0xa000`, PHY initialization `0x10000`, and an automatically aligned factory
 app at `0x20000`. This protects the layout from a rev3 bootloader larger than
 the `0x6000` gap before the former `0x8000` table offset.
@@ -44,9 +42,8 @@ python -m pip install esptool
 gh auth status
 ```
 
-Run `Flash-CI-Firmware.cmd -ListOnly` to list all 50 expected artifacts (48
-examples plus two product profiles) or
-`Flash-CI-Firmware.cmd -SelfTest` to check its local safety logic without
+Run `Flash-CI-Firmware.cmd -ListOnly` to list all 44 expected example artifacts
+or `Flash-CI-Firmware.cmd -SelfTest` to check its local safety logic without
 Git, GitHub, Python, serial-port access, downloads, or a graphical interface.
 
 Normal use requires a clean, non-detached branch with exactly one ready open
@@ -58,14 +55,17 @@ validates its manifest, paths, hashes, sizes, offsets, and 32 MiB ranges.
 Pass `-Port COMx` unless automatic detection finds exactly one present USB
 serial device with VID `303A`. Before writing, the tool proves that the port is
 an ESP32-P4 and parses its silicon major/minor revision (`v1.10` means 110).
-It selects `rev1_3` below 3.0 and `rev3_x` at or above 3.0, then repeats the
-same ESP32-P4/profile/revision probe after download and manifest verification;
-the revision must remain unchanged. This silicon check is not proof of a
-PCB/electrical revision. It writes only the verified manifest offsets with
-`python -m esptool --chip esp32p4 --baud 921600 write_flash`; it never runs an
+All currently published example artifacts use `rev1_3`, so the flasher accepts
+silicon below 3.0 and rejects newer silicon because no `rev3_x` artifact is
+currently published. It repeats the ESP32-P4/profile/revision probe after
+download and manifest verification; the revision must remain unchanged. This
+silicon check is not proof of a PCB/electrical revision. It writes only the
+verified manifest offsets. It invokes
+`python -m esptool --chip esp32p4 --baud 921600 write_flash` and never runs an
 erase command. A successful esptool exit and `Hash of data verified` are both
-required. Then perform the relevant board test and select PASS in the dialog
-before it advances. Progress is reset whenever the full SHA changes.
+required. Then perform the relevant board test
+and select PASS in the dialog before it advances. Progress is reset whenever
+the full SHA changes.
 
 For example:
 

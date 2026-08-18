@@ -37,14 +37,16 @@ factory firmware are inventoried separately and are not product examples.
 | Stable ESP-IDF 6 line | [`v6.0.2`](https://github.com/espressif/esp-idf/releases/tag/v6.0.2) |
 | Managed board BSP | [`waveshare/esp32_p4_wifi6_touch_lcd_7b` 3.0.0](https://components.espressif.com/components/waveshare/esp32_p4_wifi6_touch_lcd_7b/versions/3.0.0) |
 | BSP LVGL integration | BSP-managed `espressif/esp_lvgl_adapter` `~0.6` line |
-| First-party projects | 19 |
-| IDF 5.5 coverage | 19 projects |
-| IDF 6.0 coverage | 19 projects |
-| Full manual-dispatch matrix | 48 jobs |
+| Included first-party projects | 17 |
+| IDF 5.5 coverage | 17 projects |
+| IDF 6.0 coverage | 17 projects |
+| Full manual-dispatch matrix | 44 jobs |
 
-Every first-party project builds on IDF 5.5.5 and IDF 6.0.2. `04_sdmmc` builds
-its format-on-mount-failure configuration and `12_usb_extend_screen` builds
-five configurations on each supported line:
+Every included first-party project builds on IDF 5.5.5 and IDF 6.0.2. The
+`11_esp_brookesia_phone` directory remains in the repository but is excluded
+because ESP-Brookesia 0.4.x requires LVGL 8 while the 7B BSP uses LVGL 9.5.
+`04_sdmmc` builds its format-on-mount-failure configuration and
+`12_usb_extend_screen` builds five configurations on each supported line:
 
 - `default`
 - function-EV-board compatibility overlay
@@ -52,22 +54,22 @@ five configurations on each supported line:
 - `without_hid`
 - `without_uac`
 
-Every one of these 48 jobs appends the `rev1_3` defaults and names its retained
+Every one of the 44 jobs appends the `rev1_3` defaults and names its retained
 14-day artifact with `rev1_3`; revision profiles do not multiply the example
-matrix. A separate `Product firmware` workflow builds maintained
-`firmware/brookesia` exactly twice on IDF 5.5.5, once per `rev1_3` and `rev3_x`,
-with separate build directories and CMake-cached resolved SDKCONFIG files. The
-examples use the same absolute CMake cache path for each configuration, so the
-packager reads the `build/<configuration>/sdkconfig` that IDF actually generated.
+matrix. `firmware/brookesia` is maintained separately and is not currently
+built or packaged by a GitHub Actions workflow. The examples use the same
+absolute CMake cache path for each configuration, so the packager reads the
+`build/<configuration>/sdkconfig` that IDF actually generated.
 
 Every tracked `sdkconfig.ci*` file is either submitted as one of these variants
 or explicitly classified by the discovery contract. Empty upstream
 placeholders, credential-only Wi-Fi inputs, and ESP32-C2/ESP32-S3 target
 configurations are intentionally excluded from this ESP32-P4 product matrix.
 
-Each successful matrix job also packages one flashable CI ZIP. The 48 full
-matrix entries therefore produce 48 uniquely named artifacts: four for
-`04_sdmmc`, ten for `12_usb_extend_screen`, and two for every other example.
+Each successful matrix job also packages one flashable CI ZIP. The 44 full
+matrix entries therefore produce 44 uniquely named artifacts: four for
+`04_sdmmc`, ten for `12_usb_extend_screen`, and two for each of the other 15
+included examples.
 See [Firmware and CI packages](firmware.md) for the retrieval and flashing
 boundary.
 
@@ -99,10 +101,10 @@ applies file-kind rules before directory ownership:
 | Issue/PR templates and governance files | None |
 | `examples/arduino/**` or Arduino workflow inputs | No ESP-IDF matrix; the Arduino workflow compiles its own sketches |
 | Direct source or configuration inside one example | That example only |
-| Shared revision config, packager, or workflow safety input | All 19 examples and both firmware profiles |
-| `firmware/brookesia` source/config | No examples; both maintained firmware profiles |
+| Shared revision config, packager, or workflow safety input | All 17 included examples |
+| `firmware/brookesia` source/config | No example build; report the firmware scope separately |
 | Firmware Markdown, factory BIN, or delivery archive | No build; report the firmware/release scope separately |
-| Complete but unknown non-document path | All 19 examples, both firmware profiles, and report the unknown path |
+| Complete but unknown non-document path | All 17 included examples and report the unknown path |
 | Rename or deletion | Include the old path's build impact |
 | Empty or unavailable diff | Fail the discovery job |
 
@@ -125,7 +127,7 @@ Manual workflow runs accept `project`:
 
 | Value | Meaning |
 | --- | --- |
-| `all` | Build the full 48-job first-party example matrix |
+| `all` | Build the full 44-job included-example matrix |
 | `09_lvgl_demo_v9` | Build one example by directory name on both IDF lines |
 | `examples/esp-idf/09_lvgl_demo_v9` | Build one example by path on both IDF lines |
 
@@ -145,5 +147,6 @@ python .github/scripts/test_review_boundaries.py
 python .github/scripts/discover_esp_idf_examples.py --example all
 ```
 
-Product compile evidence comes from the required GitHub Actions matrix on the
-final reviewed commit.
+Example and Arduino compile evidence comes from the required GitHub Actions
+matrices on the final reviewed commit. The excluded Brookesia source remains a
+separately maintained, manually validated firmware surface.
