@@ -1,7 +1,14 @@
 # Examples
 
-ESP-IDF examples live under [esp-idf](esp-idf/). Each directory is intended to
-build as an independent ESP-IDF project.
+[简体中文](README_ZH.md)
+
+This repository provides both [ESP-IDF](esp-idf/) and [Arduino](arduino/)
+examples for the ESP32-P4-WIFI6-Touch-LCD-7B.
+
+## ESP-IDF examples
+
+ESP-IDF projects live under [esp-idf](esp-idf/). Each directory builds as an
+independent ESP-IDF project.
 
 ```bash
 cd examples/esp-idf/00_board_check
@@ -12,30 +19,57 @@ idf.py -p PORT flash monitor
 
 The examples are organized around this board's 1024 x 600 MIPI-DSI display,
 GT911 touch controller, ESP32-C6 wireless path, SD card, audio codec, USB, and
-field-bus interfaces. Several small examples were brought over from
-ESP32-P4-platform with little or no code change because they only depend on the
-ESP32-P4 target and standard ESP-IDF services.
+field-bus interfaces.
 
-| Directory | Purpose | Notes |
+The numeric prefixes are unique. Existing board-specific example numbers are
+kept stable; imported generic examples use the next available numbers.
+
+### Recommended order
+
+1. `00_board_check`: verify toolchain, flashing, serial monitor, flash, PSRAM,
+   and chip revision.
+2. `02_hello_world`, `15_nvs_counter`, `16_freertos_tasks`: learn the basic
+   ESP-IDF runtime patterns without external peripherals.
+3. `03_i2c_tools`, `07_color_panel`, `08_lvgl_display_panel`: bring up display
+   and touch hardware.
+4. `09_lvgl_demo_v9`, `11_esp_brookesia_phone`: start UI
+   application development.
+5. Peripheral examples such as SD card, Wi-Fi, audio, USB extended display,
+   MP4 playback, RS485, and TWAI should be used when the matching hardware path
+   is connected.
+
+### ESP-IDF index
+
+| Directory | Purpose | Hardware notes |
 | --- | --- | --- |
-| [00_board_check](esp-idf/00_board_check/) | First-run board and toolchain check | Imported from ESP32-P4-platform |
-| [01_HowToCreateProject](esp-idf/01_HowToCreateProject/) | Minimal project template | Local starter project |
-| [02_HelloWorld](esp-idf/02_HelloWorld/) | Basic app and logging | Standard ESP-IDF check |
+| [00_board_check](esp-idf/00_board_check/) | First-run board and toolchain check | USB only |
+| [01_how_to_create_project](esp-idf/01_how_to_create_project/) | Minimal project template | USB only |
+| [02_hello_world](esp-idf/02_hello_world/) | Basic app and logging | USB only |
 | [03_i2c_tools](esp-idf/03_i2c_tools/) | I2C scanning and tools | Useful for touch and peripheral bring-up |
-| [03_nvs_counter](esp-idf/03_nvs_counter/) | Persistent boot counter | Imported from ESP32-P4-platform |
-| [04_freertos_tasks](esp-idf/04_freertos_tasks/) | FreeRTOS tasks and queues | Imported from ESP32-P4-platform |
-| [04_sdmmc](esp-idf/04_sdmmc/) | SD card | Uses board SDMMC wiring |
+| [04_sdmmc](esp-idf/04_sdmmc/) | SD card | Requires SD card |
 | [05_wifistation](esp-idf/05_wifistation/) | Wi-Fi station | Uses ESP32-C6 hosted Wi-Fi path |
-| [06_I2SCodec](esp-idf/06_I2SCodec/) | I2S audio codec | Includes audio sample data |
-| [07_color_panel](esp-idf/07_color_panel/) | EK79007 color bar | 1024 x 600 MIPI-DSI bring-up |
-| [08_lvgl_display_panel](esp-idf/08_lvgl_display_panel/) | LVGL touch/display panel | Touch bounds use BSP resolution |
-| [09_lvgl_demo_v8](esp-idf/09_lvgl_demo_v8/) | LVGL v8 demo | Board BSP |
-| [10_lvgl_demo_v9](esp-idf/10_lvgl_demo_v9/) | LVGL v9 demo | Board BSP |
+| [06_i2s_codec](esp-idf/06_i2s_codec/) | I2S audio codec | Uses board audio codec |
+| [07_color_panel](esp-idf/07_color_panel/) | EK79007 color bar | 1024 x 600 MIPI-DSI panel |
+| [08_lvgl_display_panel](esp-idf/08_lvgl_display_panel/) | LVGL touch/display panel | 1024 x 600 panel and GT911 touch |
+| [09_lvgl_demo_v9](esp-idf/09_lvgl_demo_v9/) | LVGL v9 demo | Board BSP |
 | [11_esp_brookesia_phone](esp-idf/11_esp_brookesia_phone/) | ESP-Brookesia phone UI | 1024 x 600 stylesheet and camera sizing |
-| [12_usb_extend_screen](esp-idf/12_usb_extend_screen/) | USB extended screen | Includes USB and touch components |
-| [13_RS485_Test](esp-idf/13_RS485_Test/) | RS485 UART echo | Requires RS485 wiring |
-| [14_TWAItransmit](esp-idf/14_TWAItransmit/) | TWAI transmit | Requires CAN/TWAI wiring |
-| [19_system_monitor](esp-idf/19_system_monitor/) | Serial diagnostics shell | Imported from ESP32-P4-platform |
+| [12_usb_extend_screen](esp-idf/12_usb_extend_screen/) | USB extended screen | Windows-side driver required |
+| [13_rs485_test](esp-idf/13_rs485_test/) | RS485 UART echo | Requires RS485 wiring |
+| [14_twai_transmit](esp-idf/14_twai_transmit/) | TWAI transmit | Requires CAN/TWAI wiring |
+| [15_nvs_counter](esp-idf/15_nvs_counter/) | Persistent boot counter | USB only |
+| [16_freertos_tasks](esp-idf/16_freertos_tasks/) | FreeRTOS tasks and queues | USB only |
+| [17_system_monitor](esp-idf/17_system_monitor/) | Serial diagnostics shell | USB only |
+| [18_mp4_player](esp-idf/18_mp4_player/) | MP4 or AVI video playback | Requires microSD card and MJPEG video |
+
+## Arduino examples
+
+The [Arduino examples](arduino/) use Arduino-ESP32 `3.3.11` and the
+`ESP32P4 Dev Module` board profile. They provide 7B display, touch, camera,
+SD-card, audio, Wi-Fi, RS485, and CAN/TWAI sketches. See the
+[Arduino README](arduino/README.md) for the required board menu settings and
+field-bus wiring.
+
+For task-based ESP-IDF guidance, see [../docs/EXAMPLES_GUIDE.md](../docs/EXAMPLES_GUIDE.md).
 
 Generated outputs (`build/`, `managed_components/`, `dependencies.lock`, and
 local `sdkconfig`) are ignored and should not be committed.

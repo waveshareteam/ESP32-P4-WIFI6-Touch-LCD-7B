@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "profiles": {
+    "rev1_3": {
+      "defaults": "config/esp32p4_rev1_3.defaults",
+      "selects_rev_less_v3": true,
+      "minimum_symbol": "CONFIG_ESP32P4_REV_MIN_100",
+      "arduino_chip_variant": "prev3"
+    },
+    "rev3_x": {
+      "defaults": "config/esp32p4_rev3_x.defaults",
+      "selects_rev_less_v3": false,
+      "minimum_symbol": "CONFIG_ESP32P4_REV_MIN_300",
+      "arduino_chip_variant": "postv3"
+    }
+  }
+}

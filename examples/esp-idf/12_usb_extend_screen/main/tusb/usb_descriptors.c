@@ -28,10 +28,13 @@
 #include <string.h>
 #include "tusb.h"
 #include "tusb_config.h"
-#include "uac_config.h"
 #include "usb_descriptors.h"
-#include "uac_descriptors.h"
 #include "sdkconfig.h"
+
+#if CONFIG_UAC_AUDIO_ENABLE
+#include "uac_config.h"
+#include "uac_descriptors.h"
+#endif
 
 /* A combination of interfaces must have a unique product id, since PC will save device driver after the first plug.
  * Same VID/PID with different interface e.g MSC (first), then CDC (later) will possibly cause system error on PC.
@@ -108,9 +111,14 @@ enum {
 // Configuration Descriptor
 //--------------------------------------------------------------------+
 
+#if CFG_TUD_AUDIO
 #define CONFIG_TOTAL_LEN    (TUD_CONFIG_DESC_LEN + TUD_HID_DESC_LEN * CFG_TUD_HID + \
                              TUD_VENDOR_DESC_LEN * CFG_TUD_VENDOR + \
                              TUD_AUDIO_DEVICE_DESC_LEN * CFG_TUD_AUDIO)
+#else
+#define CONFIG_TOTAL_LEN    (TUD_CONFIG_DESC_LEN + TUD_HID_DESC_LEN * CFG_TUD_HID + \
+                             TUD_VENDOR_DESC_LEN * CFG_TUD_VENDOR)
+#endif
 
 uint8_t const desc_fs_configuration[] = {
     // Config number, interface count, string index, total length, attribute, power in mA
@@ -153,7 +161,7 @@ uint8_t const *tud_descriptor_configuration_cb(uint8_t index)
         STRINGIFY(CONFIG_USB_EXTEND_SCREEN_WIDTH) \
         "_" \
         "Ejpg" \
-        STRINGIFY(CONFIG_USB_EXYEEND_SCREEN_JEPG_QUALITY) \
+        STRINGIFY(CONFIG_USB_EXTEND_SCREEN_JPEG_QUALITY) \
         "_Fps" \
         STRINGIFY(CONFIG_USB_EXTEND_SCREEN_MAX_FPS) \
         "_Bl" \

@@ -26,6 +26,7 @@
 #include "unity_test_utils_memory.h"
 #include "esp_lcd_mipi_dsi.h"
 #include "esp_lcd_ek79007.h"
+#include "esp_idf_version.h"
 
 #define TEST_LCD_H_RES                  (1024)
 #define TEST_LCD_V_RES                  (600)
@@ -39,7 +40,15 @@
 #define TEST_PIN_NUM_HOR_FLIP           (-1)
 #define TEST_LCD_ROTATE_LEVEL           (1)
 
+#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(6, 0, 0)
 #if TEST_LCD_BIT_PER_PIXEL == 24
+#define TEST_MIPI_DPI_PX_FORMAT         (LCD_COLOR_FMT_RGB888)
+#elif TEST_LCD_BIT_PER_PIXEL == 16
+#define TEST_MIPI_DPI_PX_FORMAT         (LCD_COLOR_FMT_RGB565)
+#else
+#error "ESP-IDF 6 does not expose an RGB666 MIPI-DPI color format"
+#endif
+#elif TEST_LCD_BIT_PER_PIXEL == 24
 #define TEST_MIPI_DPI_PX_FORMAT         (LCD_COLOR_PIXEL_FORMAT_RGB888)
 #elif TEST_LCD_BIT_PER_PIXEL == 18
 #define TEST_MIPI_DPI_PX_FORMAT         (LCD_COLOR_PIXEL_FORMAT_RGB666)
@@ -100,7 +109,11 @@ static void test_init_lcd(void)
     TEST_ESP_OK(esp_lcd_new_panel_io_dbi(mipi_dsi_bus, &dbi_config, &mipi_dbi_io));
 
     ESP_LOGI(TAG, "Install LCD driver of ek79007");
+#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(6, 0, 0)
+    esp_lcd_dpi_panel_config_t dpi_config = EK79007_1024_600_PANEL_60HZ_CONFIG_CF(TEST_MIPI_DPI_PX_FORMAT);
+#else
     esp_lcd_dpi_panel_config_t dpi_config = EK79007_1024_600_PANEL_60HZ_CONFIG(TEST_MIPI_DPI_PX_FORMAT);
+#endif
     ek79007_vendor_config_t vendor_config = {
         .mipi_config = {
             .dsi_bus = mipi_dsi_bus,

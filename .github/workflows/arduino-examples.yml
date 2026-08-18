@@ -1,0 +1,88 @@
+name: Arduino examples
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "all, an example name, or a repo-relative example path"
+        required: false
+        default: "all"
+
+permissions:
+  contents: read
+
+env:
+  ARDUINO_CORE_VERSION: "3.3.11"
+  ARDUINO_FQBN: "esp32:esp32:esp32p4:ChipVariant=prev3,PSRAM=enabled,FlashSize=32M,FlashMode=qio,FlashFreq=80,PartitionScheme=app13M_data7M_32MB,UploadMode=default,UploadSpeed=921600"
+
+concurrency:
+  group: arduino-examples-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  discover:
+    name: Discover Arduino examples
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.examples.outputs.matrix }}
+      count: ${{ steps.examples.outputs.count }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: examples
+        env:
+          SELECTOR: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.target || 'all' }}
+        run: |
+          python3 scripts/discover_arduino_examples.py \
+            --selector "$SELECTOR" \
+            --core "$ARDUINO_CORE_VERSION" \
+            --fqbn "$ARDUINO_FQBN" \
+            --github-output "$GITHUB_OUTPUT"
+
+  build:
+    name: Build ${{ matrix.name }}
+    needs: discover
+    if: needs.discover.outputs.count != '0'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.discover.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install Arduino CLI
+        shell: bash
+        env:
+          ARDUINO_CLI_VERSION: "1.5.1"
+          ARDUINO_CLI_LINUX_AMD64_SHA256: "28a8e119c498a25607821c36cb2dc49e8463941b261a0d99091baa7bc692dd2b"
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/arduino-cli.tar.gz"
+          install_dir="$RUNNER_TEMP/arduino-cli"
+          wget --https-only --tries=3 --output-document "$archive" \
+            "https://github.com/arduino/arduino-cli/releases/download/v${ARDUINO_CLI_VERSION}/arduino-cli_${ARDUINO_CLI_VERSION}_Linux_64bit.tar.gz"
+          echo "${ARDUINO_CLI_LINUX_AMD64_SHA256}  ${archive}" | sha256sum --check --strict
+          mkdir -p "$install_dir"
+          tar -xzf "$archive" --directory "$install_dir" arduino-cli
+          echo "$install_dir" >> "$GITHUB_PATH"
+      - name: Install ESP32 Arduino core
+        run: |
+          arduino-cli config init --overwrite
+          arduino-cli config add board_manager.additional_urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
+          arduino-cli core update-index
+          arduino-cli core install esp32:esp32@${{ matrix.core }}
+      - name: Compile ${{ matrix.path }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          project="${{ matrix.path }}"
+          project_name="$(basename "$project")"
+          test -f "$project/$project_name.ino"
+          test "$(find "$project" -maxdepth 1 -type f -name '*.ino' | wc -l)" -eq 1
+          arduino-cli compile \
+            --fqbn "${{ matrix.fqbn }}" \
+            --libraries examples/arduino/libraries \
+            --build-path "build/arduino/${{ matrix.name }}-${{ matrix.core }}" \
+            "$project"

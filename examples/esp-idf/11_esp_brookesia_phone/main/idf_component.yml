@@ -1,7 +1,8 @@
 ## IDF Component Manager Manifest File
 dependencies:
   espressif/esp_wifi_remote:
-    version: "0.14.*"
+    # Pin the ESP-IDF 6-compatible release; esp_hosted remains on the 1.4.x line.
+    version: "==1.2.5"
     
   espressif/esp_hosted:
     version: "1.4.*"

@@ -1,0 +1,43 @@
+name: Feature request
+description: Propose a focused improvement for this product repository.
+title: "[Feature] "
+labels: []
+assignees: []
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: Explain the customer or maintainer problem the proposal addresses.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe the desired result without assuming a specific implementation.
+    validations:
+      required: true
+  - type: input
+    id: scope
+    attributes:
+      label: Board and example scope
+      placeholder: ESP32-P4-WIFI6-Touch-LCD-7B; examples/esp-idf/...
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Hardware or compatibility considerations
+      description: Include required peripherals, ESP-IDF versions, and protocol or firmware boundaries.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and kept the request specific to this product repository.
+          required: true

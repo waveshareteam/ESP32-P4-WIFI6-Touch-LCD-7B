@@ -1,0 +1,84 @@
+name: 缺陷报告（简体中文）
+description: 报告可复现的示例、文档或 CI 缺陷。
+title: "[Bug] "
+labels: []
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢提供可复现的问题报告。请先从日志中移除凭据、令牌、私有路径和客户数据。不要在公开 Issue 中披露疑似安全漏洞；本仓库目前没有公布经确认的私密报告渠道。
+  - type: input
+    id: board
+    attributes:
+      label: 开发板与版本
+      description: 请填写准确的产品型号和可见硬件版本。
+      placeholder: ESP32-P4-WIFI6-Touch-LCD-7B，硬件版本 ...
+    validations:
+      required: true
+  - type: input
+    id: project
+    attributes:
+      label: 示例或固件路径
+      placeholder: examples/esp-idf/00_board_check
+    validations:
+      required: true
+  - type: input
+    id: idf
+    attributes:
+      label: ESP-IDF 版本
+      placeholder: v5.5.5 或 v6.0.2
+    validations:
+      required: true
+  - type: input
+    id: host
+    attributes:
+      label: 主机环境
+      description: 请包括操作系统和相关工具版本。
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 复现步骤
+      description: 请列出可稳定复现问题的最小步骤，包括配置修改。
+      placeholder: |
+        1. ...
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期行为
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际行为
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 串口或 Actions 日志
+      description: 请在移除私密信息后粘贴完整的相关文本。
+      render: text
+  - type: dropdown
+    id: hosted_wifi
+    attributes:
+      label: 是否涉及 ESP32-C6 Hosted Wi-Fi
+      options:
+        - 否
+        - 是
+        - 不确定
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 检查项
+      options:
+        - label: 我已搜索已有 Issue，并移除凭据或私密数据。
+          required: true

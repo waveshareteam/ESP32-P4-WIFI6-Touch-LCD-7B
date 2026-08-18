@@ -40,7 +40,7 @@ extern "C" {
 //--------------------------------------------------------------------+
 
 // RHPort number used for device can be defined by board.mk, default to port 0
-#ifdef CONFIG_TINYUSB_RHPORT_HS
+#if defined(CONFIG_TINYUSB_RHPORT_HS) || defined(CONFIG_UAC_TINYUSB_RHPORT_HS)
 #   define CFG_TUSB_RHPORT1_MODE    OPT_MODE_DEVICE | OPT_MODE_HIGH_SPEED
 #   define CONFIG_USB_HS            1
 #else

@@ -26,8 +26,13 @@
 #pragma once
 
 #include "sdkconfig.h"
+
+#if CONFIG_UAC_AUDIO_ENABLE
 #include "uac_descriptors.h"
 #include "tusb_config_uac.h"
+#else
+#define CFG_TUD_AUDIO 0
+#endif
 
 #ifdef __cplusplus
 extern "C" {

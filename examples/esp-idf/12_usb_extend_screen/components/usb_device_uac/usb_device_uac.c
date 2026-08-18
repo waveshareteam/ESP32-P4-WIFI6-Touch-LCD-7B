@@ -4,6 +4,27 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+#include "sdkconfig.h"
+
+#if defined(USB_DEVICE_UAC_APP_DISABLED)
+
+/*
+ * ESP-IDF scans local components even when the application does not require
+ * them. Keep this translation unit dependency-free in an application that
+ * disables UAC; standalone component test apps do not define
+ * CONFIG_UAC_AUDIO_ENABLE and therefore still build the complete
+ * implementation below.
+ */
+#include "usb_device_uac.h"
+
+esp_err_t uac_device_init(uac_device_config_t *config)
+{
+    (void)config;
+    return ESP_ERR_NOT_SUPPORTED;
+}
+
+#else
+
 #include <string.h>
 #include <inttypes.h>
 #include "freertos/FreeRTOS.h"
@@ -79,7 +100,7 @@ static void usb_phy_init(void)
         .controller = USB_PHY_CTRL_OTG,
         .otg_mode = USB_OTG_MODE_DEVICE,
         .target = USB_PHY_TARGET_INT,
-#if CONFIG_TINYUSB_RHPORT_HS
+#if CONFIG_TINYUSB_RHPORT_HS || CONFIG_UAC_TINYUSB_RHPORT_HS
         .otg_speed = USB_PHY_SPEED_HIGH,
 #endif
     };
@@ -545,3 +566,5 @@ esp_err_t uac_device_init(uac_device_config_t *config)
     ESP_LOGI(TAG, "UAC Device Start, Version: %d.%d.%d", USB_DEVICE_UAC_VER_MAJOR, USB_DEVICE_UAC_VER_MINOR, USB_DEVICE_UAC_VER_PATCH);
     return ESP_OK;
 }
+
+#endif

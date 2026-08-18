@@ -1,0 +1,24 @@
+{
+  "classification_rules": [],
+  "exclude_patterns": [],
+  "pair_exempt_patterns": [],
+  "language_link_exempt_patterns": [],
+  "relative_link_ignore_patterns": [],
+  "docs_only_allowed_patterns": [],
+  "sensitive_allow_regexes": [],
+  "bilingual_pairs": [],
+  "bilingual_directory_mappings": [],
+  "homepage_h3_emoji_allow_patterns": [],
+  "homepage_pairs": [
+    {
+      "english": "README.md",
+      "chinese": "README_ZH.md",
+      "profile": "auto",
+      "required_components": [],
+      "required_quick_links": [],
+      "required_badges": [],
+      "required_h2_icons": [],
+      "h3_emoji_allow_patterns": []
+    }
+  ]
+}

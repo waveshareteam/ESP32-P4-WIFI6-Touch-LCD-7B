@@ -1,7 +1,12 @@
 # Getting Started
 
+[简体中文](GETTING_STARTED_ZH.md)
+
 This board uses the ESP-IDF target `esp32p4` and the
-`waveshare/esp32_p4_wifi6_touch_lcd_7b` BSP.
+[`waveshare/esp32_p4_wifi6_touch_lcd_7b` BSP](https://components.espressif.com/components/waveshare/esp32_p4_wifi6_touch_lcd_7b/versions/3.0.0)
+version 3.0.0 from the ESP Component Registry. It supplies
+`esp_lvgl_adapter` 0.6.x for LVGL integration; do not add the legacy
+`esp_lvgl_port` beside it.
 
 ## Recommended Checks
 
@@ -16,13 +21,13 @@ idf.py build
 ```
 
 ```bash
-cd examples/esp-idf/10_lvgl_demo_v9
+cd examples/esp-idf/09_lvgl_demo_v9
 idf.py set-target esp32p4
 idf.py build
 ```
 
 ```bash
-cd Firmware/brookesia
+cd firmware/brookesia
 idf.py set-target esp32p4
 idf.py build
 ```

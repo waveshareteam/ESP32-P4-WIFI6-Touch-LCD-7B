@@ -1,0 +1,7 @@
+dependencies:
+  idf: ">=5.5,<7.0"
+  waveshare/esp32_p4_wifi6_touch_lcd_7b:
+    # The managed board BSP supplies the RS485 power-rail control used here.
+    version: "==3.0.0"
+    rules:
+      - if: "target in [esp32p4]"

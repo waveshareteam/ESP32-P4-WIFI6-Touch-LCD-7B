@@ -14,12 +14,6 @@
 extern "C" {
 #endif
 
-// #if CONFIG_IDF_TARGET_ESP32P4
-// #define JPEG_BUFFER_SIZE (300*1024)
-// #elif CONFIG_IDF_TARGET_ESP32S3
-// #define JPEG_BUFFER_SIZE (100*1024)
-// #endif
-
 typedef struct {
     uint8_t press_down;
     uint8_t index;

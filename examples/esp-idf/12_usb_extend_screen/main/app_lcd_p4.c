@@ -15,7 +15,6 @@
 #include "esp_lcd_panel_ops.h"
 #include "esp_lcd_types.h"
 #include "esp_cache.h"
-#include "esp_dma_utils.h"
 #include "esp_private/esp_cache_private.h"
 #include "esp_log.h"
 #include "esp_system.h"
@@ -27,7 +26,7 @@
 #include "app_lcd.h"
 #include "app_usb.h"
 #include "bsp/esp-bsp.h"
-#include "bsp/display.h"
+#include "usb_extend_support/panel.h"
 #include "sdkconfig.h"
 
 static const char *TAG = "app_lcd";
@@ -75,12 +74,11 @@ esp_err_t app_lcd_init(void)
 
     jpeg_new_decoder_engine(&decode_eng_cfg, &jpgd_handle);
 
-    bsp_display_config_t disp_config = {
+    usb_extend_display_config_t disp_config = {
         .dpi_fb_buf_num = EXAMPLE_LCD_BUF_NUM,
     };
 
-    bsp_display_new(&disp_config, &display_handle, NULL);
-    bsp_display_brightness_init();
+    usb_extend_display_new(&disp_config, &display_handle, NULL);
     bsp_display_backlight_on();
 
 #if EXAMPLE_LCD_BUF_NUM == 1

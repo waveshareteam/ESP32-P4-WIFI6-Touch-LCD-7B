@@ -1,0 +1,53 @@
+{
+  "build_override_patterns": [],
+  "documentation_patterns": [],
+  "documentation_asset_patterns": [
+    "assets/*.gif",
+    "assets/**/*.gif",
+    "assets/*.jpeg",
+    "assets/**/*.jpeg",
+    "assets/*.jpg",
+    "assets/**/*.jpg",
+    "assets/*.pdf",
+    "assets/**/*.pdf",
+    "assets/*.png",
+    "assets/**/*.png",
+    "assets/*.svg",
+    "assets/**/*.svg",
+    "assets/*.webp",
+    "assets/**/*.webp"
+  ],
+  "ignore_build_patterns": [
+    ".gitignore",
+    ".github/assets/markdown-audit-config.json",
+    ".github/markdown-audit.json",
+    ".github/scripts/audit_markdown.py",
+    ".github/scripts/check_public_repo.py",
+    ".github/scripts/test_audit_markdown.py",
+    ".github/scripts/test_check_public_repo.py",
+    ".github/scripts/test_review_boundaries.py",
+    ".github/workflows/public-repo.yml",
+    ".github/workflows/arduino-examples.yml",
+    "scripts/discover_arduino_examples.py",
+    "examples/arduino/**",
+    "Flash-CI-Firmware.cmd",
+    "scripts/Flash-CI-Firmware.ps1"
+  ],
+  "firmware_patterns": [
+    "firmware/**"
+  ],
+  "esp_idf_shared_patterns": [],
+  "arduino_shared_patterns": [],
+  "esp_idf_global_patterns": [
+    ".github/scripts/discover_esp_idf_examples.py",
+    ".github/scripts/test_discover_esp_idf_examples.py",
+    ".github/scripts/test_package_firmware.py",
+    "releases/package_firmware.py",
+    "config/esp32p4_revision_profiles.json"
+  ],
+  "arduino_global_patterns": [],
+  "global_build_patterns": [
+    ".github/ci-routing.json",
+    "components/**"
+  ]
+}

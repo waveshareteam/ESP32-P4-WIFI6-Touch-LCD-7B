@@ -1,6 +1,6 @@
 # Board Check
 
-[中文版本](./README_CN.md)
+[简体中文](README_ZH.md)
 
 This is the recommended first ESP-IDF example for this repository.
 
@@ -38,8 +38,8 @@ idf.py build
 idf.py -p PORT flash monitor
 ```
 
-Replace `PORT` with your serial port, for example `COM7` on Windows or
-`/dev/ttyACM0` on Linux.
+Replace `PORT` with your serial port, for example `COMx` on Windows or
+`/dev/ttyACMx` on Linux.
 
 ## Expected Output
 
@@ -47,7 +47,7 @@ The serial monitor should show output similar to:
 
 ```text
 ========================================
- ESP32-P4 Platform Board Check
+ ESP32-P4-WIFI6-Touch-LCD-7B Board Check
 ========================================
 IDF target: esp32p4
 CPU cores: 2
@@ -61,7 +61,7 @@ your build, flash, and monitor workflow is ready for the other examples.
 
 ## Next Steps
 
-- Run [02_HelloWorld](../02_HelloWorld/) for the classic ESP-IDF hello world.
-- Run [08_i2c_tools](../08_i2c_tools/) if you want to scan I2C devices.
+- Run [02_hello_world](../02_hello_world/) for the classic ESP-IDF hello world.
+- Run [03_i2c_tools](../03_i2c_tools/) if you want to scan I2C devices.
 - Read [../../../docs/EXAMPLES_GUIDE.md](../../../docs/EXAMPLES_GUIDE.md) to
   choose the next example for your board.

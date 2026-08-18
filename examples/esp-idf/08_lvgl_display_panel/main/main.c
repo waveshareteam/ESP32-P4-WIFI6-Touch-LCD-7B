@@ -1,16 +1,9 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "nvs_flash.h"
-#include "nvs.h"
-#include "esp_log.h"
 #include "esp_err.h"
-#include "esp_check.h"
-#include "esp_memory_utils.h"
 #include "lvgl.h"
 #include "bsp/esp-bsp.h"
 #include "bsp/display.h"
-#include "bsp_board_extra.h"
-#include "lv_demos.h"
 
 // Define colors manually
 #define LV_COLOR_RED lv_color_make(0xFF, 0x00, 0x00)
@@ -65,29 +58,34 @@ void touch_area_event_handler(lv_event_t *e)
 void app_main(void)
 {
     bsp_display_cfg_t cfg = {
-        .lvgl_port_cfg = ESP_LVGL_PORT_INIT_CONFIG(),
-        .buffer_size = BSP_LCD_DRAW_BUFF_SIZE,
-        .double_buffer = BSP_LCD_DRAW_BUFF_DOUBLE,
-        .flags = {
-            .buff_dma = true,
-            .buff_spiram = false,
-            .sw_rotate = false, // must be set to true for software rotation
-        }};
-    lv_display_t *disp = bsp_display_start_with_config(&cfg);
-
-    // if (disp != NULL)
-    // {
-    //     bsp_display_rotate(disp, LV_DISPLAY_ROTATION_90); // 90、180、270
-    // }
+        .lv_adapter_cfg = ESP_LV_ADAPTER_DEFAULT_CONFIG(),
+        .rotation = ESP_LV_ADAPTER_ROTATE_0,
+        .tear_avoid_mode = ESP_LV_ADAPTER_TEAR_AVOID_MODE_TRIPLE_PARTIAL,
+        .touch_flags = {
+            .swap_xy = 0,
+            .mirror_x = 1,
+            .mirror_y = 1,
+        },
+    };
+    lv_display_t *display = bsp_display_start_with_config(&cfg);
+    ESP_ERROR_CHECK(display != NULL ? ESP_OK : ESP_FAIL);
     bsp_display_backlight_on();
 
     // Fill screen with red, green, and blue in sequence
+    ESP_ERROR_CHECK(bsp_display_lock(-1) ? ESP_OK : ESP_ERR_TIMEOUT);
     fill_screen_with_color(LV_COLOR_RED);
+    bsp_display_unlock();
     vTaskDelay(pdMS_TO_TICKS(1000)); // Delay for 1 second
+    ESP_ERROR_CHECK(bsp_display_lock(-1) ? ESP_OK : ESP_ERR_TIMEOUT);
     fill_screen_with_color(LV_COLOR_GREEN);
+    bsp_display_unlock();
     vTaskDelay(pdMS_TO_TICKS(1000)); // Delay for 1 second
+    ESP_ERROR_CHECK(bsp_display_lock(-1) ? ESP_OK : ESP_ERR_TIMEOUT);
     fill_screen_with_color(LV_COLOR_BLUE);
+    bsp_display_unlock();
     vTaskDelay(pdMS_TO_TICKS(1000)); // Delay for 1 second
+
+    ESP_ERROR_CHECK(bsp_display_lock(-1) ? ESP_OK : ESP_ERR_TIMEOUT);
 
     // Fill the screen with white after blue
     fill_screen_with_color(LV_COLOR_WHITE);
@@ -107,11 +105,5 @@ void app_main(void)
     lv_obj_clear_flag(lv_scr_act(), LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_clear_flag(lv_scr_act(), LV_OBJ_FLAG_SCROLL_CHAIN_HOR);
     lv_obj_clear_flag(lv_scr_act(), LV_OBJ_FLAG_SCROLL_CHAIN_VER);
-
-    while (true)
-    {
-        // Let LVGL handle rendering and input
-        vTaskDelay(pdMS_TO_TICKS(1));
-        lv_task_handler(); // Call LVGL's task handler periodically
-    }
+    bsp_display_unlock();
 }

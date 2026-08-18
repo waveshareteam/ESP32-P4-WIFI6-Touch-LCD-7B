@@ -1,0 +1,84 @@
+name: Bug report
+description: Report a reproducible example, documentation, or CI defect.
+title: "[Bug] "
+labels: []
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for providing a reproducible report. Remove credentials, tokens, private paths, and customer data from logs. Do not disclose suspected security vulnerabilities in a public issue; this repository does not currently publish a verified private reporting channel.
+  - type: input
+    id: board
+    attributes:
+      label: Board and revision
+      description: Give the exact product variant and visible hardware revision.
+      placeholder: ESP32-P4-WIFI6-Touch-LCD-7B, revision ...
+    validations:
+      required: true
+  - type: input
+    id: project
+    attributes:
+      label: Example or firmware path
+      placeholder: examples/esp-idf/00_board_check
+    validations:
+      required: true
+  - type: input
+    id: idf
+    attributes:
+      label: ESP-IDF version
+      placeholder: v5.5.5 or v6.0.2
+    validations:
+      required: true
+  - type: input
+    id: host
+    attributes:
+      label: Host environment
+      description: Include the operating system and relevant tool versions.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: List the smallest sequence that reliably reproduces the issue, including configuration changes.
+      placeholder: |
+        1. ...
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Serial or Actions logs
+      description: Paste the complete relevant text after redacting private information.
+      render: text
+  - type: dropdown
+    id: hosted_wifi
+    attributes:
+      label: ESP32-C6 Hosted Wi-Fi involved
+      options:
+        - "No"
+        - "Yes"
+        - "Unknown"
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and removed secrets or private data.
+          required: true

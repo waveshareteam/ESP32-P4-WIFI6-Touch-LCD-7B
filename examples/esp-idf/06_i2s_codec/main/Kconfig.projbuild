@@ -1,0 +1,28 @@
+menu "Example Configuration"
+
+    choice EXAMPLE_MODE
+        prompt "Example mode"
+        default EXAMPLE_MODE_MUSIC
+        help
+            Select example work mode
+
+        config EXAMPLE_MODE_MUSIC
+            bool "music"
+        config EXAMPLE_MODE_ECHO
+            bool "microphone-to-speaker echo"
+    endchoice
+
+    config EXAMPLE_MIC_GAIN_DB
+        int "Microphone gain (dB)"
+        depends on EXAMPLE_MODE_ECHO
+        range 0 37
+        default 24
+
+    config EXAMPLE_VOICE_VOLUME
+        int "Voice volume"
+        range 0 100
+        default 60
+        help
+            Set voice volume
+
+endmenu

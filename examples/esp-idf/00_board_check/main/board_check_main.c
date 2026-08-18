@@ -41,7 +41,7 @@ void app_main(void)
 
     printf("\n");
     printf("========================================\n");
-    printf(" ESP32-P4 Platform Board Check\n");
+    printf(" ESP32-P4-WIFI6-Touch-LCD-7B Board Check\n");
     printf("========================================\n");
     printf("IDF target: %s\n", CONFIG_IDF_TARGET);
     printf("CPU cores: %d\n", chip_info.cores);
@@ -66,8 +66,8 @@ void app_main(void)
     printf("\n");
     printf("Board check is running. Open the serial monitor and confirm this output.\n");
     printf("Next steps:\n");
-    printf("  1. Run 02_HelloWorld to verify a classic ESP-IDF example.\n");
-    printf("  2. Run 08_i2c_tools if you want to scan the I2C bus.\n");
+    printf("  1. Run 02_hello_world to verify a classic ESP-IDF example.\n");
+    printf("  2. Run 03_i2c_tools if you want to scan the I2C bus.\n");
     printf("  3. Choose Wi-Fi, Ethernet, SD card, display, audio, or camera examples based on your board.\n");
     printf("\n");
 
