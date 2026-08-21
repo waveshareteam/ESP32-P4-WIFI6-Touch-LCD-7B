@@ -151,6 +151,7 @@ def test_boundaries() -> None:
 
 def test_source_invariants() -> None:
     profiles = json.loads((ROOT / "config/esp32p4_revision_profiles.json").read_text(encoding="utf-8"))
+    assert profiles["default_profile"] == "rev3_x"
     assert set(profiles["profiles"]) == {"rev1_3", "rev3_x"}
     assert profiles["profiles"]["rev1_3"]["arduino_chip_variant"] == "prev3"
     assert profiles["profiles"]["rev3_x"]["arduino_chip_variant"] == "postv3"
@@ -163,17 +164,53 @@ def test_source_invariants() -> None:
             assert defaults.is_file(), defaults
             default_text = defaults.read_text(encoding="utf-8")
             assert "CONFIG_ESP32P4_REV_MIN_1=y" not in default_text
+            if project != USB_ROOT:
+                assert "# CONFIG_ESP32P4_SELECTS_REV_LESS_V3 is not set" in default_text
+                assert "CONFIG_ESP32P4_REV_MIN_300=y" in default_text
+                assert "CONFIG_ESP32P4_SELECTS_REV_LESS_V3=y" not in default_text
+                assert "CONFIG_ESP32P4_REV_MIN_100=y" not in default_text
+            if "CONFIG_COMPILER_OPTIMIZATION_PERF=y" in default_text:
+                assert "CONFIG_BOOTLOADER_LOG_LEVEL_WARN=y" in default_text
+                assert "CONFIG_BOOTLOADER_LOG_LEVEL=2" in default_text
             assert default_text.count("CONFIG_ESPTOOLPY_FLASHSIZE_32MB=y") == 1, defaults
             assert "CONFIG_ESPTOOLPY_FLASHSIZE_2MB=y" not in default_text
             assert "CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y" not in default_text
     usb_defaults = (USB_ROOT / "sdkconfig.defaults.esp32p4").read_text(encoding="utf-8")
-    assert usb_defaults.count("CONFIG_ESP32P4_REV_MIN_100=y") == 1
+    assert "# CONFIG_ESP32P4_SELECTS_REV_LESS_V3 is not set" in usb_defaults
+    assert usb_defaults.count("CONFIG_ESP32P4_REV_MIN_300=y") == 1
+    assert "CONFIG_ESP32P4_SELECTS_REV_LESS_V3=y" not in usb_defaults
+    assert "CONFIG_ESP32P4_REV_MIN_100=y" not in usb_defaults
     assert usb_defaults.count("CONFIG_ESPTOOLPY_FLASHSIZE_32MB=y") == 1
     for profile in ("esp32p4_rev1_3.defaults", "esp32p4_rev3_x.defaults"):
         profile_text = (ROOT / "config" / profile).read_text(encoding="utf-8")
         assert profile_text.count("CONFIG_ESPTOOLPY_FLASHSIZE_32MB=y") == 1
         assert "CONFIG_ESPTOOLPY_FLASHSIZE_2MB=y" not in profile_text
         assert "CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y" not in profile_text
+
+    arduino_dsi_source = (ROOT / "examples/arduino/libraries/GFX_Library_for_Arduino/src/databus/Arduino_ESP32DSIPanel.cpp").read_text(encoding="utf-8")
+    arduino_dsi_header = (ROOT / "examples/arduino/libraries/GFX_Library_for_Arduino/src/databus/Arduino_ESP32DSIPanel.h").read_text(encoding="utf-8")
+    assert ".phy_clk_src = static_cast<mipi_dsi_phy_pllref_clock_source_t>(0)" in arduino_dsi_source
+    assert "MIPI_DSI_PHY_CLK_SRC_DEFAULT" not in arduino_dsi_source
+    assert "speed = 52000000L;" in arduino_dsi_source
+    assert "DEFAULT_MIPI_DSI_LANE_BIT_RATE_MBPS 1000" in arduino_dsi_header
+
+    arduino_gt911_source = (ROOT / "examples/arduino/libraries/displays/gt911.cpp").read_text(encoding="utf-8")
+    arduino_gt911_header = (ROOT / "examples/arduino/libraries/displays/gt911.h").read_text(encoding="utf-8")
+    primary_probe = "i2c_master_probe(port.bus, ESP_LCD_TOUCH_IO_I2C_GT911_ADDRESS, 100)"
+    backup_probe = "i2c_master_probe(port.bus, ESP_LCD_TOUCH_IO_I2C_GT911_ADDRESS_BACKUP, 100)"
+    assert arduino_gt911_source.index(primary_probe) < arduino_gt911_source.index(backup_probe)
+    assert "ESP_LCD_TOUCH_IO_I2C_GT911_CONFIG_WITH_ADDRESS(address)" in arduino_gt911_source
+    assert "GT911 not found at 0x%02X or 0x%02X" in arduino_gt911_source
+    assert "ESP_ERROR_CHECK(esp_lcd_new_panel_io_i2c" not in arduino_gt911_source
+    assert "EXAMPLE_PIN_NUM_TOUCH_RST       (GPIO_NUM_NC)" in arduino_gt911_header
+    assert "EXAMPLE_PIN_NUM_TOUCH_INT       (GPIO_NUM_NC)" in arduino_gt911_header
+    arduino_workflow = (ROOT / ".github/workflows/arduino-examples.yml").read_text(encoding="utf-8")
+    assert "ChipVariant=postv3" in arduino_workflow
+    assert "ChipVariant=prev3" not in arduino_workflow
+    drawing_source = (ROOT / "examples/arduino/examples/03_Drawing_board/03_Drawing_board.ino").read_text(encoding="utf-8")
+    lvgl_source = (ROOT / "examples/arduino/examples/04_LVGLV9_Arduino/04_LVGLV9_Arduino.ino").read_text(encoding="utf-8")
+    assert "if (tp_handle == NULL)" in drawing_source
+    assert "if (tp_handle == NULL)" in lvgl_source
     firmware_defaults = (ROOT / "firmware/brookesia/sdkconfig.defaults").read_text(encoding="utf-8")
     assert firmware_defaults.count("CONFIG_ESPTOOLPY_FLASHSIZE_32MB=y") == 1
     assert "CONFIG_ESPTOOLPY_FLASHSIZE_2MB=y" not in firmware_defaults
@@ -249,7 +286,7 @@ def test_source_invariants() -> None:
     workflow = USB_WORKFLOW.read_text(encoding="utf-8")
     assert "command: |" in workflow
     assert "command: >-" not in workflow
-    assert "config/esp32p4_rev1_3.defaults" in workflow
+    assert "config/esp32p4_rev3_x.defaults" in workflow
     assert 'idf.py -D "SDKCONFIG=${PWD}/build/${{ matrix.config_id }}/sdkconfig" -B "build/${{ matrix.config_id }}" set-target esp32p4 build' in workflow
     assert 'export SDKCONFIG="build/${{ matrix.config_id }}/sdkconfig"' not in workflow
     assert not (ROOT / ".github/workflows/product-firmware.yml").exists()
@@ -463,7 +500,6 @@ def test_source_invariants() -> None:
         "examples/esp-idf/11_esp_brookesia_phone/main/idf_component.yml",
         "examples/esp-idf/12_usb_extend_screen/common_components/usb_extend_support/idf_component.yml",
         "examples/esp-idf/12_usb_extend_screen/main/idf_component.yml",
-        "examples/esp-idf/13_rs485_test/main/idf_component.yml",
         "examples/esp-idf/18_mp4_player/main/idf_component.yml",
         "firmware/brookesia/components/product_audio/idf_component.yml",
     }

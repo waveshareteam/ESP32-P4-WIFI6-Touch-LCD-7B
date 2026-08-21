@@ -17,8 +17,8 @@ base/head 差异运行仓库自包含 Markdown 审计，其他事件执行严格
 发布工作。
 
 独立的 `Arduino examples` 工作流会发现并编译 `examples/arduino/examples/` 下的
-Arduino 草图。它直接构建所有匹配草图，使用 Arduino-ESP32 3.3.11 和 pre-v3
-`ChipVariant=prev3` profile。
+Arduino 草图。它直接构建所有匹配草图，使用 Arduino-ESP32 3.3.11 和 Rev3.x
+`ChipVariant=postv3` profile。
 
 ## 必需的 ESP-IDF 矩阵
 
@@ -48,7 +48,7 @@ Brookesia phone 示例。`04_sdmmc` 会构建格式化挂载失败配置，
 - `without_hid`
 - `without_uac`
 
-这 46 个任务都会追加 `rev1_3` defaults，保留 14 天的构件名也包含 `rev1_3`；芯片
+这 46 个任务都会追加 `rev3_x` defaults，保留 14 天的构件名也包含 `rev3_x`；芯片
 profile 不会把示例矩阵倍增。`firmware/brookesia` 单独维护，目前没有 GitHub Actions
 工作流构建或打包它。示例的每种配置同样使用绝对 CMake 缓存路径，因此打包器读取的是
 IDF 实际生成的 `build/<configuration>/sdkconfig`。
@@ -68,7 +68,7 @@ target 配置均有意排除在本 ESP32-P4 产品矩阵之外。
 FQBN：
 
 ```text
-esp32:esp32:esp32p4:ChipVariant=prev3,PSRAM=enabled,FlashSize=32M,FlashMode=qio,FlashFreq=80,PartitionScheme=app13M_data7M_32MB,UploadMode=default,UploadSpeed=921600
+esp32:esp32:esp32p4:ChipVariant=postv3,PSRAM=enabled,FlashSize=32M,FlashMode=qio,FlashFreq=80,PartitionScheme=app13M_data7M_32MB,UploadMode=default,UploadSpeed=921600
 ```
 
 工作流的 `target` 手动触发输入支持 `all`、示例名或示例路径。它只提供编译覆盖，不

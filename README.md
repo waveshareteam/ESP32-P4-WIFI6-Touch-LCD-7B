@@ -98,7 +98,10 @@ order and hardware requirements.
 The [`examples/arduino/`](examples/arduino/) directory provides 12 Arduino-ESP32
 3.3.11 sketches for the 7B display, GT911 touch, ESP32-C6 Wi-Fi path, camera,
 microSD, audio, RS485, and CAN/TWAI. Select `ESP32P4 Dev Module`, enable PSRAM,
-and choose the Chip Variant that matches the ESP32-P4 silicon revision. See the
+and choose the Chip Variant that matches the ESP32-P4 silicon revision. CI uses
+the Rev3.x `postv3` variant by default. The Arduino integration does not assign
+GT911 INT or RST; it probes `0x5D` and then `0x14` and keeps touch input in
+polling mode. See the
 [Arduino example guide](examples/arduino/README.md) for menu settings, pin maps,
 and field-bus wiring requirements.
 
@@ -121,14 +124,14 @@ discovers first-party projects and builds them for `esp32p4`:
 | `v6.0.2` | All 18 included first-party examples |
 
 The [Arduino examples workflow](https://github.com/waveshareteam/ESP32-P4-WIFI6-Touch-LCD-7B/actions/workflows/arduino-examples.yml)
-compiles all 12 Arduino sketches with Arduino-ESP32 3.3.11 and the `prev3`
+compiles all 12 Arduino sketches with Arduino-ESP32 3.3.11 and the `postv3`
 Chip Variant. It is compile coverage only and does not publish firmware ZIPs.
 
 The lightweight discovery job classifies the complete pull-request diff before
 starting expensive builds. Documentation-only and governance-only changes run
 the repository checks without building examples; direct source changes select
-the affected example, and shared CI or configuration changes select all 17.
-All 46 example builds default to the pre-v3 `rev1_3` silicon profile without
+the affected example, and shared CI or configuration changes select all 18.
+All 46 example builds default to the Rev3.x `rev3_x` silicon profile without
 multiplying the matrix. `firmware/brookesia` remains outside that matrix and is
 not currently built or packaged by GitHub Actions. See
 [Continuous Integration](docs/CI.md) for routing and dispatch options. CI is

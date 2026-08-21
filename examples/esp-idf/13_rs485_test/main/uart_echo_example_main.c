@@ -3,8 +3,6 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/uart.h"
-#include "esp_ldo_regulator.h"
-#include "sd_pwr_ctrl_by_on_chip_ldo.h"
 #include "driver/gpio.h"
 #include "sdkconfig.h"
 #include "esp_log.h"
@@ -21,20 +19,6 @@
 static const char *TAG = "UART TEST";
 
 #define BUF_SIZE (1024)
-
-static esp_err_t bsp_enable_ldo_vo4(void)
-{
-    static esp_ldo_channel_handle_t vo4_chan = NULL;
-    esp_ldo_channel_config_t ldo_cfg = {
-        .chan_id = 4,
-        .voltage_mv = 3300,
-    };
-
-    ESP_ERROR_CHECK(esp_ldo_acquire_channel(&ldo_cfg, &vo4_chan));
-    ESP_LOGI(TAG, "LDO VO4 set to 3300mV");
-
-    return ESP_OK;
-}
 
 static void echo_task(void *arg)
 {
@@ -92,7 +76,6 @@ static void echo_task(void *arg)
 
 void app_main(void)
 {
-    ESP_ERROR_CHECK(bsp_enable_ldo_vo4());
     BaseType_t created = xTaskCreate(
         echo_task, "uart_echo_task", ECHO_TASK_STACK_SIZE, NULL, 10, NULL);
     ESP_ERROR_CHECK(created == pdPASS ? ESP_OK : ESP_ERR_NO_MEM);

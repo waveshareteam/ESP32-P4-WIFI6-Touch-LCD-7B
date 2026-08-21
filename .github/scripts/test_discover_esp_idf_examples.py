@@ -50,7 +50,7 @@ def assert_matrix_contract() -> None:
     artifact_names = [entry["artifact_name"] for entry in all_matrix]
     assert len(artifact_names) == len(set(artifact_names)) == 46
     assert all(name.startswith("firmware-esp-idf-") for name in artifact_names)
-    assert all(name.endswith("-rev1_3") and entry["profile"] == "rev1_3" for name, entry in zip(artifact_names, all_matrix))
+    assert all(name.endswith("-rev3_x") and entry["profile"] == "rev3_x" for name, entry in zip(artifact_names, all_matrix))
     flasher = (ROOT / "scripts/Flash-CI-Firmware.ps1").read_text(encoding="utf-8")
     flasher_specs = powershell_array(flasher, "Specs")
     flasher_exclusions = powershell_array(flasher, "ExcludedSpecs")
@@ -64,6 +64,10 @@ def assert_matrix_contract() -> None:
     assert flasher_specs.isdisjoint(flasher_exclusions)
     assert flasher_specs | flasher_exclusions == repository_projects
     assert "'01_display'" not in flasher and "'13_ethernet'" not in flasher
+    assert 'Artifact="firmware-esp-idf-$name-$version-$config-rev3_x"' in flasher
+    assert "Profile='rev3_x'" in flasher
+    assert "SELF_TEST_OK items=46" in flasher
+    assert "count=46" in flasher
     assert {entry["idf_version"] for entry in all_matrix} == {"v5.5.5", "v6.0.2"}
     default_jobs = [entry for entry in all_matrix if entry["config_id"] == "default"]
     assert sum(entry["idf_version"] == "v5.5.5" for entry in default_jobs) == 18
@@ -243,8 +247,8 @@ def assert_workflow_contract() -> None:
     assert not any(line.strip() == "paths:" for line in workflow.splitlines())
     assert "test_discover_esp_idf_examples.py" in workflow
     assert "test_package_firmware.py" in workflow
-    assert "../../../config/esp32p4_rev1_3.defaults" in workflow
-    assert "--profile rev1_3" in workflow
+    assert "../../../config/esp32p4_rev3_x.defaults" in workflow
+    assert "--profile rev3_x" in workflow
     assert "releases/package_firmware.py" in workflow
     assert '"${{ matrix.example }}/build/${{ matrix.config_id }}"' in workflow
     assert "actions/upload-artifact@v4" in workflow

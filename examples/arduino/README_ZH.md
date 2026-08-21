@@ -11,7 +11,7 @@ OV5647 MIPI-CSI 摄像头。
 - Arduino-ESP32 core `3.3.11`。
 - 开发板：`ESP32P4 Dev Module`（`esp32:esp32:esp32p4`）。
 - 菜单选项：
-  - `Chip Variant`：rev1.3 硬件选 `Before v3.00`，rev3.x 硬件选 `After v3.00`。
+  - `Chip Variant`：默认 rev3.x 硬件选 `After v3.00`；只有 rev1.3 硬件才选择 `Before v3.00`。
   - `PSRAM`：`Enabled`
   - `Flash Size`：`32 MB`
   - `Flash Mode`：`QIO`
@@ -19,6 +19,10 @@ OV5647 MIPI-CSI 摄像头。
   - `Partition Scheme`：`13M APP / 7M data (32 MB)`
   - `Upload Mode`：`Default (USB-UART bridge)`
 - 显示、摄像头和 LVGL 草图均要求启用 PSRAM。
+
+Arduino-ESP32 3.3.11 菜单把 `postv3` 标为“v3.00 or newer”，但 production P4
+预编译库的最低版本实际为 3.01。请把该菜单视为工具链库选择，并在烧录前确认实际
+硅片；编译成功不能证明恰好 v3.0 的样片可以启动。
 
 ## 示例
 
@@ -35,18 +39,30 @@ OV5647 MIPI-CSI 摄像头。
 | `09_Audio_Playback` | ES8311 扬声器播放演示 |
 | `10_Mic_Record` | ES7210 麦克风采集演示 |
 | `11_RS485_Echo` | 板载 RS485 UART 回显 |
-| `12_TWAI_Transmit` | 通过外置收发器发送 CAN/TWAI 帧 |
+| `12_TWAI_Transmit` | 通过板载 TJA1051 发送 CAN/TWAI 帧 |
+
+## 显示与触摸说明
+
+LCD-7B profile 使用 1024 x 600 EK79007 面板、52 MHz DPI 时钟，以及每 lane
+1000 Mbit/s 的双 DSI lane。随仓库 DSI 驱动将 `phy_clk_src` 保持为官方的
+revision-aware 值 `0`；ESP-IDF 随后为 pre-v3 构建选择 legacy PLL_F20M，或为
+Rev3.x 构建选择默认 XTAL。不要把 LCD-5 的面板时序复制到本 profile。
+
+随仓库 Arduino 集成有意不指定 GT911 INT 和 RST。驱动等待上电稳定后依次 probe
+`0x5D`、`0x14`，仅为有响应的地址创建 panel IO，并以轮询方式读取触摸。两个地址均无响应时，
+`03_Drawing_board` 与 `04_LVGLV9_Arduino` 会保持显示运行，但禁用触摸输入。
 
 ## 现场总线说明
 
 `11_RS485_Echo` 使用 UART1，TX 为 GPIO27，RX 为 GPIO26。草图会在打开串口前
-启用板载 LDO VO4 的 3.3 V 供电。RS485 收发器具有自动方向控制，因此草图不使用
-RTS 或 DE 引脚。请将 RS485 对端连接到开发板的 `A`、`B` 和地端子，并保持相同
-波特率。
+使用固定的 `ESP_3V3` GPIO 电源域，不依赖 VO4。VO4 为独立的 GPIO39-GPIO48
+VDD_IO_5 域供电，开发板将其中 GPIO39-GPIO45 用于 SDMMC 与卡电源控制。RS485
+收发器具有自动方向控制，因此草图不使用 RTS 或 DE 引脚。请将 RS485 对端连接到开发板的
+`A`、`B` 和地端子，并保持相同波特率。
 
 `12_TWAI_Transmit` 使用 GPIO22 作为 TX、GPIO21 作为 RX，默认速率为 500 kbit/s。
-请将信号连接到外置 CAN 收发器和正确终端匹配的 CAN 总线。ESP32-P4 提供 TWAI
-控制器，但不是 CAN 收发器。
+这些信号已经接到板载 TJA1051；请将正确终端匹配的对端或分析仪连接到 CANH/CANL
+接口。
 
 ## 音频和摄像头说明
 

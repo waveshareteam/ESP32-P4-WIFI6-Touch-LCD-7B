@@ -10,7 +10,7 @@
 ## CI ZIP 约定
 
 每个成功的 ESP-IDF 矩阵项会上传一个保留 14 天的 ZIP。名称包含示例基名、ESP-IDF
-版本、配置 ID 和硅片 profile（`rev1_3`）。ZIP 记录完整源 SHA、`esp32p4`、32 MiB Flash 上限、921600 波特率、
+版本、配置 ID 和硅片 profile（`rev3_x`）。ZIP 记录完整源 SHA、`esp32p4`、32 MiB Flash 上限、921600 波特率、
 源工程、偏移量、大小和 SHA-256，并包含构建目录 `flasher_args.json` 中每个带偏移量
 的文件。
 
@@ -44,9 +44,9 @@ head SHA 与本地 `HEAD` 相同。烧录器只解析该 SHA 的成功运行，�
 解压到新的带时间戳本地工具目录，并验证清单、路径、哈希、大小、偏移量和 32 MiB 范围。
 
 除非自动检测到恰好一个 VID 为 `303A` 的当前 USB 串口设备，否则请传入 `-Port COMx`。
-写入前工具会证明该端口是 ESP32-P4，并解析硅片主/次版本（`v1.10` 即 110）。当前发布的
-示例构件全部使用 `rev1_3`，因此烧录器只接受低于 3.0 的硅片；由于目前没有发布 `rev3_x`
-构件，它会拒绝更新的硅片。下载并验证清单后会再次探测 ESP32-P4/profile/revision，且
+写入前工具会证明该端口是 ESP32-P4，并解析硅片主/次版本（`v1.10` 即 110）。示例工作流
+生成 `rev3_x` 构件，因此烧录器只接受 3.0 或更新的硅片，并会拒绝 pre-v3 硅片使用这些包。
+下载并验证清单后会再次探测 ESP32-P4/profile/revision，且
 revision 必须保持一致。该硅片检查不能证明 PCB/电气版本。它仅按已验证清单的偏移量执行
 `python -m esptool --chip esp32p4 --baud 921600 write_flash`，绝不执行擦除命令。必须同时
 满足 esptool 成功退出以及出现 `Hash of data verified`。随后请完成对应的开发板测试，并在

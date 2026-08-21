@@ -19,7 +19,7 @@ foreach ($name in $Specs) {
     $configs = if ($name -eq '04_sdmmc') { @('default','format_on_mount_failure') } elseif ($name -eq '12_usb_extend_screen') { @('default','esp32_p4_function_ev_board','no_hid_uac','without_hid','without_uac') } else { @('default') }
     foreach ($version in @('v5.5.5','v6.0.2')) {
         foreach ($config in $configs) {
-            $Items += [pscustomobject]@{ Index=$Items.Count+1; Workflow='esp-idf-examples.yml'; Artifact="firmware-esp-idf-$name-$version-$config-rev1_3"; Framework='esp-idf'; Version=$version; ConfigId=$config; Profile='rev1_3'; SourceProject="examples/esp-idf/$name" }
+            $Items += [pscustomobject]@{ Index=$Items.Count+1; Workflow='esp-idf-examples.yml'; Artifact="firmware-esp-idf-$name-$version-$config-rev3_x"; Framework='esp-idf'; Version=$version; ConfigId=$config; Profile='rev3_x'; SourceProject="examples/esp-idf/$name" }
         }
     }
 }
@@ -50,7 +50,8 @@ function Get-StateForFinalSha($Saved, [string]$Sha, [string]$DefaultPort) {
 }
 
 if ($SelfTest) {
-    if ($Items.Count -ne 46 -or @($Items.Artifact | Sort-Object -Unique).Count -ne 46) { throw 'Self-test item contract failed.' }
+    $profileMismatches = @($Items | Where-Object { $_.Profile -ne 'rev3_x' -or $_.Artifact -notmatch '-rev3_x$' })
+    if ($Items.Count -ne 46 -or @($Items.Artifact | Sort-Object -Unique).Count -ne 46 -or $profileMismatches.Count -ne 0) { throw 'Self-test item contract failed.' }
     $exampleRoot = Join-Path $RepoRoot 'examples\esp-idf'
     $discovered = @(Get-ChildItem -LiteralPath $exampleRoot -Directory | Where-Object {
         (Test-Path -LiteralPath (Join-Path $_.FullName 'CMakeLists.txt') -PathType Leaf) -and
@@ -93,13 +94,13 @@ if ($SelfTest) {
         Assert-ManifestRejected 'overlapping range' {param($candidate)$candidate.files=@($candidate.files[0],[pscustomobject]@{archive_path='bin/other.bin';sha256=$otherSha;size=2;offset='0x10001'})}
         Assert-ManifestRejected 'out-of-range offset' {param($candidate)$candidate.files=@($candidate.files[0],[pscustomobject]@{archive_path='bin/other.bin';sha256=$otherSha;size=2;offset='0x2000000'})}
     } finally { Remove-Item -LiteralPath $testRoot -Recurse -Force -ErrorAction SilentlyContinue }
-    Write-Output 'SELF_TEST_OK items=44 state-reset=ok safe-paths=ok revision-profiles=ok manifest=ok'
+    Write-Output 'SELF_TEST_OK items=46 state-reset=ok safe-paths=ok revision-profiles=ok manifest=ok'
     return
 }
 if ($ListOnly) {
     Write-Output 'finalSHA=resolved-at-runtime'
     Write-Output 'defaultPort=auto-detect-at-runtime'
-    Write-Output 'count=44'
+    Write-Output 'count=46'
     foreach ($item in $Items) { Write-Output ('{0}: workflow={1} artifact={2} source={3} config={4} profile={5}' -f $item.Index,$item.Workflow,$item.Artifact,$item.SourceProject,$item.ConfigId,$item.Profile) }
     return
 }

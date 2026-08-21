@@ -45,6 +45,9 @@ void setup(void) {
   DEV_I2C_Port port = DEV_I2C_Init();
 
   tp_handle = touch_gt911_init(port);
+  if (tp_handle == NULL) {
+    serial_log::println("GT911 unavailable; drawing input disabled");
+  }
 
   if (!gfx->begin()) {
     serial_log::println("gfx->begin() failed!");
@@ -55,6 +58,11 @@ void setup(void) {
 }
 
 void loop() {
+
+  if (tp_handle == NULL) {
+    delay(100);
+    return;
+  }
 
   esp_lcd_touch_read_data(tp_handle);
 

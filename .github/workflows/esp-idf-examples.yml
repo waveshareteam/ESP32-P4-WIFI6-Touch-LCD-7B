@@ -129,7 +129,7 @@ jobs:
               fi
               default_files="${default_files};${{ matrix.config_file }}";
             fi
-            export SDKCONFIG_DEFAULTS="${default_files};../../../config/esp32p4_rev1_3.defaults";
+            export SDKCONFIG_DEFAULTS="${default_files};../../../config/esp32p4_rev3_x.defaults";
             idf.py -D "SDKCONFIG=${PWD}/build/${{ matrix.config_id }}/sdkconfig" -B "build/${{ matrix.config_id }}" set-target esp32p4 build
 
       - name: Package flashable ESP-IDF firmware
@@ -142,7 +142,7 @@ jobs:
             --build-dir "${{ matrix.example }}/build/${{ matrix.config_id }}" \
             --framework-version "${{ matrix.idf_version }}" \
             --config-id "${{ matrix.config_id }}" \
-            --profile rev1_3 \
+            --profile rev3_x \
             --output-dir release-artifacts
 
       - name: Upload firmware bundle

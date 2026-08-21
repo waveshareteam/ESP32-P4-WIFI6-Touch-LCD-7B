@@ -1,9 +1,9 @@
 /*
  * CAN/TWAI transmit demo for the Waveshare ESP32-P4-WIFI6-Touch-LCD-7B.
  *
- * Connect GPIO22 (TWAI TX) and GPIO21 (TWAI RX) to an external CAN
- * transceiver. The ESP32-P4 contains the controller but not the physical CAN
- * transceiver. Use a terminated bus with another node or analyzer for ACKs.
+ * GPIO22 (TWAI TX) and GPIO21 (TWAI RX) are already routed to the on-board
+ * TJA1051. Connect a correctly terminated peer or analyzer to the CANH/CANL
+ * connector so transmitted frames receive an ACK.
  */
 #include <Arduino.h>
 #include <inttypes.h>

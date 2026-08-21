@@ -12,7 +12,7 @@ or add `firmware/brookesia` to the example matrix.
 
 Each successful ESP-IDF matrix entry uploads one retained-for-14-days ZIP. Its
 name identifies the example basename, ESP-IDF version, configuration ID, and
-silicon profile (`rev1_3`).
+silicon profile (`rev3_x`).
 The ZIP records the exact full source SHA, `esp32p4`, 32 MiB flash limit,
 921600 baud rate, source project, offsets, sizes, and SHA-256 values. It
 contains every offset-bearing file listed by the build's `flasher_args.json`.
@@ -55,9 +55,9 @@ validates its manifest, paths, hashes, sizes, offsets, and 32 MiB ranges.
 Pass `-Port COMx` unless automatic detection finds exactly one present USB
 serial device with VID `303A`. Before writing, the tool proves that the port is
 an ESP32-P4 and parses its silicon major/minor revision (`v1.10` means 110).
-All currently published example artifacts use `rev1_3`, so the flasher accepts
-silicon below 3.0 and rejects newer silicon because no `rev3_x` artifact is
-currently published. It repeats the ESP32-P4/profile/revision probe after
+The example workflow publishes `rev3_x` artifacts, so the flasher accepts
+silicon revision 3.0 or newer and rejects pre-v3 silicon for those packages. It
+repeats the ESP32-P4/profile/revision probe after
 download and manifest verification; the revision must remain unchanged. This
 silicon check is not proof of a PCB/electrical revision. It writes only the
 verified manifest offsets. It invokes

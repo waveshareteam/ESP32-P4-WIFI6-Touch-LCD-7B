@@ -61,6 +61,11 @@ void my_disp_flush(lv_display_t *disp, const lv_area_t *area, uint8_t *px_map) {
 }
 
 void my_touchpad_read(lv_indev_t *indev, lv_indev_data_t *data) {
+  if (tp_handle == NULL) {
+    data->state = LV_INDEV_STATE_RELEASED;
+    return;
+  }
+
   esp_lcd_touch_read_data(tp_handle);
   touch_pressed = esp_lcd_touch_get_coordinates(
     tp_handle, touch_x, touch_y, touch_strength, &touch_cnt, MAX_TOUCH_POINTS);
@@ -88,6 +93,9 @@ void setup(void) {
   DEV_I2C_Port port = DEV_I2C_Init();
 
   tp_handle = touch_gt911_init(port);
+  if (tp_handle == NULL) {
+    serial_log::println("GT911 unavailable; continuing without touch");
+  }
 
   if (!gfx->begin()) {
     haltWithError("gfx->begin() failed!");

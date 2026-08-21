@@ -2,17 +2,17 @@
 
 [简体中文](README_ZH.md)
 
-TWAI/CAN transmit example for external CAN bus validation.
+TWAI/CAN transmit example for CAN bus validation.
 
-The example configures ESP-IDF's TWAI driver and transmits frames through the
-configured TX/RX GPIOs. An external CAN transceiver is required.
+The example configures ESP-IDF's TWAI driver and transmits through the board's
+on-board TJA1051 CAN transceiver.
 
 ## Hardware Required
 
 - ESP32-P4-WIFI6-Touch-LCD-7B board.
 - USB cable for flashing and serial monitor.
-- External CAN/TWAI transceiver.
-- CAN bus wiring and another node or analyzer to receive frames.
+- CAN bus wiring with appropriate termination.
+- Another node or analyzer to acknowledge and receive frames.
 
 ## Build and Flash
 
@@ -32,5 +32,5 @@ Default pins are configured in `main/Kconfig.projbuild`:
 | TX | GPIO22 |
 | RX | GPIO21 |
 
-Run `idf.py menuconfig` and edit `Example Configuration` if your transceiver is
-wired to different pins.
+The defaults route directly to the on-board transceiver. Run `idf.py menuconfig`
+only if the hardware routing has been modified.

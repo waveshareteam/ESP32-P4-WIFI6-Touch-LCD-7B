@@ -11,7 +11,7 @@ MIPI-CSI camera).
 - Arduino-ESP32 core `3.3.11`.
 - Board: `ESP32P4 Dev Module` (`esp32:esp32:esp32p4`).
 - Menu options:
-  - `Chip Variant`: `Before v3.00` for rev1.3 hardware or `After v3.00` for rev3.x hardware.
+  - `Chip Variant`: `After v3.00` for the default rev3.x hardware; select `Before v3.00` only for rev1.3 hardware.
   - `PSRAM`: `Enabled`
   - `Flash Size`: `32 MB`
   - `Flash Mode`: `QIO`
@@ -19,6 +19,11 @@ MIPI-CSI camera).
   - `Partition Scheme`: `13M APP / 7M data (32 MB)`
   - `Upload Mode`: `Default (USB-UART bridge)`
 - Enable PSRAM before building a display, camera, or LVGL sketch.
+
+Arduino-ESP32 3.3.11 labels `postv3` as "v3.00 or newer", while its production
+P4 library declares a minimum revision of 3.01. Treat the menu selection as a
+toolchain-library choice and confirm the installed silicon before flashing;
+successful compilation is not a bootability check for an exact v3.0 sample.
 
 ## Examples
 
@@ -35,19 +40,35 @@ MIPI-CSI camera).
 | `09_Audio_Playback` | ES8311 speaker playback demo |
 | `10_Mic_Record` | ES7210 microphone capture demo |
 | `11_RS485_Echo` | Onboard RS485 UART echo |
-| `12_TWAI_Transmit` | CAN/TWAI frame transmit through an external transceiver |
+| `12_TWAI_Transmit` | CAN/TWAI frame transmit through the on-board TJA1051 |
+
+## Display and touch notes
+
+The LCD-7B profile uses a 1024 x 600 EK79007 panel, a 52 MHz DPI clock, and two
+DSI lanes at 1000 Mbit/s per lane. The bundled DSI driver leaves
+`phy_clk_src` at the official revision-aware value `0`; ESP-IDF then selects
+the legacy PLL_F20M source for pre-v3 builds or the XTAL default for Rev3.x.
+Do not copy LCD-5 panel timings into this profile.
+
+The bundled Arduino integration intentionally leaves GT911 INT and RST
+unassigned. It waits for power-up, probes `0x5D` and then `0x14`, creates panel
+IO only for the responding address, and reads touch data by polling. `03_Drawing_board` and
+`04_LVGLV9_Arduino` keep the display running without touch when neither address
+responds.
 
 ## Field-bus notes
 
 `11_RS485_Echo` uses UART1 with TX on GPIO27 and RX on GPIO26. The sketch
-enables the board's LDO VO4 3.3 V rail before opening the port. The RS485
-transceiver has automatic direction control, so the sketch does not use an RTS
-or DE pin. Connect a peer to the board's RS485 `A`, `B`, and ground terminals
-at the same baud rate.
+uses the fixed `ESP_3V3` GPIO power domain; it does not depend on VO4. VO4
+supplies the separate GPIO39-GPIO48 VDD_IO_5 bank, which the board uses for
+SDMMC and card-power control on GPIO39-GPIO45. The RS485 transceiver has
+automatic direction control, so the sketch does
+not use an RTS or DE pin. Connect a peer to the board's RS485 `A`, `B`, and
+ground terminals at the same baud rate.
 
 `12_TWAI_Transmit` uses TX GPIO22 and RX GPIO21 at 500 kbit/s. Connect those
-signals to an external CAN transceiver and a correctly terminated CAN bus. The
-ESP32-P4 provides the TWAI controller but is not itself a CAN transceiver.
+signals through the board's on-board TJA1051 by wiring a correctly terminated
+peer or analyzer to the CANH/CANL connector.
 
 ## Audio and camera notes
 

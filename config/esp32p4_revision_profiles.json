@@ -1,5 +1,6 @@
 {
   "schema_version": 1,
+  "default_profile": "rev3_x",
   "profiles": {
     "rev1_3": {
       "defaults": "config/esp32p4_rev1_3.defaults",

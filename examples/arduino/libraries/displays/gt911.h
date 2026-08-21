@@ -96,16 +96,18 @@ touch_gt911_point_t touch_gt911_read_point(uint8_t max_touch_cnt);
  * This macro initializes the configuration structure for the GT911 touch controller's 
  * I2C interface with specific settings like the device address, SCL frequency, etc.
  */
-#define ESP_LCD_TOUCH_IO_I2C_GT911_CONFIG()           \
-    {                                                 \
-        .dev_addr = ESP_LCD_TOUCH_IO_I2C_GT911_ADDRESS,   /*!< Set the I2C address for the GT911 */  \
-        .control_phase_bytes = 1,                         /*!< Set the number of bytes for the control phase */  \
-        .dc_bit_offset = 0,                               /*!< Set the DC bit offset for I2C communication */  \
-        .lcd_cmd_bits = 16,                               /*!< Set the LCD command bits */  \
-        .flags =                                          \
-        {                                                 \
-            .disable_control_phase = 1,                   /*!< Disable control phase for I2C communication */  \
-        },                                                \
-        .scl_speed_hz = 400 * 1000,     /*!< Set the I2C master clock frequency */  \
+#define ESP_LCD_TOUCH_IO_I2C_GT911_CONFIG_WITH_ADDRESS(_address) \
+    {                                                             \
+        .dev_addr = (_address),                                   \
+        .control_phase_bytes = 1,                                 \
+        .dc_bit_offset = 0,                                       \
+        .lcd_cmd_bits = 16,                                       \
+        .flags = {                                                 \
+            .disable_control_phase = 1,                           \
+        },                                                        \
+        .scl_speed_hz = 400 * 1000,                               \
     }
+
+#define ESP_LCD_TOUCH_IO_I2C_GT911_CONFIG() \
+    ESP_LCD_TOUCH_IO_I2C_GT911_CONFIG_WITH_ADDRESS(ESP_LCD_TOUCH_IO_I2C_GT911_ADDRESS)
 

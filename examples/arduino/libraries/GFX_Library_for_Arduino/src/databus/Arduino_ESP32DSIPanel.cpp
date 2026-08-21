@@ -32,7 +32,7 @@ bool Arduino_ESP32DSIPanel::begin(int16_t w, int16_t h, int32_t speed, const lcd
     }
     else
     {
-      speed = 56000000L;
+      speed = 52000000L;
     }
   }
 
@@ -47,7 +47,9 @@ bool Arduino_ESP32DSIPanel::begin(int16_t w, int16_t h, int32_t speed, const lcd
   esp_lcd_dsi_bus_config_t bus_config = {
       .bus_id = 0,
       .num_data_lanes = 2,
-      .phy_clk_src = MIPI_DSI_PHY_CLK_SRC_DEFAULT,
+      // Zero lets ESP-IDF select the revision-compatible PHY source from the
+      // resolved ESP32-P4 minimum revision.
+      .phy_clk_src = static_cast<mipi_dsi_phy_pllref_clock_source_t>(0),
       .lane_bit_rate_mbps = _lane_bit_rate, /*新增成员变量*/
   };
   esp_lcd_dsi_bus_handle_t mipi_dsi_bus = NULL;

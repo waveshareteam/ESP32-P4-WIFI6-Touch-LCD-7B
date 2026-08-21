@@ -23,6 +23,7 @@ from typing import Iterable, Sequence
 PROJECT_ROOT = Path("examples/esp-idf")
 DEFAULT_ROUTING_CONFIG = Path(".github/ci-routing.json")
 DEFAULT_IDF_VERSIONS = ("v5.5.5", "v6.0.2")
+DEFAULT_SILICON_PROFILE = "rev3_x"
 PROJECT_IDF_VERSION_OVERRIDES: dict[str, tuple[str, ...]] = {}
 
 # All first-party ESP-IDF examples are included in the default matrix.
@@ -320,8 +321,8 @@ def build_matrix(selected: Sequence[str]) -> dict[str, list[dict[str, str]]]:
                 "idf_version": idf_version,
                 "config_id": config_id,
                 "config_file": config_file,
-                "profile": "rev1_3",
-                "artifact_name": artifact_name(example, idf_version, config_id, "rev1_3"),
+                "profile": DEFAULT_SILICON_PROFILE,
+                "artifact_name": artifact_name(example, idf_version, config_id, DEFAULT_SILICON_PROFILE),
             }
             for example in selected
             for idf_version in versions_for_example(example)

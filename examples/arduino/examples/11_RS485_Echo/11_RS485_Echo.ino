@@ -9,7 +9,6 @@
  * RS485 half-duplex mode or attach RTS/DE in this sketch.
  */
 #include <Arduino.h>
-#include "esp_ldo_regulator.h"
 
 constexpr int RS485_TX_PIN = 27;
 constexpr int RS485_RX_PIN = 26;
@@ -17,33 +16,10 @@ constexpr uint32_t RS485_BAUD = 115200;
 constexpr size_t RX_BUFFER_SIZE = 256;
 
 static uint8_t rx_buffer[RX_BUFFER_SIZE];
-static esp_ldo_channel_handle_t rs485_ldo = nullptr;
-
-static bool enable_rs485_transceiver() {
-  if (rs485_ldo != nullptr) {
-    return true;
-  }
-
-  esp_ldo_channel_config_t ldo_config = {};
-  ldo_config.chan_id = 4;
-  ldo_config.voltage_mv = 3300;
-  const esp_err_t result = esp_ldo_acquire_channel(&ldo_config, &rs485_ldo);
-  if (result != ESP_OK) {
-    Serial.printf("RS485 LDO VO4 enable failed: %s\n", esp_err_to_name(result));
-    return false;
-  }
-
-  Serial.println("RS485 LDO VO4 set to 3300 mV");
-  return true;
-}
 
 void setup() {
   Serial.begin(115200);
   delay(200);
-
-  if (!enable_rs485_transceiver()) {
-    return;
-  }
 
   Serial1.begin(RS485_BAUD, SERIAL_8N1, RS485_RX_PIN, RS485_TX_PIN);
   if (!Serial1) {

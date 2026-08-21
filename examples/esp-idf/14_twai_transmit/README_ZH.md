@@ -2,17 +2,16 @@
 
 [English](README.md)
 
-用于验证外部 CAN 总线的 TWAI/CAN 发送示例。
+用于验证 CAN 总线的 TWAI/CAN 发送示例。
 
-示例配置 ESP-IDF TWAI 驱动，并通过指定的 TX/RX GPIO 发送帧。必须连接外部 CAN
-收发器。
+示例配置 ESP-IDF TWAI 驱动，并通过开发板板载 TJA1051 CAN 收发器发送帧。
 
 ## 硬件要求
 
 - ESP32-P4-WIFI6-Touch-LCD-7B 开发板。
 - 用于烧录和串口监视器的 USB 线。
-- 外部 CAN/TWAI 收发器。
-- CAN 总线接线，以及用于接收帧的另一个节点或分析仪。
+- 带适当终端的 CAN 总线接线。
+- 用于确认和接收帧的另一个节点或分析仪。
 
 ## 构建和烧录
 
@@ -32,5 +31,5 @@ idf.py -p PORT flash monitor
 | TX | GPIO22 |
 | RX | GPIO21 |
 
-如果收发器连接到其他引脚，请运行 `idf.py menuconfig` 并修改
-`Example Configuration`。
+默认引脚直接连接板载收发器。只有硬件走线已修改时，才需运行 `idf.py menuconfig`
+并修改 `Example Configuration`。
