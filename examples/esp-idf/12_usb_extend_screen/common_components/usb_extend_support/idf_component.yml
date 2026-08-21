@@ -1,0 +1,46 @@
+dependencies:
+  idf:
+    version: '>=5.3.0'
+
+  waveshare/esp32_p4_wifi6_touch_lcd_7b:
+    # The extension composes the managed board APIs; it does not replace the board BSP.
+    version: "==3.0.1"
+
+  esp_codec_dev:
+    public: true
+    version: ^1
+
+  lvgl/lvgl:
+    version: ">=8"
+    public: true
+
+  espressif/esp_lcd_ek79007:
+    # 2.0.x natively supports the IDF 6 MIPI/DMA2D layout and declares IDF >=5.3; this exact pin keeps the dual matrix reproducible.
+    version: "==2.0.2~1"
+
+  espressif/esp_lcd_touch:
+    # Keep the custom USB/LVGL touch bridge reproducible on both supported IDF lines.
+    version: "==1.2.1"
+    public: true
+
+  espressif/esp_lcd_touch_gt911:
+    version: "==1.2.0~3"
+    public: true
+
+  espressif/esp_lcd_touch_ft5x06:
+    version: "==1.1.0~2"
+    public: true
+
+  chmorgan/esp-audio-player:
+    # Pin the audio-player API; this component declares its required ESP-IDF driver dependencies explicitly.
+    version: "==1.1.0"
+    public: true
+
+  chmorgan/esp-file-iterator:
+    version: "1.0.0"
+    public: true
+
+description: USB extended-screen panel, LVGL, and UAC support composed with the managed BSP
+targets:
+- esp32p4
+version: 0.0.1

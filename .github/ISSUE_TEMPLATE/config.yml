@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Waveshare technical support
+    url: https://docs.waveshare.com/ESP32-P4-WIFI6-Touch-LCD-7B/Technical-Support/
+    about: Use the official support channel for product service and case-specific assistance.
+  - name: Product documentation
+    url: https://www.waveshare.com/wiki/ESP32-P4-WIFI6-Touch-LCD-7B
+    about: Review product setup, interfaces, and downloads before filing an issue.

@@ -1,0 +1,154 @@
+name: ESP-IDF examples
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      project:
+        description: "First-party ESP-IDF example directory name, path, or all"
+        required: false
+        default: "all"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    name: Discover examples
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.examples.outputs.matrix }}
+      has_examples: ${{ steps.examples.outputs.has_examples }}
+      examples: ${{ steps.examples.outputs.examples }}
+      docs_only: ${{ steps.examples.outputs.docs_only }}
+      firmware_touched: ${{ steps.examples.outputs.firmware_touched }}
+      firmware_build_required: ${{ steps.examples.outputs.firmware_build_required }}
+      release_review_required: ${{ steps.examples.outputs.release_review_required }}
+      unknown_paths: ${{ steps.examples.outputs.unknown_paths }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Check public repository layout
+        shell: bash
+        run: python .github/scripts/check_public_repo.py
+
+      - name: Test discovery and configuration matrix
+        shell: bash
+        run: |
+          python .github/scripts/test_check_public_repo.py
+          python .github/scripts/test_discover_esp_idf_examples.py
+          python .github/scripts/test_package_firmware.py
+          python .github/scripts/test_review_boundaries.py
+          python .github/scripts/test_audit_markdown.py
+
+      - name: Discover changed ESP-IDF examples
+        id: examples
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            python .github/scripts/discover_esp_idf_examples.py \
+              --example "${{ inputs.project }}"
+          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            python .github/scripts/discover_esp_idf_examples.py \
+              --base-ref "${{ github.event.pull_request.base.sha }}" \
+              --head-ref "${{ github.event.pull_request.head.sha }}"
+          else
+            before="${{ github.event.before }}"
+            if [[ "$before" == "0000000000000000000000000000000000000000" ]]; then
+              python .github/scripts/discover_esp_idf_examples.py \
+                --head-ref "${{ github.sha }}"
+            else
+              python .github/scripts/discover_esp_idf_examples.py \
+                --base-ref "$before" \
+                --head-ref "${{ github.sha }}"
+            fi
+          fi
+
+      - name: Summary
+        shell: bash
+        run: |
+          if [[ "${{ steps.examples.outputs.has_examples }}" == "true" ]]; then
+            {
+              echo "### ESP-IDF examples selected"
+              echo
+              echo '${{ steps.examples.outputs.examples }}' | tr ',' '\n' | sed '/^$/d' | sed 's/^/- /'
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No ESP-IDF example changes detected." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          {
+            echo
+            echo "### Change routing"
+            echo
+            echo "- Documentation-only: ${{ steps.examples.outputs.docs_only }}"
+            echo "- Firmware surface touched: ${{ steps.examples.outputs.firmware_touched }}"
+            echo "- Release review required: ${{ steps.examples.outputs.release_review_required }}"
+            echo "- Unknown paths: ${{ steps.examples.outputs.unknown_paths }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  build:
+    name: Build ${{ matrix.example }} (${{ matrix.idf_version }}, ${{ matrix.config_id }})
+    needs: discover
+    if: needs.discover.outputs.has_examples == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Build with ESP-IDF
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: ${{ matrix.idf_version }}
+          target: esp32p4
+          path: ${{ matrix.example }}
+          command: |
+            if [ "${{ matrix.config_id }}" = "default" ]; then
+              default_files="sdkconfig.defaults";
+            else
+              default_files="sdkconfig.defaults";
+              if [ -f "sdkconfig.defaults.esp32p4" ]; then
+                default_files="${default_files};sdkconfig.defaults.esp32p4";
+              fi
+              default_files="${default_files};${{ matrix.config_file }}";
+            fi
+            export SDKCONFIG_DEFAULTS="${default_files};../../../config/esp32p4_rev3_x.defaults";
+            idf.py -D "SDKCONFIG=${PWD}/build/${{ matrix.config_id }}/sdkconfig" -B "build/${{ matrix.config_id }}" set-target esp32p4 build
+
+      - name: Package flashable ESP-IDF firmware
+        env:
+          CI: "true"
+          PACKAGE_GIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python releases/package_firmware.py \
+            --project "${{ matrix.example }}" \
+            --build-dir "${{ matrix.example }}/build/${{ matrix.config_id }}" \
+            --framework-version "${{ matrix.idf_version }}" \
+            --config-id "${{ matrix.config_id }}" \
+            --profile rev3_x \
+            --output-dir release-artifacts
+
+      - name: Upload firmware bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: release-artifacts/${{ matrix.artifact_name }}.zip
+          if-no-files-found: error
+          retention-days: 14

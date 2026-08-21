@@ -1,0 +1,73 @@
+{
+  "classification_rules": [
+    {
+      "category": "embedded_upstream",
+      "patterns": [
+        "examples/esp-idf/11_esp_brookesia_phone/components/apps/setting/ui/**",
+        "firmware/brookesia/components/apps/setting/ui/**",
+        "examples/esp-idf/12_usb_extend_screen/windows_driver/**",
+        "examples/esp-idf/18_mp4_player/components/esp_extractor/**"
+      ]
+    }
+  ],
+  "exclude_patterns": [],
+  "pair_exempt_patterns": [
+    "README_CN.md",
+    "**/README_CN.md"
+  ],
+  "language_link_exempt_patterns": [
+    "README_CN.md",
+    "**/README_CN.md"
+  ],
+  "relative_link_ignore_patterns": [],
+  "docs_only_allowed_patterns": [],
+  "sensitive_allow_regexes": [],
+  "bilingual_pairs": [
+    {
+      "english": "docs/CI.md",
+      "chinese": "docs/CI_ZH.md"
+    },
+    {
+      "english": "firmware/README.md",
+      "chinese": "firmware/README_ZH.md"
+    },
+    {
+      "english": "docs/firmware.md",
+      "chinese": "docs/firmware_ZH.md"
+    }
+  ],
+  "bilingual_directory_mappings": [],
+  "homepage_h3_emoji_allow_patterns": [],
+  "homepage_pairs": [
+    {
+      "english": "README.md",
+      "chinese": "README_ZH.md",
+      "profile": "single-product",
+      "required_components": ["hero_image"],
+      "required_quick_links": [
+        "product",
+        "documentation",
+        "esp_idf",
+        "firmware"
+      ],
+      "required_badges": [
+        "build",
+        "license"
+      ],
+      "required_h2_icons": [
+        "✨",
+        "🖥️",
+        "🚀",
+        "🧪",
+        "📡",
+        "✅",
+        "📦",
+        "🗂️",
+        "📚",
+        "🤝",
+        "📄"
+      ],
+      "h3_emoji_allow_patterns": []
+    }
+  ]
+}

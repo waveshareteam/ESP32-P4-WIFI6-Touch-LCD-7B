@@ -1,0 +1,51 @@
+version: "0.6.0-beta2"
+description: ESP-Brookesia-Core is a core component of ESP-Brookesia.
+url: https://github.com/espressif/esp-brookesia/tree/master/core/brookesia_core
+issues: https://github.com/espressif/esp-brookesia/issues
+repository: https://github.com/espressif/esp-brookesia.git
+dependencies:
+  espressif/cjson:
+    version: "^1.7.19"
+    public: true
+  idf: ">=5.3"
+
+  # Utilities
+  espressif/cmake_utilities:
+    version: "0.*"
+    public: true
+
+  espressif/esp-lib-utils:
+    version: "0.3.*"
+    public: true
+
+  espressif/esp-boost:
+    # The vendored Brookesia release/v0.6 source uses the 0.3 API on IDF 5.
+    # esp-boost 0.6.0 is the first release supporting IDF 6 and is the exact
+    # compatibility bridge validated by this repository's IDF 6 matrix.
+    matches:
+      - if: "idf_version >= 6.0"
+        version: "0.6.0"
+      - if: "idf_version < 6.0"
+        version: "0.3.*"
+    public: true
+
+  # GUI - LVGL
+  lvgl/lvgl:
+    # This product integration carries its IDF 6 compatibility work against
+    # LVGL 9.5.0; changing the LVGL line requires a full matrix review.
+    version: "9.5.0"
+    public: true
+
+  # GUI - Animation Player
+  espressif2022/image_player:
+    version: "1.1.*"
+    public: true
+
+  espressif/esp_mmap_assets:
+    version: "1.3.*"
+    public: true
+
+  # The legacy release/v0.6 AI dependency stack is intentionally omitted.
+  # Kconfig keeps CONFIG_ESP_BROOKESIA_ENABLE_AI_FRAMEWORK hidden and
+  # disabled. Re-enabling it requires an explicit Brookesia architecture
+  # upgrade and matching dependency validation on every required IDF line.

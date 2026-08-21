@@ -1,0 +1,75 @@
+name: Public repository checks
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  public-repo:
+    name: Public repository layout
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Check customer-facing repository layout
+        shell: bash
+        run: |
+          set -euo pipefail
+          python .github/scripts/check_public_repo.py
+          python .github/scripts/test_check_public_repo.py
+          python .github/scripts/test_audit_markdown.py
+          python .github/scripts/test_discover_esp_idf_examples.py
+          python .github/scripts/test_package_firmware.py
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            route_file="${RUNNER_TEMP}/public-repo-route.json"
+            python .github/scripts/discover_esp_idf_examples.py \
+              --base-ref "${{ github.event.pull_request.base.sha }}" \
+              --head-ref "${{ github.event.pull_request.head.sha }}" \
+              --routing-config .github/ci-routing.json > "$route_file"
+            docs_only="$(python -c 'import json, sys; print(str(json.load(open(sys.argv[1], encoding="utf-8"))["scope"]["docs_only"]).lower())' "$route_file")"
+            if [[ "$docs_only" == "true" ]]; then
+              python .github/scripts/discover_esp_idf_examples.py \
+                --base-ref "${{ github.event.pull_request.base.sha }}" \
+                --head-ref "${{ github.event.pull_request.head.sha }}" \
+                --routing-config .github/ci-routing.json \
+                --expect-docs-only --expect-no-example-builds
+              python .github/scripts/audit_markdown.py . \
+                --base "${{ github.event.pull_request.base.sha }}" \
+                --config .github/markdown-audit.json --format json \
+                --expect-docs-only
+            else
+              python .github/scripts/audit_markdown.py . \
+                --base "${{ github.event.pull_request.base.sha }}" \
+                --config .github/markdown-audit.json --format json
+            fi
+          else
+            python .github/scripts/audit_markdown.py . --all --strict \
+              --config .github/markdown-audit.json
+          fi
+
+  flasher-policy:
+    name: Windows flasher policy
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Validate offline flasher inventory and package policy
+        shell: pwsh
+        run: |
+          ./scripts/Flash-CI-Firmware.ps1 -SelfTest
+          ./scripts/Flash-CI-Firmware.ps1 -ListOnly
