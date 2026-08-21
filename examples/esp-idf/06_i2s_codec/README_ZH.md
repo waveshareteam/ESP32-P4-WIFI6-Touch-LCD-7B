@@ -33,5 +33,5 @@ idf.py -p PORT flash monitor
 | `CONFIG_EXAMPLE_MODE_ECHO` | 将麦克风输入回放到扬声器 |
 | `CONFIG_EXAMPLE_MIC_GAIN_DB` | 回声模式的麦克风增益 |
 
-CI 使用 ESP-IDF v5.5.5 和 v6.0.2，并基于管理型 BSP 3.0.0 编译本示例。
+CI 使用 ESP-IDF v5.5.5 和 v6.0.2，并基于管理型 BSP 3.0.1 编译本示例。
 编译不代表已在硬件上验证音频运行行为。

@@ -35,4 +35,4 @@ Useful menuconfig options:
 | `CONFIG_EXAMPLE_MIC_GAIN_DB` | Echo-mode microphone gain |
 
 CI compiles this example with ESP-IDF v5.5.5 and v6.0.2 against managed BSP
-version 3.0.0. Compilation does not verify audio runtime behavior on hardware.
+version 3.0.1. Compilation does not verify audio runtime behavior on hardware.

@@ -28,7 +28,7 @@
 - 面向硬件用户的示例应提供 `README.md`
 
 开发板的显示、触摸、音频、SD 卡和无线集成应使用管理型 7B BSP 组件
-`waveshare/esp32_p4_wifi6_touch_lcd_7b` 3.0.0。显示应用直接使用 BSP 公开的
+`waveshare/esp32_p4_wifi6_touch_lcd_7b` 3.0.1。显示应用直接使用 BSP 公开的
 LVGL adapter 配置与加锁 API。不要把生成输出提交到 Git。
 
 ## Arduino 工程

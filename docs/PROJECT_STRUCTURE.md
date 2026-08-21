@@ -30,7 +30,7 @@ Each project should contain:
 - `README.md` for hardware-facing examples
 
 Use the managed 7B BSP component,
-`waveshare/esp32_p4_wifi6_touch_lcd_7b` 3.0.0, for board display, touch, audio,
+`waveshare/esp32_p4_wifi6_touch_lcd_7b` 3.0.1, for board display, touch, audio,
 SD card, and wireless integration. Display applications use the BSP's public
 LVGL adapter configuration and locking APIs directly. Keep generated outputs
 out of git.

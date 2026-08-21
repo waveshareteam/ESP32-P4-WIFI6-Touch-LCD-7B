@@ -35,7 +35,7 @@ factory firmware are inventoried separately and are not product examples.
 | Target | `esp32p4` |
 | Stable ESP-IDF 5.5 line | [`v5.5.5`](https://github.com/espressif/esp-idf/releases/tag/v5.5.5) |
 | Stable ESP-IDF 6 line | [`v6.0.2`](https://github.com/espressif/esp-idf/releases/tag/v6.0.2) |
-| Managed board BSP | [`waveshare/esp32_p4_wifi6_touch_lcd_7b` 3.0.0](https://components.espressif.com/components/waveshare/esp32_p4_wifi6_touch_lcd_7b/versions/3.0.0) |
+| Managed board BSP | [`waveshare/esp32_p4_wifi6_touch_lcd_7b` 3.0.1](https://components.espressif.com/components/waveshare/esp32_p4_wifi6_touch_lcd_7b/versions/3.0.1) |
 | BSP LVGL integration | BSP-managed `espressif/esp_lvgl_adapter` `~0.6` line |
 | Included first-party projects | 18 |
 | IDF 5.5 coverage | 18 projects |

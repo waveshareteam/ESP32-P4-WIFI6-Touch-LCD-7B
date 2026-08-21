@@ -44,7 +44,7 @@ for complete hardware and setup guidance.
 | Camera | MIPI-CSI (2-lane) connector; an OV5647 camera is available with the camera version |
 | Audio | ES8311 codec, ES7210 audio ADC, dual microphones, and speaker header |
 | Storage and expansion | microSD, USB 2.0 OTG HS, CAN/TWAI, RS485, I2C, UART, and GPIO |
-| Board support | Managed component: `waveshare/esp32_p4_wifi6_touch_lcd_7b` 3.0.0 |
+| Board support | Managed component: `waveshare/esp32_p4_wifi6_touch_lcd_7b` 3.0.1 |
 | ESP-IDF target | `esp32p4` |
 
 > [!NOTE]

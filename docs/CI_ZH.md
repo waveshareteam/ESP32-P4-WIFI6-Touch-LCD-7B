@@ -31,7 +31,7 @@ Arduino 草图。它直接构建所有匹配草图，使用 Arduino-ESP32 3.3.11
 | Target | `esp32p4` |
 | ESP-IDF 5.5 稳定线 | [`v5.5.5`](https://github.com/espressif/esp-idf/releases/tag/v5.5.5) |
 | ESP-IDF 6 稳定线 | [`v6.0.2`](https://github.com/espressif/esp-idf/releases/tag/v6.0.2) |
-| 管理型开发板 BSP | [`waveshare/esp32_p4_wifi6_touch_lcd_7b` 3.0.0](https://components.espressif.com/components/waveshare/esp32_p4_wifi6_touch_lcd_7b/versions/3.0.0) |
+| 管理型开发板 BSP | [`waveshare/esp32_p4_wifi6_touch_lcd_7b` 3.0.1](https://components.espressif.com/components/waveshare/esp32_p4_wifi6_touch_lcd_7b/versions/3.0.1) |
 | BSP 的 LVGL 集成 | BSP 管理的 `espressif/esp_lvgl_adapter` `~0.6` 版本线 |
 | 纳入矩阵的一方工程 | 18 个 |
 | IDF 5.5 覆盖范围 | 18 个工程 |

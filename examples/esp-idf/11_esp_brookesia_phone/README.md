@@ -24,7 +24,7 @@ Replace `PORT` with the board's serial port.
 
 ## Board Adaptation
 
-- Uses the Registry-managed `waveshare/esp32_p4_wifi6_touch_lcd_7b` BSP at `3.0.0`.
+- Uses the Registry-managed `waveshare/esp32_p4_wifi6_touch_lcd_7b` BSP at `3.0.1`.
 - Uses the BSP display configuration and lock APIs with the 7B panel rotation and touch orientation.
 - Uses the local `components/brookesia_core` component from the LVGL 9 Brookesia integration.
 - Starts the phone system from its app registry and installs the single

@@ -337,7 +337,7 @@ def test_source_invariants() -> None:
     codec_cmake = CODEC_MAIN_CMAKE.read_text(encoding="utf-8")
     codec_source = CODEC_SOURCE.read_text(encoding="utf-8")
     codec_kconfig = (CODEC_SOURCE.parent / "Kconfig.projbuild").read_text(encoding="utf-8")
-    assert 'version: "==3.0.0"' in codec_manifest
+    assert 'version: "==3.0.1"' in codec_manifest
     assert "espressif/es8311" not in codec_manifest
     assert "espressif/esp_lvgl_port" not in codec_manifest
     assert "PRIV_REQUIRES" not in codec_cmake
@@ -380,7 +380,7 @@ def test_source_invariants() -> None:
     brookesia_app_source = BROOKESIA_APP_SOURCE.read_text(encoding="utf-8")
 
     assert 'idf: ">=5.5"' in brookesia_manifest
-    assert 'waveshare/esp32_p4_wifi6_touch_lcd_7b:\n    version: "==3.0.0"' in brookesia_manifest
+    assert 'waveshare/esp32_p4_wifi6_touch_lcd_7b:\n    version: "==3.0.1"' in brookesia_manifest
     assert "espressif/esp-brookesia" not in brookesia_manifest
     assert 'SRCS "main.cpp"' in brookesia_main_cmake
     assert "get_component_library(\"lvgl\" LVGL_LIB)" in brookesia_main_cmake
@@ -418,8 +418,8 @@ def test_source_invariants() -> None:
     assert 'espressif/esp_lcd_touch_gt911:\n    version: "==1.2.0~3"\n    public: true' in usb_support_manifest
     assert 'espressif/esp_lcd_touch_ft5x06:\n    version: "==1.1.0~2"\n    public: true' in usb_support_manifest
     assert all(not path.exists() for path in USB_TOUCH_LOCAL_OVERRIDE_COMPONENT_DIRS)
-    assert 'waveshare/esp32_p4_wifi6_touch_lcd_7b:\n    version: "==3.0.0"' in usb_main_manifest
-    assert 'waveshare/esp32_p4_wifi6_touch_lcd_7b:\n    # The extension composes the managed board APIs; it does not replace the board BSP.\n    version: "==3.0.0"' in usb_support_manifest
+    assert 'waveshare/esp32_p4_wifi6_touch_lcd_7b:\n    version: "==3.0.1"' in usb_main_manifest
+    assert 'waveshare/esp32_p4_wifi6_touch_lcd_7b:\n    # The extension composes the managed board APIs; it does not replace the board BSP.\n    version: "==3.0.1"' in usb_support_manifest
     assert "espressif/esp_lvgl_port" not in usb_main_manifest + usb_support_manifest
     assert 'usb_extend_support:\n    override_path: "../common_components/usb_extend_support"' in usb_main_manifest
     for dependency in ("driver", "esp_driver_i2s", "esp_driver_i2c", "esp_driver_sdmmc", "esp_driver_gpio", "esp_driver_ledc"):
@@ -506,7 +506,8 @@ def test_source_invariants() -> None:
     for manifest in managed_bsp_manifests:
         text = manifest.read_text(encoding="utf-8")
         assert "waveshare/esp32_p4_wifi6_touch_lcd_7b:" in text
-        assert 'version: "==3.0.0"' in text
+        expected_version = "==3.0.0" if manifest.is_relative_to(ROOT / "firmware") else "==3.0.1"
+        assert f'version: "{expected_version}"' in text
         assert 'version: "==2.0.0"' not in text
         assert "espressif/esp_lvgl_port:" not in text
         bsp_contract = text.split("waveshare/esp32_p4_wifi6_touch_lcd_7b:", 1)[1].split("\n  ", 1)[0]

@@ -40,7 +40,7 @@ GitHub Actions 验证、ESP-Brookesia 固件源码以及预编译出厂固件。
 | 摄像头 | MIPI-CSI（2-lane）接口；摄像头版本可选配 OV5647 |
 | 音频 | ES8311 编解码器、ES7210 音频 ADC、双麦克风与扬声器接口 |
 | 存储与扩展 | microSD、USB 2.0 OTG HS、CAN/TWAI、RS485、I2C、UART 与 GPIO |
-| 板级支持 | 托管组件：`waveshare/esp32_p4_wifi6_touch_lcd_7b` 3.0.0 |
+| 板级支持 | 托管组件：`waveshare/esp32_p4_wifi6_touch_lcd_7b` 3.0.1 |
 | ESP-IDF target | `esp32p4` |
 
 > [!NOTE]

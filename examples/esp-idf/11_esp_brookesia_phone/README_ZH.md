@@ -23,7 +23,7 @@ idf.py -p PORT flash monitor
 
 ## 板级适配
 
-- 使用 Registry 托管的 `waveshare/esp32_p4_wifi6_touch_lcd_7b` BSP `3.0.0`。
+- 使用 Registry 托管的 `waveshare/esp32_p4_wifi6_touch_lcd_7b` BSP `3.0.1`。
 - 使用 BSP 提供的显示配置和加锁 API，并保留 7B 屏幕旋转及触摸方向配置。
 - 使用仓库内 `components/brookesia_core` 中的 LVGL 9 Brookesia core。
 - 通过 app registry 启动 Phone 系统，只安装 `brookesia_app_squareline_demo` 这一个示例 app。

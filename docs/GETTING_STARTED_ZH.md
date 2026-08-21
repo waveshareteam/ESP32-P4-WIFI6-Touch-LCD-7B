@@ -4,8 +4,8 @@
 
 本开发板使用 ESP-IDF 目标 `esp32p4` 和
 ESP Component Registry 中的
-[`waveshare/esp32_p4_wifi6_touch_lcd_7b` BSP](https://components.espressif.com/components/waveshare/esp32_p4_wifi6_touch_lcd_7b/versions/3.0.0)
-3.0.0。该版本通过 `esp_lvgl_adapter` 0.6.x 集成 LVGL；不要再并列添加旧的
+[`waveshare/esp32_p4_wifi6_touch_lcd_7b` BSP](https://components.espressif.com/components/waveshare/esp32_p4_wifi6_touch_lcd_7b/versions/3.0.1)
+3.0.1。该版本通过 `esp_lvgl_adapter` 0.6.x 集成 LVGL；不要再并列添加旧的
 `esp_lvgl_port`。
 
 ## 推荐检查顺序

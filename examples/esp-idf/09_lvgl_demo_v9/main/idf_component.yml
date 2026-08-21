@@ -1,8 +1,8 @@
 ## IDF Component Manager Manifest File
 dependencies:
   waveshare/esp32_p4_wifi6_touch_lcd_7b:
-    # 3.0.0 is the current stable BSP and supplies esp_lvgl_adapter transitively.
-    version: "==3.0.0"
+    # 3.0.1 is the current stable BSP and supplies esp_lvgl_adapter transitively.
+    version: "==3.0.1"
   lvgl/lvgl:
     # Current releases on the BSP-managed esp_lvgl_adapter ~0.6 line rely on
     # LVGL APIs added after 9.2. Keep the stable LVGL release pinned until the
