@@ -106,6 +106,12 @@ XiaozhiActivationClient::~XiaozhiActivationClient()
     }
 }
 
+esp_err_t XiaozhiActivationClient::ensureIdentity() const
+{
+    Identity identity = {};
+    return loadIdentity(identity);
+}
+
 esp_err_t XiaozhiActivationClient::loadIdentity(Identity &identity) const
 {
     nvs_handle_t handle = 0;

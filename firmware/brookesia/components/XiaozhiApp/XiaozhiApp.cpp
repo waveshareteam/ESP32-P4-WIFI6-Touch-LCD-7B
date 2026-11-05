@@ -1399,6 +1399,16 @@ bool XiaozhiApp::prepareChat()
     const bool was_waiting =
         _activation_phase == ActivationPhase::WaitingForBinding ||
         _activation_phase == ActivationPhase::BoundPendingSuccess;
+#if CONFIG_XIAOZHI_APP_TRANSPORT_AUTO || CONFIG_XIAOZHI_APP_TRANSPORT_MQTT
+    // esp_xiaozhi sends an empty Client-Id when board/uuid is missing, so a
+    // bound board with erased NVS would get MQTT credentials it cannot use.
+    const esp_err_t identity_ret = _activation_client->ensureIdentity();
+    if (identity_ret != ESP_OK) {
+        setError(identity_ret, "Create Xiaozhi device identity");
+        schedulePrepare(RETRY_INTERVAL_MS);
+        return false;
+    }
+#endif
     ScopedXiaozhiInfo service;
     esp_err_t ret = esp_xiaozhi_chat_get_info(&service.value);
     if (!canPrepare()) {

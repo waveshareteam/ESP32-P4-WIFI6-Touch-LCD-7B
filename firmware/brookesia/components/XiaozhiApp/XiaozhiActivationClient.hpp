@@ -48,6 +48,9 @@ public:
 
     esp_err_t fetchInfo(Info &out);
 
+    // Creates board/uuid when it is missing.
+    esp_err_t ensureIdentity() const;
+
     // ESP_OK means bound, ESP_ERR_TIMEOUT means the web binding is pending.
     esp_err_t activate(const Info &info, int &http_status);
 
