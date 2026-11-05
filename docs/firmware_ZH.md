@@ -3,7 +3,7 @@
 [English](firmware.md)
 
 本仓库保留三种不同的固件范围：不可变的
-`firmware/ESP32-P4-WIFI6-Touch-LCD-7B-FactoryOnly.bin`、单独维护的
+`firmware/ESP32-P4-WIFI6-Touch-LCD-7B_FactoryOnly_20261105.bin`、单独维护的
 `firmware/brookesia/` 源码，以及由 CI 构建的 ESP-IDF 示例 ZIP。CI ZIP 是诊断性
 构建工件，不会替代出厂镜像，也不会把 `firmware/brookesia` 加入示例矩阵。
 

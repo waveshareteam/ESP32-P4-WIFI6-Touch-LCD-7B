@@ -18,7 +18,7 @@ documentation, CI, or maintainability are welcome.
 - First-party ESP-IDF examples live directly under `examples/esp-idf/`.
 - `firmware/brookesia` is a separately maintained delivery-source project and
   is not part of the default example matrix.
-- `firmware/ESP32-P4-WIFI6-Touch-LCD-7B-FactoryOnly.bin` is an immutable
+- `firmware/ESP32-P4-WIFI6-Touch-LCD-7B_FactoryOnly_20261105.bin` is an immutable
   prebuilt factory artifact. Do not replace, rebuild, or repackage it in an
   unrelated change.
 - Preserve imported or managed component history. Do not reformat or translate

@@ -12,7 +12,7 @@
 
 | 路径 | 用途 |
 | --- | --- |
-| `ESP32-P4-WIFI6-Touch-LCD-7B-FactoryOnly.bin` | 更新后的预编译出厂专用二进制 |
+| `ESP32-P4-WIFI6-Touch-LCD-7B_FactoryOnly_20261105.bin` | 更新后的预编译出厂专用二进制 |
 | `brookesia/` | 可构建的 ESP-Brookesia 固件源码 |
 
 ## 出厂二进制完整性
@@ -20,7 +20,7 @@
 仓库中的出厂专用二进制 SHA-256 为：
 
 ```text
-986ca7f5826217bdcbf4ad7e147c095fddd7859c8d77255240bf1d88ae3927b4
+95d0828b06d13394a37704aea16fbfa1f05accd1263a84187dc66ed93e035f25
 ```
 
 轻量仓库检查只验证该文件身份；它不验证构建来源、不重建或重新打包镜像，也不能证明已完成硬件验证。

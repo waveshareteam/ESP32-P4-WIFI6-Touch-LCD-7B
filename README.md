@@ -144,7 +144,7 @@ The [`firmware/`](firmware/) directory keeps two different firmware surfaces:
 
 - [`firmware/brookesia/`](firmware/brookesia/) is an inventoried delivery-source
   project; it is not built by the default example CI.
-- `firmware/ESP32-P4-WIFI6-Touch-LCD-7B-FactoryOnly.bin` is the updated
+- `firmware/ESP32-P4-WIFI6-Touch-LCD-7B_FactoryOnly_20261105.bin` is the updated
   prebuilt factory firmware image and is not a CI build output.
 
 The checked-in factory BIN has a SHA-256 integrity check. Firmware-source and

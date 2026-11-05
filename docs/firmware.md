@@ -3,7 +3,7 @@
 [简体中文](firmware_ZH.md)
 
 This repository keeps three distinct firmware surfaces: immutable
-`firmware/ESP32-P4-WIFI6-Touch-LCD-7B-FactoryOnly.bin`, separately maintained
+`firmware/ESP32-P4-WIFI6-Touch-LCD-7B_FactoryOnly_20261105.bin`, separately maintained
 `firmware/brookesia/` source, and source-built ESP-IDF example ZIPs from CI.
 CI ZIPs are diagnostic build artifacts; they do not replace the factory image
 or add `firmware/brookesia` to the example matrix.

@@ -15,7 +15,7 @@
 
 - 一方 ESP-IDF 示例直接位于 `examples/esp-idf/` 下。
 - `firmware/brookesia` 是单独维护的交付源码工程，不属于默认示例矩阵。
-- `firmware/ESP32-P4-WIFI6-Touch-LCD-7B-FactoryOnly.bin` 是不可变的预编译
+- `firmware/ESP32-P4-WIFI6-Touch-LCD-7B_FactoryOnly_20261105.bin` 是不可变的预编译
   出厂制品。不要在无关修改中替换、重建或重新打包它。
 - 保留导入或 managed 组件的历史。不要在产品级修改中批量格式化或翻译嵌套的
   上游组件树。
