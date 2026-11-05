@@ -1,6 +1,15 @@
 {
   "classification_rules": [
     {
+      "category": "first_party_customer",
+      "patterns": [
+        "firmware/brookesia/components/Camera/config/README.md",
+        "firmware/brookesia/components/Camera/config/README_ZH.md",
+        "firmware/brookesia/components/HardwareApps/README.md",
+        "firmware/brookesia/components/HardwareApps/README_ZH.md"
+      ]
+    },
+    {
       "category": "embedded_upstream",
       "patterns": [
         "examples/esp-idf/11_esp_brookesia_phone/components/apps/setting/ui/**",

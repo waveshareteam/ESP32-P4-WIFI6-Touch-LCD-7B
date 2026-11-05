@@ -54,6 +54,7 @@ dist/
 .env.*
 
 # Firmware binaries and archives generated locally
+firmware/brookesia/spiffs/xiaozhi/font.bin
 *.elf
 *.map
 *.uf2

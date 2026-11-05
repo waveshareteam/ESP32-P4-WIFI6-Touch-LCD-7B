@@ -12,25 +12,25 @@
 
 | 路径 | 用途 |
 | --- | --- |
-| `ESP32-P4-WIFI6-Touch-LCD-7B-FactoryOnly.bin` | 已有的预编译出厂专用二进制 |
+| `ESP32-P4-WIFI6-Touch-LCD-7B-FactoryOnly.bin` | 更新后的预编译出厂专用二进制 |
 | `brookesia/` | 可构建的 ESP-Brookesia 固件源码 |
 
 ## 出厂二进制完整性
 
-出厂专用二进制是不可变的交付制品，其 SHA-256 为：
+仓库中的出厂专用二进制 SHA-256 为：
 
 ```text
-3a60bb19b90f04914ac1173d9a63df19eeb3626662c72d7d631028aded00c6df
+124bea4a483e6d9ca7ce79f47e55a49ff889a8df23d8dfd680257f62fc212c5b
 ```
 
-轻量仓库检查只验证该文件身份，不会重建、重新打包，也不据此宣称完成硬件验证。
+轻量仓库检查只验证该文件身份；它不验证构建来源、不重建或重新打包镜像，也不能证明已完成硬件验证。
 
 ## Brookesia 源码
 
 `brookesia/` 基于本仓库的 `11_esp_brookesia_phone` 示例，并采用
 ESP32-P4 platform 的固件源码结构。该工程针对以下能力进行了适配：
 
-- ESP Component Registry 中的 `waveshare/esp32_p4_wifi6_touch_lcd_7b` 3.0.0
+- `espressif/esp_board_manager`，以及 `waveshare/waveshare_boards` 中的 `esp32_p4_wifi6_touch_lcd_7b` 板级定义
 - 1024 x 600 显示分辨率
 - GT911 触摸
 - ESP32-C6 Hosted Wi-Fi

@@ -1,46 +1,108 @@
 # This file was generated using idf.py save-defconfig. It can be edited manually.
-# Espressif IoT Development Framework (ESP-IDF) 5.5.0 Project Minimal Configuration
+# Espressif IoT Development Framework (ESP-IDF) 5.5.5 Project Minimal Configuration
 #
+
+# ---------------------------------------------------------------------------
+# Target and silicon revision
+# ---------------------------------------------------------------------------
 CONFIG_IDF_TARGET="esp32p4"
+CONFIG_ESP32P4_REV_MIN_300=y
+# CONFIG_ESP32P4_SELECTS_REV_LESS_V3 is not set
+
+# ---------------------------------------------------------------------------
+# Flash and partition table
+# ---------------------------------------------------------------------------
 CONFIG_ESPTOOLPY_FLASHMODE_QIO=y
 CONFIG_ESPTOOLPY_FLASHSIZE_32MB=y
+CONFIG_ESPTOOLPY_FLASHSIZE="32MB"
 CONFIG_PARTITION_TABLE_CUSTOM=y
 CONFIG_PARTITION_TABLE_OFFSET=0x9000
-CONFIG_EXAMPLE_ENABLE_CAM_SENSOR_PIC_VFLIP=n
-CONFIG_EXAMPLE_ENABLE_CAM_SENSOR_PIC_HFLIP=n
-CONFIG_COMPILER_OPTIMIZATION_PERF=y
-CONFIG_COMPILER_ORPHAN_SECTIONS_PLACE=y
+
+# ---------------------------------------------------------------------------
+# PSRAM
+# ---------------------------------------------------------------------------
 CONFIG_SPIRAM=y
-CONFIG_SPIRAM_SPEED_200M=y
+CONFIG_SPIRAM_MODE_HEX=y
+CONFIG_SPIRAM_SPEED_250M=y
+CONFIG_SPIRAM_SPEED=250
+CONFIG_SPIRAM_FETCH_INSTRUCTIONS=y
+CONFIG_SPIRAM_RODATA=y
 CONFIG_SPIRAM_XIP_FROM_PSRAM=y
-CONFIG_SPIRAM_USE_CAPS_ALLOC=y
+CONFIG_SPIRAM_MALLOC_ALWAYSINTERNAL=0
+CONFIG_SPIRAM_MALLOC_RESERVE_INTERNAL=4096
+
+# ---------------------------------------------------------------------------
+# System, console and compiler
+# ---------------------------------------------------------------------------
 CONFIG_CACHE_L2_CACHE_256KB=y
 CONFIG_CACHE_L2_CACHE_LINE_128B=y
-CONFIG_ESP_SYSTEM_PANIC_PRINT_HALT=y
-CONFIG_FATFS_LFN_HEAP=y
+CONFIG_IDF_EXPERIMENTAL_FEATURES=y
+CONFIG_COMPILER_OPTIMIZATION_PERF=y
+CONFIG_ESP_CONSOLE_UART_CUSTOM=y
+CONFIG_ESP_CONSOLE_UART_BAUDRATE=2000000
 CONFIG_FREERTOS_HZ=1000
-CONFIG_FREERTOS_VTASKLIST_INCLUDE_COREID=y
-CONFIG_FREERTOS_GENERATE_RUN_TIME_STATS=y
-CONFIG_FREERTOS_TASK_CREATE_ALLOW_EXT_MEM=n
-CONFIG_VFS_MAX_COUNT=15
-CONFIG_ESP_BROOKESIA_LOG_STYLE_STD=y
-CONFIG_ESP_BROOKESIA_MEMORY_USE_CUSTOM=y
-CONFIG_BSP_LCD_DPI_BUFFER_NUMS=2
-CONFIG_CAMERA_SC2336=y
-CONFIG_CAMERA_SC2336_MIPI_RAW10_1280x720_60FPS=y
-CONFIG_CAMERA_SC2336_CUSTOMIZED_IPA_JSON_CONFIGURATION_FILE=y
-CONFIG_CAMERA_SC2336_CUSTOMIZED_IPA_JSON_CONFIGURATION_FILE_PATH="components/apps/camera/sc2336_custom.json"
-CONFIG_ESP_VIDEO_ENABLE_DVP_VIDEO_DEVICE=n
+CONFIG_VFS_MAX_COUNT=20
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=10240
+# esp_wifi_service publishes events and runs subscriber callbacks in the default event loop task.
+CONFIG_ESP_SYSTEM_EVENT_TASK_STACK_SIZE=4096
+
+# ---------------------------------------------------------------------------
+# Wi-Fi (ESP-Hosted)
+# ---------------------------------------------------------------------------
+# ESP32-P4 uses the on-board ESP32-C6 through ESP-Hosted over SDIO.
+# Transport pins and reset defaults come from the matching esp_hosted 1.4.x P4 profile.
+CONFIG_SLAVE_IDF_TARGET_ESP32C6=y
+CONFIG_WIFI_RMT_STATIC_RX_BUFFER_NUM=16
+CONFIG_WIFI_RMT_DYNAMIC_RX_BUFFER_NUM=64
+CONFIG_WIFI_RMT_DYNAMIC_TX_BUFFER_NUM=64
+CONFIG_WIFI_RMT_AMPDU_TX_ENABLED=y
+CONFIG_WIFI_RMT_TX_BA_WIN=32
+CONFIG_WIFI_RMT_AMPDU_RX_ENABLED=y
+CONFIG_WIFI_RMT_RX_BA_WIN=32
+
+# ---------------------------------------------------------------------------
+# LwIP
+# ---------------------------------------------------------------------------
+CONFIG_LWIP_TCP_SND_BUF_DEFAULT=65534
+CONFIG_LWIP_TCP_WND_DEFAULT=65534
+CONFIG_LWIP_TCP_RECVMBOX_SIZE=64
+CONFIG_LWIP_UDP_RECVMBOX_SIZE=64
+CONFIG_LWIP_TCPIP_RECVMBOX_SIZE=64
+CONFIG_LWIP_TCP_SACK_OUT=y
+
+# ---------------------------------------------------------------------------
+# Camera (OV5647) and ISP/IPA
+# ---------------------------------------------------------------------------
+CONFIG_CAMERA_OV5647=y
+CONFIG_CAMERA_OV5647_MIPI_RAW8_800X640_50FPS=y
+CONFIG_CAMERA_OV5647_MIPI_RAW8_800X800_50FPS=n
+CONFIG_CAMERA_OV5647_MIPI_DEFAULT_FMT_RAW8_800X640_50FPS=y
+CONFIG_CAMERA_OV5647_CSI_LINESYNC_ENABLE=y
 CONFIG_ESP_VIDEO_ENABLE_ISP_PIPELINE_CONTROLLER=y
-CONFIG_LV_COLOR_SCREEN_TRANSP=y
-CONFIG_LV_MEM_CUSTOM=y
-CONFIG_LV_MEM_CUSTOM_INCLUDE="esp_heap_caps.h"
-CONFIG_LV_MEMCPY_MEMSET_STD=y
-CONFIG_LV_CIRCLE_CACHE_SIZE=10
-CONFIG_LV_LAYER_SIMPLE_BUF_SIZE=102400
-CONFIG_LV_IMG_CACHE_DEF_SIZE=20
-CONFIG_LV_GRAD_CACHE_DEF_SIZE=10240
-CONFIG_LV_ATTRIBUTE_FAST_MEM_USE_IRAM=y
+# CONFIG_CAMERA_OV5647_DEFAULT_IPA_JSON_CONFIGURATION_FILE is not set
+CONFIG_CAMERA_OV5647_CUSTOMIZED_IPA_JSON_CONFIGURATION_FILE=y
+CONFIG_CAMERA_OV5647_CUSTOMIZED_IPA_JSON_CONFIGURATION_FILE_PATH="components/Camera/config/ov5647_ipa.json"
+CONFIG_ESP_IPA_AWB_ALGORITHM=y
+
+# ---------------------------------------------------------------------------
+# LVGL core
+# ---------------------------------------------------------------------------
+CONFIG_LV_OS_FREERTOS=y
+CONFIG_LV_USE_CLIB_MALLOC=y
+CONFIG_LV_USE_CLIB_STRING=y
+CONFIG_LV_USE_CLIB_SPRINTF=y
+CONFIG_LV_DEF_REFR_PERIOD=15
+CONFIG_LV_OBJ_STYLE_CACHE=y
+CONFIG_LV_DRAW_SW_DRAW_UNIT_CNT=2
+CONFIG_LV_USE_LOG=y
+CONFIG_LV_LOG_PRINTF=y
+CONFIG_LV_USE_IMGFONT=y
+CONFIG_LV_USE_SNAPSHOT=y
+CONFIG_LV_BUILD_EXAMPLES=n
+
+# ---------------------------------------------------------------------------
+# LVGL fonts
+# ---------------------------------------------------------------------------
 CONFIG_LV_FONT_MONTSERRAT_8=y
 CONFIG_LV_FONT_MONTSERRAT_10=y
 CONFIG_LV_FONT_MONTSERRAT_12=y
@@ -59,10 +121,39 @@ CONFIG_LV_FONT_MONTSERRAT_38=y
 CONFIG_LV_FONT_MONTSERRAT_40=y
 CONFIG_LV_FONT_MONTSERRAT_42=y
 CONFIG_LV_FONT_MONTSERRAT_44=y
-CONFIG_LV_FONT_MONTSERRAT_46=y
-CONFIG_LV_FONT_MONTSERRAT_48=y
-CONFIG_LV_USE_MONKEY=y
-CONFIG_LV_USE_DEMO_WIDGETS=y
-CONFIG_LV_USE_DEMO_BENCHMARK=y
-CONFIG_LV_USE_DEMO_STRESS=y
-CONFIG_IDF_EXPERIMENTAL_FEATURES=y
+CONFIG_LV_FONT_SOURCE_HAN_SANS_SC_16_CJK=y
+CONFIG_LV_FONT_FMT_TXT_LARGE=y
+CONFIG_LV_USE_FONT_COMPRESSED=y
+
+# ---------------------------------------------------------------------------
+# ESP-Brookesia and esp-boost
+# ---------------------------------------------------------------------------
+CONFIG_ESP_BROOKESIA_ENABLE_AI_FRAMEWORK=n
+CONFIG_ESP_BROOKESIA_GUI_ENABLE_ANIM_PLAYER=n
+CONFIG_ESP_BROOKESIA_ENABLE_SERVICES=y
+CONFIG_ESP_BROOKESIA_SERVICES_ENABLE_STORAGE_NVS=y
+CONFIG_ESP_BROOKESIA_SYSTEMS_ENABLE_SPEAKER=n
+CONFIG_BOOST_MATH_ENABLED=n
+CONFIG_BOOST_SERIALIZATION_ENABLED=n
+
+# ---------------------------------------------------------------------------
+# Xiaozhi
+# ---------------------------------------------------------------------------
+# Xiaozhi wake word: "Ni Hao Xiao Zhi" (WakeNet 9).
+CONFIG_SR_WN_WN9_NIHAOXIAOZHI_TTS=y
+
+# Xiaozhi-owned status and activation fallback text. Server text is unchanged.
+CONFIG_XIAOZHI_APP_UI_LANGUAGE_ENGLISH=y
+CONFIG_XIAOZHI_APP_TRANSPORT_AUTO=y
+
+# Keep synchronous service requests within the app lifecycle wait window.
+CONFIG_XIAOZHI_INFO_TIMEOUT_MS=8000
+
+# ---------------------------------------------------------------------------
+# Legacy BSP options
+# ---------------------------------------------------------------------------
+# These symbols no longer exist after the move to esp_board_manager; the build
+# reports them as unknown kconfig symbols.
+CONFIG_BSP_I2C_CLK_SPEED_HZ=400000
+CONFIG_BSP_LCD_DPI_BUFFER_NUMS=3
+CONFIG_BSP_LCD_COLOR_FORMAT_RGB565=y

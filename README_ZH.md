@@ -129,11 +129,11 @@ Actions 工作流构建或打包它。完整路由和手动触发选项请参阅
 
 - [`firmware/brookesia/`](firmware/brookesia/) 是交付源码工程，仅作盘点，
   不由默认示例 CI 构建。
-- `firmware/ESP32-P4-WIFI6-Touch-LCD-7B-FactoryOnly.bin` 是已有的预编译
+- `firmware/ESP32-P4-WIFI6-Touch-LCD-7B-FactoryOnly.bin` 是更新后的预编译
   出厂固件，不是 CI 构建产物。
 
-出厂 BIN 文件是不可变的交付工件。只有在明确限定的固件维护流程中，才会修改和
-验证固件源码。交付与烧录边界请参阅[固件说明](firmware/README_ZH.md)。
+仓库会对已提交的出厂 BIN 执行 SHA-256 完整性检查。固件源码或二进制更新均应在
+明确限定的固件维护流程中处理。交付与烧录边界请参阅[固件说明](firmware/README_ZH.md)。
 
 ## 🗂️ 仓库结构
 

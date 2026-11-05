@@ -15,11 +15,18 @@ import json
 
 ROOT = Path(__file__).resolve().parents[2]
 USB_ROOT = ROOT / "examples/esp-idf/12_usb_extend_screen"
-SETTING_FILES = (
-    ROOT / "firmware/brookesia/components/apps/setting/Setting.cpp",
-)
-PRODUCT_AUDIO_FILES = (
-    ROOT / "firmware/brookesia/components/product_audio/src/product_audio.c",
+WLAN_PAGE_HEADER = ROOT / "firmware/brookesia/components/Settings/ui/WlanPage.hpp"
+WLAN_PAGE_SOURCE = ROOT / "firmware/brookesia/components/Settings/ui/WlanPage.cpp"
+FIRMWARE_ROOT = ROOT / "firmware/brookesia"
+FIRMWARE_BOARD_ROOT = FIRMWARE_ROOT / "components/board"
+BOARD_CODEC_SOURCE = FIRMWARE_BOARD_ROOT / "src/board_codec.c"
+BOARD_DISPLAY_SOURCE = FIRMWARE_BOARD_ROOT / "src/board_display.c"
+BOARD_PERIPHERALS_SOURCE = FIRMWARE_BOARD_ROOT / "src/board_peripherals.c"
+FIRMWARE_MAIN_SOURCE = FIRMWARE_ROOT / "main/main.cpp"
+FIRMWARE_BOOT_SOURCE = FIRMWARE_ROOT / "main/BootLoading.cpp"
+FIRMWARE_HARDWARE_APPS = FIRMWARE_ROOT / "components/HardwareApps"
+FIRMWARE_XIAOZHI_CLIENT = FIRMWARE_ROOT / "components/XiaozhiApp/XiaozhiClient.cpp"
+USB_AUDIO_FILES = (
     USB_ROOT / "common_components/usb_extend_support/src/usb_extend_audio.c",
 )
 MP4_ADAPTER = ROOT / "examples/esp-idf/18_mp4_player/main/app_stream_adapter.c"
@@ -217,25 +224,37 @@ def test_source_invariants() -> None:
     assert "CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y" not in firmware_defaults
     assert "CONFIG_PARTITION_TABLE_OFFSET=0x9000" in firmware_defaults
     partitions = (ROOT / "firmware/brookesia/partitions.csv").read_text(encoding="utf-8")
-    assert "nvs,      data, nvs,     0xa000,  0x6000," in partitions
-    assert "phy_init, data, phy,     0x10000, 0x1000," in partitions
-    assert "automatically aligned to 0x20000" in partitions
-    setting_texts = [path.read_text(encoding="utf-8") for path in SETTING_FILES]
-    for text in setting_texts:
-        assert "st_wifi_password" not in text
-        assert "ESP_ERROR_CHECK(esp_wifi_disconnect" not in text
-        assert "const bool psk_flag" in text
-        assert text.count("resetWifiScanUi();") >= 4
-        assert "WIFI_PASSWORD_MAX_LENGTH        (63)" in text
-        assert "WIFI_SSID_MAX_LENGTH            (32)" in text
-        assert "candidate_ssid[WIFI_SSID_MAX_LENGTH + 1]" in text
-        assert "bsp_display_lock(1000)" in text
-        assert "bsp_display_lock(pdMS_TO_TICKS(1000))" not in text
-        assert "WIFI_EVENT_CONNECTED) &&" in text
-        disconnected = text[text.index("WIFI_EVENT_STA_DISCONNECTED"):text.index("WIFI_EVENT_SCAN_DONE")]
-        assert disconnected.index("memset(st_wifi_ssid") < disconnected.index("xEventGroupSetBits")
+    assert "nvsfactory, data,   nvs,        ,     200K," in partitions
+    assert "nvs,        data,   nvs,        ,     840K," in partitions
+    assert "otadata,    data,   ota,        ,     0x2000," in partitions
+    assert "phy_init,   data,   phy,        ,     0x1000," in partitions
+    assert "model,    data, spiffs,         ,     0xEF000," in partitions
+    assert "factory,  app,  factory,        0x00200000,     8M," in partitions
+    assert "storage,  data, spiffs,         ,     6M," in partitions
+    wlan_header = WLAN_PAGE_HEADER.read_text(encoding="utf-8")
+    wlan_source = WLAN_PAGE_SOURCE.read_text(encoding="utf-8")
+    assert "static constexpr size_t MAX_AP_NUM = 12;" in wlan_header
+    assert "char ssid[33];" in wlan_header
+    assert "size_t len = std::min(src_len, dst_size - 1);" in wlan_source
+    assert "dst[len] = '\\0';" in wlan_source
+    scan_apply = wlan_source[
+        wlan_source.index("void WlanPage::applyScanRecords()"):
+        wlan_source.index("void WlanPage::processPendingEvents()")
+    ]
+    assert "record.ssid[0] == '\\0'" in scan_apply
+    assert "std::find_if" in scan_apply
+    assert "ap.rssi > it->rssi" in scan_apply
+    assert "std::sort(results.begin(), results.end()" in scan_apply
+    assert "results.resize(MAX_AP_NUM);" in scan_apply
+    scan_callback = wlan_source[
+        wlan_source.index("void WlanPage::wifi_scan_done_cb"):
+        wlan_source.index("void WlanPage::ui_timer_cb")
+    ]
+    assert "self->scan_records.assign(ap_records, ap_records + ap_count);" in scan_callback
+    assert "self->pending_events.fetch_or(PENDING_SCAN_DONE);" in scan_callback
+    assert "lv_obj_" not in scan_callback
 
-    for path in PRODUCT_AUDIO_FILES:
+    for path in USB_AUDIO_FILES:
         text = path.read_text(encoding="utf-8")
         assert "if (bytes_read != NULL)" in text
         assert "if (bytes_written != NULL)" in text
@@ -243,6 +262,12 @@ def test_source_invariants() -> None:
         assert "memcpy(audio_file_path, filename, sizeof(audio_file_path))" not in text
         assert "memcpy(audio_file_path, file_path, sizeof(audio_file_path))" not in text
         assert "strnlen(file_path, sizeof(audio_file_path))" in text
+
+    board_codec_text = BOARD_CODEC_SOURCE.read_text(encoding="utf-8")
+    assert "if (bytes_read) {\n        *bytes_read = 0;" in board_codec_text
+    assert "if (ret == ESP_OK && bytes_read) {\n        *bytes_read = len;" in board_codec_text
+    assert "if (bytes_written) {\n        *bytes_written = 0;" in board_codec_text
+    assert "if (ret == ESP_OK && bytes_written) {\n        *bytes_written = len;" in board_codec_text
 
     adapter = MP4_ADAPTER.read_text(encoding="utf-8")
     extractor = MP4_EXTRACTOR.read_text(encoding="utf-8")
@@ -467,17 +492,25 @@ def test_source_invariants() -> None:
         ROOT / "examples/esp-idf/08_lvgl_display_panel/components/bsp_extra",
         ROOT / "examples/esp-idf/09_lvgl_demo_v9/components/bsp_extra",
         BROOKESIA_ROOT / "components/bsp_extra",
-        ROOT / "firmware/brookesia/components/bsp_extra",
     )
     assert all(not path.exists() for path in local_bsp_component_dirs)
+    # The firmware board layer sits on esp_board_manager and replaces the local BSP.
+    assert not (FIRMWARE_ROOT / "components/bsp_extra").exists()
+    assert not (FIRMWARE_ROOT / "components/esp32_p4_wifi6_touch_lcd_7b").exists()
+    firmware_board_manifest = (FIRMWARE_BOARD_ROOT / "idf_component.yml").read_text(encoding="utf-8")
+    assert "esp_board_manager for ESP32-P4-WIFI6-Touch-LCD-7B" in firmware_board_manifest
+    assert "espressif/esp_board_manager:" in firmware_board_manifest
+    assert "waveshare/waveshare_boards:" in (FIRMWARE_ROOT / "main/idf_component.yml").read_text(encoding="utf-8")
     assert not (USB_ROOT / "common_components/esp32_p4_wifi6_touch_lcd_7b_usb_bsp").exists()
     assert not (ROOT / "components/product_display").exists()
+    local_bsp_implementation_roots = (FIRMWARE_BOARD_ROOT,)
     first_party_code = "\n".join(
         path.read_text(encoding="utf-8", errors="replace")
         for path in ROOT.rglob("*")
         if path.is_file()
         and (path.suffix in {".c", ".cc", ".cpp", ".h", ".hpp"} or path.name == "CMakeLists.txt")
         and not {".git", "build", "managed_components"}.intersection(path.parts)
+        and not any(path.is_relative_to(root) for root in local_bsp_implementation_roots)
     )
     for direct_adapter_api in (
         "esp_lv_adapter_init(",
@@ -501,13 +534,11 @@ def test_source_invariants() -> None:
         "examples/esp-idf/12_usb_extend_screen/common_components/usb_extend_support/idf_component.yml",
         "examples/esp-idf/12_usb_extend_screen/main/idf_component.yml",
         "examples/esp-idf/18_mp4_player/main/idf_component.yml",
-        "firmware/brookesia/components/product_audio/idf_component.yml",
     }
     for manifest in managed_bsp_manifests:
         text = manifest.read_text(encoding="utf-8")
         assert "waveshare/esp32_p4_wifi6_touch_lcd_7b:" in text
-        expected_version = "==3.0.0" if manifest.is_relative_to(ROOT / "firmware") else "==3.0.1"
-        assert f'version: "{expected_version}"' in text
+        assert 'version: "==3.0.1"' in text
         assert 'version: "==2.0.0"' not in text
         assert "espressif/esp_lvgl_port:" not in text
         bsp_contract = text.split("waveshare/esp32_p4_wifi6_touch_lcd_7b:", 1)[1].split("\n  ", 1)[0]
@@ -517,7 +548,6 @@ def test_source_invariants() -> None:
         ROOT / "examples/esp-idf/08_lvgl_display_panel/main/main.c",
         ROOT / "examples/esp-idf/09_lvgl_demo_v9/main/main.c",
         BROOKESIA_ROOT / "main/main.cpp",
-        ROOT / "firmware/brookesia/main/main.cpp",
     )
     for path in display_cfg_files:
         text = path.read_text(encoding="utf-8")
@@ -530,9 +560,77 @@ def test_source_invariants() -> None:
         assert "BSP_LCD_DRAW_BUFF" not in text
     for path in display_cfg_files[:2]:
         assert "ESP_LV_ADAPTER_TEAR_AVOID_MODE_TRIPLE_PARTIAL" in path.read_text(encoding="utf-8")
-    for path in display_cfg_files[2:]:
+    for path in display_cfg_files[2:3]:
         assert "ESP_LV_ADAPTER_TEAR_AVOID_MODE_DOUBLE_DIRECT" in path.read_text(encoding="utf-8")
     assert "lv_task_handler()" not in display_cfg_files[0].read_text(encoding="utf-8")
+
+    # Firmware display setup lives in the board component, not in main.cpp.
+    firmware_main = FIRMWARE_MAIN_SOURCE.read_text(encoding="utf-8")
+    board_display = BOARD_DISPLAY_SOURCE.read_text(encoding="utf-8")
+    assert "board_display_start()" in firmware_main
+    assert "bsp_display_" not in firmware_main
+    assert "product_display_" not in firmware_main
+    assert "ESP_LV_ADAPTER_DEFAULT_CONFIG()" in board_display
+    assert "ESP_LV_ADAPTER_TEAR_AVOID_MODE_TRIPLE_PARTIAL" in board_display
+    assert "BOARD_DISPLAY_ROTATION ESP_LV_ADAPTER_ROTATE_180" in " ".join(board_display.split())
+    assert "lvgl_port_cfg" not in board_display
+
+    # Every stylesheet named in main.cpp links its wallpaper into the app image,
+    # and the 1280_800 one alone overflows the 8 MiB factory partition.
+    assert "ESP_BROOKESIA_PHONE_1024_600_DARK_STYLESHEET()" in firmware_main
+    for stylesheet in ("1280_800", "800_1280", "720_1280"):
+        assert f"ESP_BROOKESIA_PHONE_{stylesheet}_DARK_STYLESHEET" not in firmware_main
+
+    # The GT911 INT line is not wired, so a reset can move its I2C address: reset
+    # before the lcd_touch device probes, and keep the driver from resetting after.
+    touch_start = board_display[board_display.index("lv_display_t *board_display_start(void)"):]
+    assert touch_start.index("board_touch_reset()") < touch_start.index("ESP_BOARD_DEVICE_NAME_LCD_TOUCH")
+    assert "esp_err_t lcd_touch_factory_entry_t(" in board_display
+    assert "touch_config.rst_gpio_num = GPIO_NUM_NC;" in board_display
+    assert "esp_lcd_touch_set_mirror_x(touch, !mirror_x);" in board_display
+    assert "esp_lcd_touch_set_mirror_y(touch, !mirror_y);" in board_display
+
+    # RS485 and CAN install from the app registry: WHOLE_ARCHIVE keeps the static
+    # registrars, and an app missing from either side never reaches the home screen.
+    hardware_cmake = (FIRMWARE_HARDWARE_APPS / "CMakeLists.txt").read_text(encoding="utf-8")
+    assert "\n    WHOLE_ARCHIVE\n" in hardware_cmake
+    assert "REQUIRES brookesia_core board" in hardware_cmake
+    for source, registrar in (
+        ("RS485Terminal.cpp", 'RS485Terminal, "RS485"'),
+        ("CANTerminal.cpp", 'CANTerminal, "CAN"'),
+    ):
+        app_source = (FIRMWARE_HARDWARE_APPS / source).read_text(encoding="utf-8")
+        assert '#include "board_peripherals.h"' in app_source
+        assert f"ESP_UTILS_REGISTER_PLUGIN_WITH_CONSTRUCTOR(systems::base::App, {registrar}" in app_source
+    assert '{"RS485", "CAN", "Settings", "AIChats"}' in firmware_main
+    board_peripherals = " ".join(BOARD_PERIPHERALS_SOURCE.read_text(encoding="utf-8").split())
+    for pin in ("BOARD_RS485_TX_GPIO (GPIO_NUM_27)", "BOARD_RS485_RX_GPIO (GPIO_NUM_26)",
+                "BOARD_TWAI_TX_GPIO (GPIO_NUM_22)", "BOARD_TWAI_RX_GPIO (GPIO_NUM_21)"):
+        assert pin in board_peripherals
+
+    # The boot spinner redraws every frame under the LVGL lock, so app_main must
+    # not need that lock to report progress, and stops the spinner before it does.
+    boot_source = FIRMWARE_BOOT_SOURCE.read_text(encoding="utf-8")
+    refresh_stage = boot_source[boot_source.index("void refresh_boot_loading("):boot_source.index("void fade_in_backlight(")]
+    assert "loading.showStage(status, progress, BOOT_FRAME_WAIT_MS)" in refresh_stage
+    assert "LvLockGuard" not in refresh_stage
+    assert "apply_and_wait_for_frame" not in refresh_stage
+    assert firmware_main.index("boot_loading.stopAnimation();") < firmware_main.index("new (std::nothrow) Phone(disp)")
+    # app_main owns BootLoadingUi and may return, so no LVGL callback may outlive it.
+    assert boot_source.count("stopStageUpdates();") == 3
+    failure_guard = boot_source[boot_source.index("BootLoadingFailureGuard::~BootLoadingFailureGuard()"):]
+    assert failure_guard.index("loading_.stopAnimation();") < failure_guard.index("LvLockGuard gui_guard;")
+
+    # Each Xiaozhi audio session restarts JSON-RPC ids at 1 and the MCP engine
+    # rejects repeats, so stale ids must go before hello or tools/list never runs.
+    xiaozhi_client = FIRMWARE_XIAOZHI_CLIENT.read_text(encoding="utf-8")
+    assert 'MCP_DEFAULT_SESSION[] = "__default"' in xiaozhi_client
+    assert (
+        xiaozhi_client.index("esp_mcp_clear_session_state(_mcp, MCP_DEFAULT_SESSION)")
+        < xiaozhi_client.index("esp_xiaozhi_chat_open_audio_channel(")
+    )
+    # esp_mcp_mgr logs whole requests at INFO, and initialize carries the vision token.
+    assert 'esp_log_level_set("esp_mcp_mgr", ESP_LOG_WARN);' in firmware_main
 
     for defaults in (
         ROOT / "examples/esp-idf/08_lvgl_display_panel/sdkconfig.defaults",
@@ -552,18 +650,18 @@ def test_source_invariants() -> None:
         assert "GLOB_RECURSE" not in demo_cmake
         assert "REQUIRES esp32_p4_wifi6_touch_lcd_7b lvgl__lvgl" in demo_cmake
 
-    for defaults in (
-        BROOKESIA_ROOT / "sdkconfig.defaults",
-        ROOT / "firmware/brookesia/sdkconfig.defaults",
-    ):
-        text = defaults.read_text(encoding="utf-8")
-        assert "CONFIG_BSP_LCD_DPI_BUFFER_NUMS=2" in text
+    example_defaults = (BROOKESIA_ROOT / "sdkconfig.defaults").read_text(encoding="utf-8")
+    assert "CONFIG_BSP_LCD_DPI_BUFFER_NUMS=2" in example_defaults
+    firmware_defaults = (ROOT / "firmware/brookesia/sdkconfig.defaults").read_text(encoding="utf-8")
+    # A larger L2 cache comes out of internal RAM, which Wi-Fi TX buffers depend on.
+    assert "CONFIG_CACHE_L2_CACHE_256KB" not in firmware_defaults
+    assert "CONFIG_ESP_BROOKESIA_ENABLE_SERVICES=y" in firmware_defaults
+    assert "CONFIG_ESP_BROOKESIA_SERVICES_ENABLE_STORAGE_NVS=y" in firmware_defaults
+    for text in (example_defaults, firmware_defaults):
         assert "CONFIG_BSP_DISPLAY_LVGL_AVOID_TEAR" not in text
         assert "CONFIG_BSP_DISPLAY_LVGL_DIRECT_MODE" not in text
 
-    lock_contract_files = display_cfg_files + SETTING_FILES + (
-        ROOT / "firmware/brookesia/components/apps/video_player/esp_lvgl_simple_player/esp_lvgl_simple_player.c",
-    )
+    lock_contract_files = display_cfg_files[:3]
     for path in lock_contract_files:
         text = path.read_text(encoding="utf-8")
         assert "bsp_display_lock(" in text, path
@@ -630,15 +728,6 @@ def test_source_invariants() -> None:
     assert "do not verify LCD runtime behavior" in usb_readme
     assert "EK79007 版本守卫 API 与 IDF 6 分配器/DMA2D 路径" in usb_readme_zh
     assert "不验证 LCD 运行行为" in usb_readme_zh
-
-    for text in setting_texts:
-        callback_start = text.index("onButtonWifiListClickedEventCallback")
-        callback_end = text.index("void AppSettings::", callback_start + 1)
-        callback = text[callback_start:callback_end]
-        assert "app->stopWifiScan()" not in callback
-        reset = text[text.index("void AppSettings::resetWifiScanUi"):]
-        assert "if (!bsp_display_lock(-1))" in reset
-
 
 def main() -> int:
     test_boundaries()
