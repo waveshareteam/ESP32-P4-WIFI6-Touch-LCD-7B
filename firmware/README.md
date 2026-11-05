@@ -21,7 +21,7 @@ factory-only image or the separately maintained `brookesia/` source project.
 The checked-in factory-only binary has SHA-256:
 
 ```text
-95d0828b06d13394a37704aea16fbfa1f05accd1263a84187dc66ed93e035f25
+8eb423480642feef658d80ac9e796e66f212cbd94f0e9e38b8a3ac2862af3e7e
 ```
 
 The lightweight repository check verifies this identity. It does not verify

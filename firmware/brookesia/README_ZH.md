@@ -14,7 +14,7 @@ SD 卡和 ESP32-C6 Hosted Wi-Fi，并提供 RS485 和 CAN/TWAI 终端应用。
 
 | 项目 | 配置 |
 | --- | --- |
-| 主控 | ESP32-P4 Rev3.x，32 MiB Flash，Hex 模式 PSRAM（250 MHz） |
+| 主控 | ESP32-P4 Rev3.x，32 MiB Flash，Hex 模式 PSRAM（200 MHz） |
 | 显示 / 触摸 | 7 英寸 EK79007 1024 x 600 MIPI-DSI 屏，GT911 电容触摸 |
 | 框架 | ESP-IDF v5.5；`main/idf_component.yml` 要求 `>=5.5,<6.0` |
 | UI | LVGL 9.5.0，本地 ESP-Brookesia core 0.6.0-beta2 |
@@ -182,7 +182,7 @@ idf.py menuconfig
 
 ## 摄像头与多媒体
 
-Camera 使用 OV5647 的 800 x 640 binning 模式。PPA 将画面裁剪后铺满 1024 x 600 屏幕，
+Camera 使用 OV5647 的 800 x 800 模式。PPA 将画面裁剪后铺满 1024 x 600 屏幕，
 裁剪尺寸按 PPA 1/16 步进的缩放系数计算。
 
 VideoPlayer 只扫描 `/sdcard/avi`，`.avi` 扩展名不区分大小写。SD 卡根目录下的

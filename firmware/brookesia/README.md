@@ -15,7 +15,7 @@ and ESP32-C6 hosted Wi-Fi, and adds RS485 and CAN/TWAI terminal applications.
 
 | Item | Configuration |
 | --- | --- |
-| Host MCU | ESP32-P4 Rev3.x, 32 MiB flash, hex-mode PSRAM at 250 MHz |
+| Host MCU | ESP32-P4 Rev3.x, 32 MiB flash, hex-mode PSRAM at 200 MHz |
 | Display / touch | 7-inch EK79007 1024 x 600 MIPI-DSI panel, GT911 capacitive touch |
 | Framework | ESP-IDF v5.5; `main/idf_component.yml` requires `>=5.5,<6.0` |
 | UI | LVGL 9.5.0 with the local ESP-Brookesia core 0.6.0-beta2 |
@@ -200,7 +200,7 @@ appropriate termination.
 
 ## Camera and media
 
-Camera runs the OV5647 in its 800 x 640 binned mode. The PPA cover-fills the
+Camera runs the OV5647 in its 800 x 800 mode. The PPA cover-fills the
 1024 x 600 panel, cropping the source so that the scale factor lands on the PPA's
 1/16 steps.
 
