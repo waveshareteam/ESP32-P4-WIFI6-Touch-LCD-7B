@@ -127,6 +127,18 @@ idf.py -p PORT app-flash monitor
 | `factory` | app / factory | `0x200000` | 8 MiB | 应用程序 |
 | `storage` | data / spiffs | `0xA00000` | 6 MiB | 音乐、小智提示音和字体（`storage.bin`） |
 
+### 单独擦除 NVS
+
+如需清除 Wi-Fi、应用设置和小智状态而不重新烧录固件，请在已激活的 ESP-IDF 环境中运行
+以下命令。PowerShell 中请将 `$IDF_PATH` 换成 `$env:IDF_PATH`：
+
+```sh
+python $IDF_PATH/components/partition_table/parttool.py --port PORT --partition-table-offset 0x9000 erase_partition --partition-name=nvs
+```
+
+擦除后复位开发板，并在 Settings 中重新配置 WLAN。`idf.py flash` 不会写入 `nvs`
+分区，因此不会清除这些数据。
+
 ## AIChats / 小智
 
 AIChats 使用 `esp_xiaozhi` 处理协议，本工程负责 UI、激活、音频和生命周期集成。

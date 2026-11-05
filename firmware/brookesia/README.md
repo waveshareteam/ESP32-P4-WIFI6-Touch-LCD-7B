@@ -136,6 +136,19 @@ The layout is defined in `partitions.csv`; the partition table is at `0x9000`:
 | `factory` | app / factory | `0x200000` | 8 MiB | Application |
 | `storage` | data / spiffs | `0xA00000` | 6 MiB | Music, Xiaozhi prompts and font (`storage.bin`) |
 
+### Erase NVS only
+
+To clear Wi-Fi, app settings and Xiaozhi state without reflashing the firmware,
+run this from an activated ESP-IDF environment. In PowerShell, use
+`$env:IDF_PATH` instead of `$IDF_PATH`:
+
+```sh
+python $IDF_PATH/components/partition_table/parttool.py --port PORT --partition-table-offset 0x9000 erase_partition --partition-name=nvs
+```
+
+Reset the board and configure WLAN again in Settings. `idf.py flash` does not
+write the `nvs` partition, so it keeps this data.
+
 ## AIChats / Xiaozhi
 
 AIChats uses `esp_xiaozhi` for the protocol. This project provides the UI,
