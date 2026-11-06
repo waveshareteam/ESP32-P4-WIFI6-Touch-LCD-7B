@@ -43,8 +43,9 @@ This repository has no committed local schematic, and board glue continues to
 use the published BSP/application boundary. Compilation is not panel, touch,
 RS485, or CAN HIL validation.
 
-Both Brookesia profiles use the same custom partition layout: the partition
-table is at `0x9000`, NVS starts at `0xa000`, PHY initialization starts at
-`0x10000`, and the factory app is automatically aligned to `0x20000`. This
-leaves room for the rev3 bootloader, whose size can exceed the `0x6000` space
-available before a table at `0x8000`.
+Both Brookesia profiles use the same partition layout. The table is at
+`0x9000`; generated offsets place `nvsfactory` at `0xa000`, `nvs` at `0x3c000`,
+`otadata` at `0x10e000`, `phy_init` at `0x110000`, the speech model at
+`0x111000`, the fixed 8 MiB factory app at `0x200000`, and 6 MiB storage at
+`0xa00000`. Keep `partitions.csv`, the resolved `sdkconfig`, and the delivered
+FactoryOnly image in sync.

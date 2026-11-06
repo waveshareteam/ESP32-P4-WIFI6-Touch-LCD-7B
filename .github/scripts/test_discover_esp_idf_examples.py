@@ -187,7 +187,7 @@ def assert_routing_contract() -> None:
     assert report["scope"]["firmware_build_required"] is False
     assert report["esp_idf"]["selected"] == []
 
-    report = discover.route_changes([change("firmware/ESP32-P4-WIFI6-Touch-LCD-7B-FactoryOnly.bin")], known)
+    report = discover.route_changes([change("firmware/ESP32-P4-WIFI6-Touch-LCD-7B_FactoryOnly_20261105.bin")], known)
     assert report["scope"]["firmware_build_required"] is False
 
     report = discover.route_changes(
@@ -199,7 +199,7 @@ def assert_routing_contract() -> None:
     assert report["esp_idf"]["selected"] == []
 
     report = discover.route_changes(
-        [change("firmware/ESP32-P4-WIFI6-Touch-LCD-7B-FactoryOnly.bin")], known
+        [change("firmware/ESP32-P4-WIFI6-Touch-LCD-7B_FactoryOnly_20261105.bin")], known
     )
     assert report["scope"]["release_review_required"] is True
     assert report["esp_idf"]["selected"] == []

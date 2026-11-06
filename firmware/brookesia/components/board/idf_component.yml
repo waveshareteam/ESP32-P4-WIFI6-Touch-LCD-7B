@@ -1,0 +1,47 @@
+dependencies:
+  idf:
+    version: '>=5.5'
+
+  chmorgan/esp-audio-player:
+    version: 1.1.0
+    public: true
+
+  chmorgan/esp-file-iterator:
+    version: 1.0.0
+    public: true
+
+  espressif/esp_board_manager:
+    version: ^0.7.5
+    public: true
+
+  espressif/esp_lcd_touch_gt911: '*'
+
+  espressif/esp_lvgl_adapter:
+    version: ^0.7.3~1
+    public: true
+
+  espressif/esp_wifi_service:
+    version: ^0.5.3
+    public: true
+
+  # Co-processor firmware version query; main/idf_component.yml pins the exact release.
+  espressif/esp_wifi_remote:
+    matches:
+      - if: "idf_version >= 6.0"
+        version: ">=1.6,<2.0"
+      - if: "idf_version < 6.0"
+        version: "0.14.*"
+    public: true
+
+  espressif/esp_hosted:
+    matches:
+      - if: "idf_version >= 6.0"
+        version: ">=2.12,<3.0"
+      - if: "idf_version < 6.0"
+        version: "1.4.*"
+    public: true
+
+description: Board support layer on esp_board_manager for ESP32-P4-WIFI6-Touch-LCD-7B
+targets:
+- esp32p4
+version: 0.0.2

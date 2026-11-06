@@ -1,7 +1,10 @@
 # Name,   Type, SubType, Offset,  Size, Flags
-# Note: if you change the phy_init or app partition offset, make sure to change the offset in Kconfig.projbuild
-nvs,      data, nvs,     0xa000,  0x6000,
-phy_init, data, phy,     0x10000, 0x1000,
-# The blank factory offset is automatically aligned to 0x20000 for an app partition.
-factory,  app,  factory, ,        9M,
-storage,  data, spiffs,  ,        4M,
+# Note: if you have increased the bootloader size, make sure to update the offsets to avoid overlap
+nvsfactory, data,   nvs,        ,     200K,
+nvs,        data,   nvs,        ,     840K,
+otadata,    data,   ota,        ,     0x2000,
+phy_init,   data,   phy,        ,     0x1000,
+# ESP-SR memory-maps this image; keep it below 16 MiB on Quad Flash.
+model,    data, spiffs,         ,     0xEF000,
+factory,  app,  factory,        0x00200000,     8M,
+storage,  data, spiffs,         ,     6M,

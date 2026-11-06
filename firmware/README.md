@@ -13,26 +13,27 @@ factory-only image or the separately maintained `brookesia/` source project.
 
 | Path | Purpose |
 | --- | --- |
-| `ESP32-P4-WIFI6-Touch-LCD-7B-FactoryOnly.bin` | Existing prebuilt factory-only binary |
+| `ESP32-P4-WIFI6-Touch-LCD-7B_FactoryOnly_20261105.bin` | Updated prebuilt factory-only binary |
 | `brookesia/` | Buildable ESP-Brookesia firmware source |
 
 ## Factory Binary Integrity
 
-The factory-only binary is an immutable delivery artifact with SHA-256:
+The checked-in factory-only binary has SHA-256:
 
 ```text
-3a60bb19b90f04914ac1173d9a63df19eeb3626662c72d7d631028aded00c6df
+8eb423480642feef658d80ac9e796e66f212cbd94f0e9e38b8a3ac2862af3e7e
 ```
 
-The lightweight repository check verifies this identity. It does not rebuild,
-repackage, or claim hardware validation for the binary.
+The lightweight repository check verifies this identity. It does not verify
+build provenance, rebuild or repackage the image, or establish hardware
+validation.
 
 ## Brookesia Source
 
 `brookesia/` is based on the local `11_esp_brookesia_phone` example and follows
 the ESP32-P4-platform firmware-source layout. It is adapted for:
 
-- `waveshare/esp32_p4_wifi6_touch_lcd_7b` 3.0.0 from the ESP Component Registry
+- `espressif/esp_board_manager` with the `esp32_p4_wifi6_touch_lcd_7b` board from `waveshare/waveshare_boards`
 - 1024 x 600 display resolution
 - GT911 touch
 - ESP32-C6 hosted Wi-Fi

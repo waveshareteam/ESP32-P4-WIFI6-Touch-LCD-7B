@@ -3,7 +3,7 @@
 [English](firmware.md)
 
 本仓库保留三种不同的固件范围：不可变的
-`firmware/ESP32-P4-WIFI6-Touch-LCD-7B-FactoryOnly.bin`、单独维护的
+`firmware/ESP32-P4-WIFI6-Touch-LCD-7B_FactoryOnly_20261105.bin`、单独维护的
 `firmware/brookesia/` 源码，以及由 CI 构建的 ESP-IDF 示例 ZIP。CI ZIP 是诊断性
 构建工件，不会替代出厂镜像，也不会把 `firmware/brookesia` 加入示例矩阵。
 
@@ -21,9 +21,11 @@
 
 目前没有 GitHub Actions 工作流构建或打包 Brookesia 源码。其 `rev1_3` 和 `rev3_x` defaults
 仍可用于经过单独验证的手动构建，生成的固件镜像不能混用。两个 profile 共用 Brookesia
-分区布局：分区表为 `0x9000`，NVS 为 `0xa000`，PHY 初始化为 `0x10000`，factory app
-自动对齐到 `0x20000`。这可避免 rev3 bootloader 大于旧 `0x8000` 分区表偏移之前
-`0x6000` 空间时破坏布局。
+两个 profile 使用相同的 Brookesia 分区布局：分区表位于 `0x9000`；生成后的
+`nvsfactory` 位于 `0xa000`，`nvs` 位于 `0x3c000`，`otadata` 位于 `0x10e000`，
+`phy_init` 位于 `0x110000`，语音模型位于 `0x111000`，固定的 8 MiB factory app
+位于 `0x200000`，6 MiB 存储位于 `0xa00000`。请保持 `partitions.csv`、解析后的
+`sdkconfig` 和交付的 FactoryOnly 镜像一致。
 
 ## Windows 烧录器
 

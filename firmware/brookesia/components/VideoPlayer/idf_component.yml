@@ -1,0 +1,4 @@
+version: 0.6.0
+dependencies:
+  espressif/esp_extractor: "1.0.7"
+  espressif/esp_new_jpeg: "1.0.2"

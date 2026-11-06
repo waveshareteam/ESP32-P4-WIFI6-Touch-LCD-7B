@@ -1,18 +1,12 @@
-## IDF Component Manager Manifest File
 dependencies:
+  idf:
+    version: '>=5.5,<6.0'
+
+  # Match the ESP-IDF 5.x host line used by this board's bundled C6 firmware.
   espressif/esp_wifi_remote:
-    version: "0.14.*"
-    
+    version: 0.14.5
+
   espressif/esp_hosted:
-    version: "1.4.*"
-
-  espressif/esp-brookesia:
-    version: "0.4.*"
-
-  esp_video:
-    version: "0.8.*"
-    public: true
-
-  espressif/esp_h264:
-      version: "==1.0.3"
-      public: true
+    version: 1.4.7
+  espressif/esp_board_manager: ^0.7.5
+  waveshare/waveshare_boards: ^0.2.0

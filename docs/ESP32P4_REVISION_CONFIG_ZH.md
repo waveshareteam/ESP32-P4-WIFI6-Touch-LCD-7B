@@ -35,7 +35,8 @@ bootloader 日志详细程度，不改变应用日志级别或分区布局。
 硅片版本不能证明 PCB/电气版本或硬件运行。本次提交不包含本地原理图，板级 glue
 继续使用已发布的 BSP/应用边界。编译结果不等同于屏幕、触摸、RS485 或 CAN HIL。
 
-两个 Brookesia profile 共用同一套自定义分区：分区表位于 `0x9000`，NVS 从
-`0xa000` 开始，PHY 初始化从 `0x10000` 开始，factory app 自动对齐到 `0x20000`。
-这样可为 rev3 bootloader 留出空间；其大小可能超过分区表位于 `0x8000` 时可用的
-`0x6000` 空间。
+两个 Brookesia profile 使用相同的分区布局：分区表位于 `0x9000`；生成后的
+`nvsfactory` 位于 `0xa000`，`nvs` 位于 `0x3c000`，`otadata` 位于 `0x10e000`，
+`phy_init` 位于 `0x110000`，语音模型位于 `0x111000`，固定的 8 MiB factory app
+位于 `0x200000`，6 MiB 存储位于 `0xa00000`。请保持 `partitions.csv`、解析后的
+`sdkconfig` 和交付的 FactoryOnly 镜像一致。

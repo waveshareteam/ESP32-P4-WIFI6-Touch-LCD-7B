@@ -3,7 +3,7 @@
 [简体中文](firmware_ZH.md)
 
 This repository keeps three distinct firmware surfaces: immutable
-`firmware/ESP32-P4-WIFI6-Touch-LCD-7B-FactoryOnly.bin`, separately maintained
+`firmware/ESP32-P4-WIFI6-Touch-LCD-7B_FactoryOnly_20261105.bin`, separately maintained
 `firmware/brookesia/` source, and source-built ESP-IDF example ZIPs from CI.
 CI ZIPs are diagnostic build artifacts; they do not replace the factory image
 or add `firmware/brookesia` to the example matrix.
@@ -27,10 +27,12 @@ packaged by this matrix.
 The Brookesia source is not currently built or packaged by a GitHub Actions
 workflow. Its `rev1_3` and `rev3_x` defaults remain available for separately
 validated manual builds, and resulting firmware images are not interchangeable.
-Both profiles use the same Brookesia partition layout: table `0x9000`, NVS
-`0xa000`, PHY initialization `0x10000`, and an automatically aligned factory
-app at `0x20000`. This protects the layout from a rev3 bootloader larger than
-the `0x6000` gap before the former `0x8000` table offset.
+Both profiles use the same Brookesia partition layout. The table is at
+`0x9000`; generated offsets place `nvsfactory` at `0xa000`, `nvs` at `0x3c000`,
+`otadata` at `0x10e000`, `phy_init` at `0x110000`, the speech model at
+`0x111000`, the fixed 8 MiB factory app at `0x200000`, and 6 MiB storage at
+`0xa00000`. Keep `partitions.csv`, the resolved `sdkconfig`, and the delivered
+FactoryOnly image in sync.
 
 ## Windows flasher
 

@@ -1,58 +1,35 @@
-idf_component_register(
-    SRCS main.cpp
-    INCLUDE_DIRS .
-    PRIV_REQUIRES
-        apps
-        product_audio
-        esp-brookesia
-        esp32_p4_wifi6_touch_lcd_7b
-        freertos
-        nvs_flash
-        log
-        esp_common
-        esp_hw_support
-        heap
-        lvgl__lvgl
-        esp_driver_sdmmc
-        esp_driver_gpio
-        esp_driver_isp)
+# Pull in every project component. With MINIMAL_BUILD only components reachable
+# from main are built, so a new app only needs its own directory under
+# components/ plus an ESP_UTILS_REGISTER_PLUGIN_WITH_CONSTRUCTOR registration.
+file(GLOB PROJECT_COMPONENT_DIRS LIST_DIRECTORIES true "${CMAKE_CURRENT_LIST_DIR}/../components/*")
+set(PROJECT_COMPONENTS "")
+foreach(component_dir IN LISTS PROJECT_COMPONENT_DIRS)
+    if(EXISTS "${component_dir}/CMakeLists.txt")
+        get_filename_component(component_name "${component_dir}" NAME)
+        list(APPEND PROJECT_COMPONENTS ${component_name})
+    endif()
+endforeach()
 
-idf_component_get_property(LVGL_LIB lvgl__lvgl COMPONENT_LIB)
-target_compile_options(
-    ${LVGL_LIB} 
-    PRIVATE 
-        -DLV_LVGL_H_INCLUDE_SIMPLE
-        -DLV_USE_DEMO_MUSIC
+idf_component_register(
+    SRCS "main.cpp" "BootLoading.cpp"
+    INCLUDE_DIRS "."
+    PRIV_REQUIRES
+        ${PROJECT_COMPONENTS}
+        esp_event
+        esp_lvgl_adapter
+        esp_netif
+        esp_wifi
+        nvs_flash
+        board
 )
 
-if(CONFIG_ESP_BROOKESIA_MEMORY_USE_CUSTOM)
-    idf_build_get_property(build_components BUILD_COMPONENTS)
-    foreach(COMPONENT ${build_components})
-        if(COMPONENT MATCHES "esp-brookesia" OR COMPONENT MATCHES "espressif__esp-brookesia")
-            set(TARGET_COMPONENT ${COMPONENT})
-            break()
-        endif()
-    endforeach()
-
-    if(TARGET_COMPONENT STREQUAL "")
-        message(FATAL_ERROR "Component 'esp-brookesia' not found.")
-    else()
-        idf_component_get_property(ESP_BROOKESIA_LIB ${TARGET_COMPONENT} COMPONENT_LIB)
-    endif()
-
-    target_compile_options(
-        ${ESP_BROOKESIA_LIB}
-        PUBLIC
-            "-DESP_BROOKESIA_MEMORY_CUSTOM_MALLOC(x)=heap_caps_aligned_alloc(1, x, MALLOC_CAP_SPIRAM)"  "-DESP_BROOKESIA_MEMORY_CUSTOM_FREE=free"
-    )
+# Copy the Xiaozhi UI font into the SPIFFS image source directory.
+idf_component_get_property(XIAOZHI_FONTS_DIR 78__xiaozhi-fonts COMPONENT_DIR)
+set(XIAOZHI_FONT_SRC "${XIAOZHI_FONTS_DIR}/cbin/font_puhui_common_30_4.bin")
+if(XIAOZHI_FONTS_DIR AND EXISTS "${XIAOZHI_FONT_SRC}")
+    configure_file("${XIAOZHI_FONT_SRC}" "${CMAKE_CURRENT_LIST_DIR}/../spiffs/xiaozhi/font.bin" COPYONLY)
+else()
+    message(STATUS "xiaozhi-fonts common font not found; skipping SPIFFS font copy")
 endif()
 
-if(CONFIG_LV_MEM_CUSTOM)
-    target_compile_options(
-        ${LVGL_LIB} 
-        PRIVATE 
-            "-DLV_MEM_CUSTOM_ALLOC(x)=heap_caps_malloc(x, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT)"
-    )
-endif()
-
-spiffs_create_partition_image(storage ../spiffs FLASH_IN_PROJECT)
+spiffs_create_partition_image(storage "${CMAKE_CURRENT_LIST_DIR}/../spiffs" FLASH_IN_PROJECT)

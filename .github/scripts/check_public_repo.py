@@ -10,8 +10,8 @@ from pathlib import Path
 
 
 EXAMPLE_ROOT = Path("examples/esp-idf")
-FACTORY_FIRMWARE = Path("firmware/ESP32-P4-WIFI6-Touch-LCD-7B-FactoryOnly.bin")
-FACTORY_FIRMWARE_SHA256 = "3a60bb19b90f04914ac1173d9a63df19eeb3626662c72d7d631028aded00c6df"
+FACTORY_FIRMWARE = Path("firmware/ESP32-P4-WIFI6-Touch-LCD-7B_FactoryOnly_20261105.bin")
+FACTORY_FIRMWARE_SHA256 = "8eb423480642feef658d80ac9e796e66f212cbd94f0e9e38b8a3ac2862af3e7e"
 BAD_TEXT_PATTERNS = (
     (
         "stale ESP32-P4 Function EV Board text",
